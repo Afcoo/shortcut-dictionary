@@ -1,0 +1,645 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F70943622CC9350D007EA02E /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = F70943612CC9350D007EA02E /* KeyboardShortcuts */; };
+		F731F1112CE134FC00ACAEB8 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = F731F1102CE134F700ACAEB8 /* .gitignore */; };
+		F756E4322D1C488700B237B5 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F756E4302D1C488700B237B5 /* InfoPlist.strings */; };
+		F7F7011E2CFCB9B700E110EA /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = F7F7011D2CFCB9B700E110EA /* LaunchAtLogin */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		F790FF992CC377E000A6AB1C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F790FF7F2CC377DC00A6AB1C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F790FF862CC377DC00A6AB1C;
+			remoteInfo = ShortcutDictionary;
+		};
+		F790FFA32CC377E000A6AB1C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F790FF7F2CC377DC00A6AB1C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F790FF862CC377DC00A6AB1C;
+			remoteInfo = ShortcutDictionary;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		F731F1102CE134F700ACAEB8 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		F756E4312D1C488700B237B5 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		F756E4332D1C489000B237B5 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		F790FF872CC377DC00A6AB1C /* ShortcutDictionary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShortcutDictionary.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F790FF982CC377E000A6AB1C /* ShortcutDictionaryTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ShortcutDictionaryTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		F790FFA22CC377E000A6AB1C /* ShortcutDictionaryUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ShortcutDictionaryUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		F756E4352D1C4AC900B237B5 /* Exceptions for "ShortcutDictionary" folder in "ShortcutDictionary" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = F790FF862CC377DC00A6AB1C /* ShortcutDictionary */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		F790FF892CC377DC00A6AB1C /* ShortcutDictionary */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				F756E4352D1C4AC900B237B5 /* Exceptions for "ShortcutDictionary" folder in "ShortcutDictionary" target */,
+			);
+			path = ShortcutDictionary;
+			sourceTree = "<group>";
+		};
+		F790FF9B2CC377E000A6AB1C /* ShortcutDictionaryTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ShortcutDictionaryTests;
+			sourceTree = "<group>";
+		};
+		F790FFA52CC377E000A6AB1C /* ShortcutDictionaryUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = ShortcutDictionaryUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F790FF842CC377DC00A6AB1C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F7F7011E2CFCB9B700E110EA /* LaunchAtLogin in Frameworks */,
+				F70943622CC9350D007EA02E /* KeyboardShortcuts in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F790FF952CC377E000A6AB1C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F790FF9F2CC377E000A6AB1C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F790FF7E2CC377DC00A6AB1C = {
+			isa = PBXGroup;
+			children = (
+				F756E4302D1C488700B237B5 /* InfoPlist.strings */,
+				F731F1102CE134F700ACAEB8 /* .gitignore */,
+				F790FF892CC377DC00A6AB1C /* ShortcutDictionary */,
+				F790FF9B2CC377E000A6AB1C /* ShortcutDictionaryTests */,
+				F790FFA52CC377E000A6AB1C /* ShortcutDictionaryUITests */,
+				F790FF882CC377DC00A6AB1C /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		F790FF882CC377DC00A6AB1C /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F790FF872CC377DC00A6AB1C /* ShortcutDictionary.app */,
+				F790FF982CC377E000A6AB1C /* ShortcutDictionaryTests.xctest */,
+				F790FFA22CC377E000A6AB1C /* ShortcutDictionaryUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F790FF862CC377DC00A6AB1C /* ShortcutDictionary */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F790FFAC2CC377E000A6AB1C /* Build configuration list for PBXNativeTarget "ShortcutDictionary" */;
+			buildPhases = (
+				F790FF832CC377DC00A6AB1C /* Sources */,
+				F790FF842CC377DC00A6AB1C /* Frameworks */,
+				F790FF852CC377DC00A6AB1C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				F790FF892CC377DC00A6AB1C /* ShortcutDictionary */,
+			);
+			name = ShortcutDictionary;
+			packageProductDependencies = (
+				F70943612CC9350D007EA02E /* KeyboardShortcuts */,
+				F7F7011D2CFCB9B700E110EA /* LaunchAtLogin */,
+			);
+			productName = ShortcutDictionary;
+			productReference = F790FF872CC377DC00A6AB1C /* ShortcutDictionary.app */;
+			productType = "com.apple.product-type.application";
+		};
+		F790FF972CC377E000A6AB1C /* ShortcutDictionaryTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F790FFAF2CC377E000A6AB1C /* Build configuration list for PBXNativeTarget "ShortcutDictionaryTests" */;
+			buildPhases = (
+				F790FF942CC377E000A6AB1C /* Sources */,
+				F790FF952CC377E000A6AB1C /* Frameworks */,
+				F790FF962CC377E000A6AB1C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F790FF9A2CC377E000A6AB1C /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				F790FF9B2CC377E000A6AB1C /* ShortcutDictionaryTests */,
+			);
+			name = ShortcutDictionaryTests;
+			packageProductDependencies = (
+			);
+			productName = ShortcutDictionaryTests;
+			productReference = F790FF982CC377E000A6AB1C /* ShortcutDictionaryTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		F790FFA12CC377E000A6AB1C /* ShortcutDictionaryUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F790FFB22CC377E000A6AB1C /* Build configuration list for PBXNativeTarget "ShortcutDictionaryUITests" */;
+			buildPhases = (
+				F790FF9E2CC377E000A6AB1C /* Sources */,
+				F790FF9F2CC377E000A6AB1C /* Frameworks */,
+				F790FFA02CC377E000A6AB1C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				F790FFA42CC377E000A6AB1C /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				F790FFA52CC377E000A6AB1C /* ShortcutDictionaryUITests */,
+			);
+			name = ShortcutDictionaryUITests;
+			packageProductDependencies = (
+			);
+			productName = ShortcutDictionaryUITests;
+			productReference = F790FFA22CC377E000A6AB1C /* ShortcutDictionaryUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F790FF7F2CC377DC00A6AB1C /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1600;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					F790FF862CC377DC00A6AB1C = {
+						CreatedOnToolsVersion = 16.0;
+					};
+					F790FF972CC377E000A6AB1C = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = F790FF862CC377DC00A6AB1C;
+					};
+					F790FFA12CC377E000A6AB1C = {
+						CreatedOnToolsVersion = 16.0;
+						TestTargetID = F790FF862CC377DC00A6AB1C;
+					};
+				};
+			};
+			buildConfigurationList = F790FF822CC377DC00A6AB1C /* Build configuration list for PBXProject "ShortcutDictionary" */;
+			developmentRegion = ko;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				ko,
+				en,
+			);
+			mainGroup = F790FF7E2CC377DC00A6AB1C;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				F70943602CC9350D007EA02E /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */,
+				F7F7011C2CFCB9B700E110EA /* XCRemoteSwiftPackageReference "LaunchAtLogin-Modern" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = F790FF882CC377DC00A6AB1C /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F790FF862CC377DC00A6AB1C /* ShortcutDictionary */,
+				F790FF972CC377E000A6AB1C /* ShortcutDictionaryTests */,
+				F790FFA12CC377E000A6AB1C /* ShortcutDictionaryUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F790FF852CC377DC00A6AB1C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F756E4322D1C488700B237B5 /* InfoPlist.strings in Resources */,
+				F731F1112CE134FC00ACAEB8 /* .gitignore in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F790FF962CC377E000A6AB1C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F790FFA02CC377E000A6AB1C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F790FF832CC377DC00A6AB1C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F790FF942CC377E000A6AB1C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F790FF9E2CC377E000A6AB1C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		F790FF9A2CC377E000A6AB1C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F790FF862CC377DC00A6AB1C /* ShortcutDictionary */;
+			targetProxy = F790FF992CC377E000A6AB1C /* PBXContainerItemProxy */;
+		};
+		F790FFA42CC377E000A6AB1C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F790FF862CC377DC00A6AB1C /* ShortcutDictionary */;
+			targetProxy = F790FFA32CC377E000A6AB1C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		F756E4302D1C488700B237B5 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F756E4312D1C488700B237B5 /* ko */,
+				F756E4332D1C489000B237B5 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		F790FFAA2CC377E000A6AB1C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		F790FFAB2CC377E000A6AB1C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 13.5;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+				SWIFT_COMPILATION_MODE = wholemodule;
+			};
+			name = Release;
+		};
+		F790FFAD2CC377E000A6AB1C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ShortcutDictionary/ShortcutDictionary.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"ShortcutDictionary/Preview Content\"";
+				DEVELOPMENT_TEAM = Q733AL2HDW;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ShortcutDictionary/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "$(PRODUCT_NAME)";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.reference";
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Afcoo.ShortcutDictionary;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		F790FFAE2CC377E000A6AB1C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = ShortcutDictionary/ShortcutDictionary.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"ShortcutDictionary/Preview Content\"";
+				DEVELOPMENT_TEAM = Q733AL2HDW;
+				ENABLE_HARDENED_RUNTIME = YES;
+				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ShortcutDictionary/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "$(PRODUCT_NAME)";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.reference";
+				INFOPLIST_KEY_LSUIElement = YES;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Afcoo.ShortcutDictionary;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		F790FFB02CC377E000A6AB1C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Q733AL2HDW;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Afcoo.ShortcutDictionaryTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ShortcutDictionary.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ShortcutDictionary";
+			};
+			name = Debug;
+		};
+		F790FFB12CC377E000A6AB1C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Q733AL2HDW;
+				GENERATE_INFOPLIST_FILE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Afcoo.ShortcutDictionaryTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/ShortcutDictionary.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/ShortcutDictionary";
+			};
+			name = Release;
+		};
+		F790FFB32CC377E000A6AB1C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Q733AL2HDW;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Afcoo.ShortcutDictionaryUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = ShortcutDictionary;
+			};
+			name = Debug;
+		};
+		F790FFB42CC377E000A6AB1C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = Q733AL2HDW;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = Afcoo.ShortcutDictionaryUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TEST_TARGET_NAME = ShortcutDictionary;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F790FF822CC377DC00A6AB1C /* Build configuration list for PBXProject "ShortcutDictionary" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F790FFAA2CC377E000A6AB1C /* Debug */,
+				F790FFAB2CC377E000A6AB1C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F790FFAC2CC377E000A6AB1C /* Build configuration list for PBXNativeTarget "ShortcutDictionary" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F790FFAD2CC377E000A6AB1C /* Debug */,
+				F790FFAE2CC377E000A6AB1C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F790FFAF2CC377E000A6AB1C /* Build configuration list for PBXNativeTarget "ShortcutDictionaryTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F790FFB02CC377E000A6AB1C /* Debug */,
+				F790FFB12CC377E000A6AB1C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F790FFB22CC377E000A6AB1C /* Build configuration list for PBXNativeTarget "ShortcutDictionaryUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F790FFB32CC377E000A6AB1C /* Debug */,
+				F790FFB42CC377E000A6AB1C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		F70943602CC9350D007EA02E /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sindresorhus/KeyboardShortcuts";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.2.1;
+			};
+		};
+		F7F7011C2CFCB9B700E110EA /* XCRemoteSwiftPackageReference "LaunchAtLogin-Modern" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sindresorhus/LaunchAtLogin-Modern";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F70943612CC9350D007EA02E /* KeyboardShortcuts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F70943602CC9350D007EA02E /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */;
+			productName = KeyboardShortcuts;
+		};
+		F7F7011D2CFCB9B700E110EA /* LaunchAtLogin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F7F7011C2CFCB9B700E110EA /* XCRemoteSwiftPackageReference "LaunchAtLogin-Modern" */;
+			productName = LaunchAtLogin;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = F790FF7F2CC377DC00A6AB1C /* Project object */;
+}
