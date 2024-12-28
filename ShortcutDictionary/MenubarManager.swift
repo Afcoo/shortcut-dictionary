@@ -32,11 +32,9 @@ class MenubarManager {
                 $0.size.width = 18 / ratio
                 return $0
             }(NSImage(named: "icon_flat")!)
-//            if !icon.isEmpty {
-//                button.image = NSImage(named: icon,)
-//            } else {
-//                button.image = NSImage(systemSymbolName: "character.book.closed.fill", accessibilityDescription: "Menu Icon")
-//            }
+
+            image.isTemplate = true // 색상 변경을 위한 템플릿 이미지로 설정
+
             button.image = image
             button.action = #selector(statusBarButtonClicked(_:))
             button.sendAction(on: [.leftMouseUp, .rightMouseUp]) // 좌/우클릭 모두 감지
