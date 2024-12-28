@@ -14,8 +14,8 @@
 <img width="600" alt="2  자동 복사   붙여넣기" src="https://github.com/user-attachments/assets/15a4b15c-1e8e-44b4-b2c3-4e5880abfd9f" /><br />
 단축키로 사전을 열면, 선택된 단어를 자동으로 복사 후 검색창에 붙여넣습니다.
 
-### 메뉴 바 아이콘
-<img width="600" alt="3  메뉴 바 아이템" src="https://github.com/user-attachments/assets/7941ea5c-810b-425b-b980-5e248f6e9f74" /><br />
+### 메뉴 바 아이템
+<img width="600" alt="3  메뉴 바 아이템" src="https://github.com/user-attachments/assets/0e965d31-653e-4501-aedc-0ccd3349eeed" /><br />
 메뉴 바에 표시된 아이콘을 눌러 사전을 열어보세요
 
 
