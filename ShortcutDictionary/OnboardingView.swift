@@ -4,16 +4,48 @@ import SwiftUI
     OnboardingView()
 }
 
+struct OnboardingPage: Identifiable {
+    let id = UUID()
+    let systemIcon: String
+    let title: String
+    let content: AnyView
+    let height: CGFloat
+}
+
 struct OnboardingView: View {
     @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding = false
 
+    let maxPage = 2
     @State private var currentPage = 0
     @State private var currentHeight: CGFloat = 120
 
-    let pageHeights: [CGFloat] = [
-        100,
-        220,
-        190
+    let onboardingPages = [
+        OnboardingPage(
+            systemIcon: "character.book.closed.fill",
+            title: "환영합니다!",
+            content: AnyView(
+                Text("단축키 사전을 사용해볼까요?")
+            ),
+            height: 260
+        ),
+        OnboardingPage(
+            systemIcon: "keyboard",
+            title: "어디서든 단축키로 사전 열기",
+            content: AnyView(
+                ShortcutSettingsView()
+                    .padding(.bottom, -50)
+            ),
+            height: 360
+        ),
+        OnboardingPage(
+            systemIcon: "checkmark.seal",
+            title: "준비 완료!",
+            content: AnyView(
+                GeneralSettingsView()
+                    .padding(.bottom, -50)
+            ),
+            height: 330
+        ),
     ]
 
     var body: some View {
@@ -21,108 +53,37 @@ struct OnboardingView: View {
             // 상단 버튼
             HStack {
                 if currentPage > 0 {
-                    ToolbarButton(action: { currentPage -= 1 }, systemName: "chevron.backward")
+                    ToolbarButton(action: prev, systemName: "chevron.backward")
                 }
                 Spacer()
-                ToolbarButton(action: { NSApplication.shared.terminate(self) }, systemName: "xmark.circle")
+                if currentPage != maxPage {
+                    ToolbarButton(action: { NSApplication.shared.terminate(self) }, systemName: "xmark.circle")
+                }
             }
             .padding(8)
 
-            // 온보딩 페이지 탭 뷰
-            TabView(selection: $currentPage) {
-                // 첫 번째 페이지
-                VStack {
-                    Image(systemName: "character.book.closed.fill")
-                        .font(.system(size: 60))
-                        .foregroundColor(.accentColor)
+            Image(systemName: onboardingPages[currentPage].systemIcon)
+                .font(.system(size: 60))
+                .foregroundColor(.accentColor)
 
-                    Spacer().frame(height: 10)
+            Spacer().frame(height: 10)
 
-                    Text("환영합니다!")
-                        .font(.title)
-                        .bold()
+            Text(onboardingPages[currentPage].title)
+                .font(.title)
+                .bold()
 
-                    Spacer().frame(height: 10)
+            Spacer().frame(height: 10)
 
-                    Text("단축키 사전을 사용해볼까요?")
-
-                    Spacer()
-                }
-                .tag(0)
-                .toolbar(.hidden, for: .automatic)
-                .transition(.opacity)
-
-                // 두 번째 페이지
-                VStack {
-                    Image(systemName: "keyboard")
-                        .font(.system(size: 60))
-                        .foregroundColor(.accentColor)
-
-                    Spacer().frame(height: 10)
-
-                    Text("어디서든 단축키로 사전 열기")
-                        .font(.title2)
-                        .bold()
-
-                    Spacer().frame(height: 10)
-
-                    ShortcutSettingsView()
-                        .padding(.bottom, -50)
-                }
-                .tag(1)
-                .toolbar(.hidden, for: .automatic)
-                .transition(.opacity)
-
-                // 세 번째 페이지
-                VStack {
-                    Image(systemName: "checkmark.seal")
-                        .font(.system(size: 60))
-                        .foregroundColor(.accentColor)
-
-                    Spacer().frame(height: 10)
-
-                    Text("준비 완료!")
-                        .font(.title)
-                        .bold()
-
-                    Spacer().frame(height: 10)
-
-                    GeneralSettingsView()
-
-                        .padding(.bottom, -50)
-                }
-                .tag(2)
-                .toolbar(.hidden, for: .automatic)
-                .transition(.opacity)
-            }
-            .onChange(of: currentPage) { newPage in
-                withAnimation(.bouncy) {
-                    currentHeight = pageHeights[newPage]
-                }
-//                currentHeight = pageHeights[newPage]
-                WindowManager.shared.resizeOnboarding(width: 400, height: pageHeights[newPage] + 140)
-            }
-            .frame(width: 400)
-            .frame(height: currentHeight)
+            onboardingPages[currentPage].content
 
             Spacer()
+
             // 하단 버튼
-            if currentPage < 2 {
-                Button("다음") {
-                    currentPage += 1
-                }.buttonStyle(NextButton())
-                    .padding(.bottom, 20)
-            }
-            else {
-                Button("시작하기") {
-                    WindowManager.shared.closeOnboarding()
-                    WindowManager.shared.show()
-                    hasCompletedOnboarding = true
-                }
+            Button(currentPage < maxPage ? "다음" : "시작하기", action: next)
                 .buttonStyle(NextButton())
                 .padding(.bottom, 20)
-            }
         }
+        .frame(width: 400)
         .background(
             VisualEffectView(
                 material: NSVisualEffectView.Material.hudWindow,
@@ -130,7 +91,27 @@ struct OnboardingView: View {
             )
             .ignoresSafeArea()
         )
-        .ignoresSafeArea()
+    }
+
+    func prev() {
+        withAnimation(.spring) {
+            currentPage -= 1
+        }
+        WindowManager.shared.resizeOnboarding(width: 400, height: onboardingPages[currentPage].height)
+    }
+
+    func next() {
+        if currentPage < 2 {
+            withAnimation(.spring) {
+                currentPage += 1
+                WindowManager.shared.resizeOnboarding(width: 400, height: onboardingPages[currentPage].height)
+            }
+        }
+        else {
+            hasCompletedOnboarding = true
+            WindowManager.shared.closeOnboarding()
+            WindowManager.shared.show()
+        }
     }
 }
 
