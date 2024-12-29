@@ -15,7 +15,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
         WindowManager.shared.showOnboarding()
 
-//        WindowManager.shared.show()
+//        WindowManager.shared.showDict()
     }
 
     // 창 닫아도 세션 유지
@@ -26,7 +26,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     // Dock 아이콘 클릭 시 창 표시
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
         if !flag {
-            WindowManager.shared.show()
+            WindowManager.shared.showDict()
         }
         return true
     }

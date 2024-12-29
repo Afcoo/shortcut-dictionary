@@ -41,7 +41,7 @@ struct DictionaryView: View {
     }
 
     private func openDict() {
-        WindowManager.shared.show()
+        WindowManager.shared.showDict()
     }
 
     private func reloadDict() {
@@ -49,7 +49,7 @@ struct DictionaryView: View {
     }
 
     private func closeDict() {
-        WindowManager.shared.close()
+        WindowManager.shared.closeDict()
     }
 
     private func openSettingPage() {

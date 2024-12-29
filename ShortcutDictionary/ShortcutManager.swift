@@ -32,7 +32,7 @@ class ShortcutManager {
         }
 
         // 사전 창 열기
-        WindowManager.shared.show()
+        WindowManager.shared.showDict()
     }
 
     private func sendCommandC() {

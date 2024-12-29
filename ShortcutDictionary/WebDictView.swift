@@ -98,7 +98,7 @@ struct WebDictView: NSViewRepresentable {
                     switch key {
                     case "Escape":
                         if isEscToClose {
-                            WindowManager.shared.close()
+                            WindowManager.shared.closeDict()
                         }
                     default:
                         return

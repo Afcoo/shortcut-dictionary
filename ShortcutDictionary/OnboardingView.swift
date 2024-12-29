@@ -110,7 +110,7 @@ struct OnboardingView: View {
         else {
             hasCompletedOnboarding = true
             WindowManager.shared.closeOnboarding()
-            WindowManager.shared.show()
+            WindowManager.shared.showDict()
         }
     }
 }

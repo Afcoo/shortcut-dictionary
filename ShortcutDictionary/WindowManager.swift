@@ -8,33 +8,35 @@ class WindowManager {
 
     static var shared = WindowManager()
 
-    let window: NSWindow
+    let dictWindow: NSWindow
     var dummyWindow: NSWindow?
     var onboardingWindow: NSWindow?
 
     private init() {
-        window = NSWindow(
+        dictWindow = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 400, height: 550),
             styleMask: [.closable, .titled, .resizable],
             backing: .buffered,
             defer: false
         )
 
-        window.isReleasedWhenClosed = false
-        window.close()
+        dictWindow.isReleasedWhenClosed = false
+        dictWindow.close()
 
-        window.contentView = NSHostingView(
+        dictWindow.contentView = NSHostingView(
             rootView: DictionaryView()
                 .frame(minWidth: 360, minHeight: 400)
                 .ignoresSafeArea()
         )
-        window.title = "단축키 사전"
-        window.setFrameAutosaveName("DictionaryFrame")
+        dictWindow.title = "단축키 사전"
+        dictWindow.setFrameAutosaveName("DictionaryFrame")
 
-        chromeless(window)
-        setAlwaysOnTop(isAlwaysOnTop)
-        moveToScreenCenter(window)
+        chromeless(dictWindow)
+        setDictAlwaysOnTop(isAlwaysOnTop)
+        moveToScreenCenter(dictWindow)
 
+        // NSWindow 및 Notification을 사용한 설정 열기
+        // macOS 14.0 이상 NSApp.sendAction 사용 불가 대응
         if #available(macOS 14.0, *) {
             dummyWindow = NSWindow()
             dummyWindow!.isReleasedWhenClosed = false
@@ -44,14 +46,14 @@ class WindowManager {
         }
     }
 
-    func show() {
+    func showDict() {
         if isShowOnMousePos {
             // 마우스 위치가 창의 가운데로 오도록 설정
             let mouseLocation = NSEvent.mouseLocation
             let screens = NSScreen.screens
             if let screenWithMouse = (screens.first { NSMouseInRect(mouseLocation, $0.frame, false) }) {
-                let width = window.contentLayoutRect.width
-                let height = window.contentLayoutRect.height
+                let width = dictWindow.contentLayoutRect.width
+                let height = dictWindow.contentLayoutRect.height
 
                 var _x = mouseLocation.x - width / 2
                 var _y = mouseLocation.y - height / 2
@@ -68,24 +70,24 @@ class WindowManager {
                 }
 
                 // set window position
-                window.setFrameOrigin(NSPoint(x: _x, y: _y))
+                dictWindow.setFrameOrigin(NSPoint(x: _x, y: _y))
             }
         }
 
-        NSApp.activate(ignoringOtherApps: true)
-        window.makeKeyAndOrderFront(nil)
+        goFront(dictWindow)
     }
 
-    func close() {
-        window.close()
+    func closeDict() {
+        dictWindow.close()
     }
-
-    func setAlwaysOnTop(_ tf: Bool) {
+    
+    // 사전 창 항상 위에 표시 설정
+    func setDictAlwaysOnTop(_ tf: Bool) {
         if tf {
-            window.level = .floating
+            dictWindow.level = .floating
         }
         else {
-            window.level = .normal
+            dictWindow.level = .normal
         }
     }
 
@@ -101,18 +103,6 @@ class WindowManager {
                 NSApp.sendAction(Selector(("showPreferencesWindow:")), to: nil, from: nil)
             }
         }
-    }
-
-    func chromeless(_ window: NSWindow) {
-        // hide buttons
-        window.standardWindowButton(.closeButton)?.isHidden = true
-        window.standardWindowButton(.miniaturizeButton)?.isHidden = true
-        window.standardWindowButton(.zoomButton)?.isHidden = true
-
-        // hide title and bar
-        window.titlebarAppearsTransparent = true
-        window.titleVisibility = .hidden
-        window.styleMask.insert(NSWindow.StyleMask.fullSizeContentView)
     }
 
     func showOnboarding() {
@@ -136,7 +126,7 @@ class WindowManager {
         window.backgroundColor = .clear
 
         moveToScreenCenter(window)
-        window.makeKeyAndOrderFront(nil)
+        goFront(window)
 
         onboardingWindow = window
     }
@@ -160,6 +150,27 @@ class WindowManager {
         }
 
         onboardingWindow.close()
+    }
+}
+
+private extension WindowManager {
+    // 타이틀 바 완전 제거
+    func chromeless(_ window: NSWindow) {
+        // hide buttons
+        window.standardWindowButton(.closeButton)?.isHidden = true
+        window.standardWindowButton(.miniaturizeButton)?.isHidden = true
+        window.standardWindowButton(.zoomButton)?.isHidden = true
+
+        // hide title and bar
+        window.titlebarAppearsTransparent = true
+        window.titleVisibility = .hidden
+        window.styleMask.insert(NSWindow.StyleMask.fullSizeContentView)
+    }
+
+    // 창을 가장 앞으로 가져오기
+    func goFront(_ window: NSWindow) {
+        window.makeKeyAndOrderFront(nil)
+        NSApp.activate(ignoringOtherApps: true)
     }
 
     func moveToScreenCenter(_ window: NSWindow) {

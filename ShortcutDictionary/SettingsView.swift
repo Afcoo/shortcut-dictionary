@@ -153,7 +153,7 @@ struct DictionarySettingsView: View {
                 Text("툴바 표시")
             }
             .onChange(of: isAlwaysOnTop) { _ in
-                WindowManager.shared.setAlwaysOnTop(isAlwaysOnTop)
+                WindowManager.shared.setDictAlwaysOnTop(isAlwaysOnTop)
             }
 
             // 마우스 위치에 사전 표시
