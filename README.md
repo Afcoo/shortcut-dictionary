@@ -8,7 +8,7 @@
 ### 단축키로 사전 열기
 <img width="600" alt="1  사전 창 열기" src="https://github.com/user-attachments/assets/4db0866f-8075-4699-b46e-7583ba153136" /><br />
 언제 어디서든, 원하는 단축키로 사전을 표시하세요. 
-(기본 단축키는 **OPT+CMD+D** 이며, 처음 사용 시 활성화가 필요합니다)
+(기본 단축키는 **Ctrl+Shift+D** 이며, 처음 사용 시 활성화가 필요합니다)
 
 ### 자동 복사 & 붙여넣기
 <img width="600" alt="2  자동 복사   붙여넣기" src="https://github.com/user-attachments/assets/15a4b15c-1e8e-44b4-b2c3-4e5880abfd9f" /><br />

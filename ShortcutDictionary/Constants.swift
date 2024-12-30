@@ -2,7 +2,7 @@ import KeyboardShortcuts
 import SwiftUI
 
 extension KeyboardShortcuts.Name {
-    static let dictShortcut = Self("dictShortcut", default: .init(.d, modifiers: [.command, .option]))
+    static let dictShortcut = Self("dictShortcut", default: .init(.d, modifiers: [.control, .shift]))
 }
 
 extension Notification.Name {
