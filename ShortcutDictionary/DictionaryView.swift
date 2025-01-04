@@ -27,7 +27,7 @@ struct DictionaryView: View {
 
             // 웹 뷰
             webDictView
-                .id(selectedDict) // 값 변경시 리로드
+                .id(selectedDict) // 선택된 사전 변경시 리로드
                 .clipShape(RoundedRectangle(cornerRadius: 10))
         }
         .padding(_padding)
@@ -59,49 +59,4 @@ struct DictionaryView: View {
 
 #Preview {
     DictionaryView()
-}
-
-struct VisualEffectView: NSViewRepresentable {
-    let material: NSVisualEffectView.Material
-    let blendingMode: NSVisualEffectView.BlendingMode
-
-    func makeNSView(context: Context) -> NSVisualEffectView {
-        let visualEffectView = NSVisualEffectView()
-        visualEffectView.material = material
-        visualEffectView.blendingMode = blendingMode
-        visualEffectView.state = NSVisualEffectView.State.active
-        return visualEffectView
-    }
-
-    func updateNSView(_ visualEffectView: NSVisualEffectView, context: Context) {
-        visualEffectView.material = material
-        visualEffectView.blendingMode = blendingMode
-    }
-}
-
-struct ToolbarButton: View {
-    let action: () -> Void
-    let systemName: String
-    var useSystem = true
-
-    var body: some View {
-        Button(
-            action: action,
-            label: {
-                if useSystem {
-                    Image(systemName: systemName)
-                        .imageScale(.large)
-                        .foregroundColor(Color(.tertiaryLabelColor))
-                }
-                else {
-                    Image(systemName)
-                        .renderingMode(.template) // 색 변경 가능하게
-                        .resizable()
-                        .scaledToFit() // 비율 유지
-                        .frame(height: 20)
-                        .foregroundColor(Color(.tertiaryLabelColor))
-                }
-            }
-        ).buttonStyle(.plain)
-    }
 }
