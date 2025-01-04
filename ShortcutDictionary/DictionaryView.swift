@@ -18,7 +18,6 @@ struct DictionaryView: View {
                     ToolbarButton(action: closeDict, systemName: "xmark.circle")
                     Spacer()
                     ToolbarButton(action: reloadDict, systemName: "arrow.clockwise.circle")
-//                    Spacer()
                     ToolbarButton(action: openSettingPage, systemName: "gear.circle")
                 }
                 Spacer()
@@ -38,6 +37,25 @@ struct DictionaryView: View {
             )
             .ignoresSafeArea()
         )
+        .contextMenu { // Edge 우클릭시 표시
+            Button((isToolbarEnabled ? "􀆅 " : "") + "툴바 표시") {
+                isToolbarEnabled.toggle()
+            }
+
+            Button("새로 고침") {
+                reloadDict()
+            }
+
+            Button("창 닫기") {
+                closeDict()
+            }
+
+            Divider()
+
+            Button("종료") {
+                NSApplication.shared.terminate(self)
+            }
+        }
     }
 
     private func openDict() {
