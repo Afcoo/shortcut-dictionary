@@ -5,6 +5,7 @@ class WindowManager {
     @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding = false
     @AppStorage("enable_always_on_top") var isAlwaysOnTop: Bool = false
     @AppStorage("enable_show_on_mouse_position") var isShowOnMousePos: Bool = true
+    @AppStorage("enable_close_with_out_click") var isOutClickToClose: Bool = true
 
     static var shared = WindowManager()
 
@@ -14,6 +15,8 @@ class WindowManager {
     var dummyWindow: NSWindow?
     var onboardingWindow: NSWindow?
     var aboutWindow: NSWindow?
+
+    private var clickEventMonitor: Any?
 
     private init() {
         dictWindow = NSWindow(
@@ -33,6 +36,10 @@ class WindowManager {
 
             dummyWindow!.contentView = NSHostingView(rootView: DummyView())
         }
+    }
+
+    deinit {
+        removeClickEventMonitor()
     }
 
     func setDictWindow() {
@@ -84,11 +91,36 @@ class WindowManager {
             }
         }
 
+        if isOutClickToClose {
+            // 클릭 이벤트 모니터링
+            clickEventMonitor = NSEvent.addGlobalMonitorForEvents(
+                matching: [.leftMouseDown, .rightMouseDown]
+            ) { [weak self] _ in
+                guard let self = self else { return }
+
+                let clickLocation = NSEvent.mouseLocation
+                let windowFrame = dictWindow.frame
+
+                // 클릭 위치가 창 밖인지 확인, 창 밖 클릭 시 닫기
+                if !NSPointInRect(clickLocation, windowFrame) {
+                    dictWindow.close()
+                    self.removeClickEventMonitor()
+                }
+            }
+        }
+
         goFront(dictWindow)
     }
 
     func closeDict() {
         dictWindow.close()
+    }
+
+    private func removeClickEventMonitor() {
+        if let monitor = clickEventMonitor {
+            NSEvent.removeMonitor(monitor)
+            clickEventMonitor = nil
+        }
     }
 
     // 사전 창 항상 위에 표시 설정

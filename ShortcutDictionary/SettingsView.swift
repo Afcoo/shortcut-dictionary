@@ -20,9 +20,9 @@ struct SettingsView: View {
     @State private var currentView = 0
 
     let viewHeights: [CGFloat] = [
-        110,
+        120,
         170,
-        230,
+        280,
         260
     ]
 
@@ -138,6 +138,7 @@ struct DictionarySettingsView: View {
     @AppStorage("enable_toolbar") var isToolbarEnabled: Bool = true
     @AppStorage("enable_show_on_mouse_position") var isShowOnMousePos: Bool = true
     @AppStorage("enable_close_with_esc") var isEscToClose: Bool = true
+    @AppStorage("enable_close_with_out_click") var isOutClickToClose: Bool = true
 
     var body: some View {
         Form {
@@ -169,6 +170,12 @@ struct DictionarySettingsView: View {
             // ESC로 사전 닫기
             Toggle(isOn: $isEscToClose) {
                 Text("ESC키로 사전 닫기")
+            }
+
+            // 사전 바깥 클릭 시 닫기
+            Toggle(isOn: $isOutClickToClose) {
+                Text("사전 밖 클릭 시 닫기")
+                Text("변경된 설정은 사전 창을 다시 열 때 적용됩니다")
             }
         }
         .formStyle(.grouped)

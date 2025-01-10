@@ -19,6 +19,7 @@ enum UserKeys: String, CaseIterable { // UserKeys for settings
     case isAlwaysOnTop = "enable_always_on_top"
     case isToolbarEnabled = "enable_toolbar"
     case isEscToClose = "enable_close_with_esc"
+    case isOutClickToClose = "enable_close_with_out_click"
     case isShowOnMousePos = "enable_show_on_mouse_position"
 }
 
