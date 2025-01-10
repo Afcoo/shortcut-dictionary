@@ -38,10 +38,15 @@ struct DictionaryView: View {
             .ignoresSafeArea()
         )
         .contextMenu { // Edge 우클릭시 표시
-            Button((isToolbarEnabled ? "􀆅 " : "") + "툴바 표시") {
+            Button(action: {
                 isToolbarEnabled.toggle()
+            }) {
+                HStack {
+                    Image(systemName: "checkmark")
+                        .imageScale(.small)
+                    Text("툴바 표시")
+                }
             }
-            .keyboardShortcut("T", modifiers: .command)
 
             Button("새로 고침") {
                 reloadDict()

@@ -2,7 +2,6 @@ import KeyboardShortcuts
 import SwiftUI
 
 class WindowManager {
-    @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding = false
     @AppStorage("enable_always_on_top") var isAlwaysOnTop: Bool = false
     @AppStorage("enable_show_on_mouse_position") var isShowOnMousePos: Bool = true
     @AppStorage("enable_close_with_out_click") var isOutClickToClose: Bool = true
@@ -154,10 +153,6 @@ class WindowManager {
 // 온보딩 윈도우 관리
 extension WindowManager {
     func showOnboarding() {
-        if hasCompletedOnboarding {
-            return
-        }
-
         let window = NSWindow()
         window.styleMask = [.titled]
         window.isReleasedWhenClosed = true

@@ -3,15 +3,21 @@ import KeyboardShortcuts
 import SwiftUI
 
 final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
+    @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding = false
+
     // 앱 실행 시
     func applicationDidFinishLaunching(_ notification: Notification) {
-        NSApplication.shared.setActivationPolicy(.prohibited)
-
         MenubarManager.shared.registerMenuBarItem()
 
         ShortcutManager.shared.registerShortcut()
 
-        WindowManager.shared.showOnboarding()
+        if !hasCompletedOnboarding {
+            NSApplication.shared.setActivationPolicy(.regular)
+            WindowManager.shared.showOnboarding()
+        }
+        else {
+            NSApplication.shared.setActivationPolicy(.prohibited)
+        }
     }
 
     // 창 닫아도 세션 유지

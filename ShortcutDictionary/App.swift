@@ -34,8 +34,14 @@ struct ShortcutDictionaryApp: App {
             }
             
             CommandGroup(replacing: .sidebar) {
-                Button((isToolbarEnabled ? "􀆅 " : "") + "툴바 표시") {
+                Button(action: {
                     isToolbarEnabled.toggle()
+                }) {
+                    HStack {
+                        Image(systemName: "checkmark")
+                            .imageScale(.small)
+                        Text("툴바 표시")
+                    }
                 }
                 .keyboardShortcut("T", modifiers: .command)
                 
