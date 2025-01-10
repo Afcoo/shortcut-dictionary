@@ -51,6 +51,11 @@ struct SettingsView: View {
         }
         .frame(width: 350)
         .frame(height: viewHeights[currentView])
+        .onDisappear {
+            if !WindowManager.shared.dictWindow.isVisible {
+                NSApplication.shared.setActivationPolicy(.prohibited)
+            }
+        }
     }
 }
 
@@ -199,23 +204,13 @@ struct InfoSettingsView: View {
         )
     ]
 
-    let appIcon: NSImage = NSApplication.shared.applicationIconImage
     @State private var showingLicenses = false
 
     var body: some View {
         VStack {
             Spacer()
 
-            Image(nsImage: appIcon)
-                .resizable()
-                .frame(width: 100, height: 100)
-
-            Text("단축키 사전").bold()
-            Text("버전: \(getAppVersion()) (\(getBuildNumber()))")
-
-            Spacer().frame(height: 10)
-
-            Text("ⓒ 2024. Afcoo. All rights reserved.")
+            InfoView()
 
             Button("오픈소스 라이센스") {
                 showingLicenses = true
@@ -285,20 +280,6 @@ struct InfoSettingsView: View {
         }
     }
 
-    func getAppVersion() -> String {
-        if let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
-            return appVersion
-        }
-        return "Unknown"
-    }
-
-    func getBuildNumber() -> String {
-        if let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
-            return buildNumber
-        }
-        return "Unknown"
-    }
-
     // 온보딩 초기화
     func restartOnboarding() {
         UserDefaults.standard.resetKey("hasCompletedOnboarding")
@@ -325,6 +306,39 @@ struct InfoSettingsView: View {
         })
 
         NotificationCenter.default.post(name: .reloadDict, object: "") // 사전 창 새로고침
+    }
+}
+
+struct InfoView: View {
+    let appIcon: NSImage = NSApplication.shared.applicationIconImage
+
+    var body: some View {
+        VStack {
+            Image(nsImage: appIcon)
+                .resizable()
+                .frame(width: 100, height: 100)
+
+            Text("단축키 사전").bold()
+            Text("버전: \(getAppVersion()) (\(getBuildNumber()))")
+
+            Spacer().frame(height: 10)
+
+            Text("ⓒ 2024. Afcoo. All rights reserved.")
+        }
+    }
+
+    func getAppVersion() -> String {
+        if let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+            return appVersion
+        }
+        return "Unknown"
+    }
+
+    func getBuildNumber() -> String {
+        if let buildNumber = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
+            return buildNumber
+        }
+        return "Unknown"
     }
 }
 

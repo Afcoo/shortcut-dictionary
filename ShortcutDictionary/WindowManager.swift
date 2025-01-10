@@ -9,8 +9,13 @@ class WindowManager {
     static var shared = WindowManager()
 
     let dictWindow: NSWindow
+    let dictWindowDelegate = DictWindowDelegate()
+
     var dummyWindow: NSWindow?
     var onboardingWindow: NSWindow?
+    var aboutWindow: NSWindow?
+
+    var isDictWindowKey = false
 
     private init() {
         dictWindow = NSWindow(
@@ -19,7 +24,20 @@ class WindowManager {
             backing: .buffered,
             defer: false
         )
+        setDictWindow()
 
+        // NSWindow 및 Notification을 사용한 설정 열기
+        // macOS 14.0 이상 NSApp.sendAction 사용 불가 대응
+        if #available(macOS 14.0, *) {
+            dummyWindow = NSWindow()
+            dummyWindow!.isReleasedWhenClosed = false
+            dummyWindow!.close()
+
+            dummyWindow!.contentView = NSHostingView(rootView: DummyView())
+        }
+    }
+
+    func setDictWindow() {
         dictWindow.isReleasedWhenClosed = false
         dictWindow.close()
 
@@ -35,18 +53,14 @@ class WindowManager {
         setDictAlwaysOnTop(isAlwaysOnTop)
         moveToScreenCenter(dictWindow)
 
-        // NSWindow 및 Notification을 사용한 설정 열기
-        // macOS 14.0 이상 NSApp.sendAction 사용 불가 대응
-        if #available(macOS 14.0, *) {
-            dummyWindow = NSWindow()
-            dummyWindow!.isReleasedWhenClosed = false
-            dummyWindow!.close()
-
-            dummyWindow!.contentView = NSHostingView(rootView: DummyView())
-        }
+        dictWindow.delegate = dictWindowDelegate
     }
 
     func showDict() {
+        NSApplication.shared.setActivationPolicy(.regular)
+
+        isDictWindowKey = true
+
         if isShowOnMousePos {
             // 마우스 위치가 창의 가운데로 오도록 설정
             let mouseLocation = NSEvent.mouseLocation
@@ -78,9 +92,11 @@ class WindowManager {
     }
 
     func closeDict() {
+        isDictWindowKey = false
+
         dictWindow.close()
     }
-    
+
     // 사전 창 항상 위에 표시 설정
     func setDictAlwaysOnTop(_ tf: Bool) {
         if tf {
@@ -103,8 +119,14 @@ class WindowManager {
                 NSApp.sendAction(Selector(("showPreferencesWindow:")), to: nil, from: nil)
             }
         }
-    }
 
+        NSApplication.shared.setActivationPolicy(.regular)
+        NSApplication.shared.activate(ignoringOtherApps: true)
+    }
+}
+
+// 온보딩 윈도우 관리
+extension WindowManager {
     func showOnboarding() {
         if hasCompletedOnboarding {
             return
@@ -153,6 +175,32 @@ class WindowManager {
     }
 }
 
+// About 윈도우 관리
+extension WindowManager {
+    func showAbout() {
+        if let window = aboutWindow {
+            // 이미 있다면 앞으로 가져오기
+            window.makeKeyAndOrderFront(nil)
+        }
+        else {
+            aboutWindow = NSWindow(
+                contentRect: NSRect(x: 0, y: 0, width: 550, height: 300),
+                styleMask: [.closable, .titled],
+                backing: .buffered,
+                defer: false
+            )
+            aboutWindow?.isReleasedWhenClosed = false
+            aboutWindow?.contentView = NSHostingView(
+                rootView: InfoView()
+                    .frame(width: 300, height: 250)
+            )
+            aboutWindow?.title = "단축키 사전에 관하여"
+            aboutWindow?.center()
+            aboutWindow?.makeKeyAndOrderFront(nil)
+        }
+    }
+}
+
 private extension WindowManager {
     // 타이틀 바 완전 제거
     func chromeless(_ window: NSWindow) {
@@ -189,6 +237,18 @@ private extension WindowManager {
 
             window.setFrameOrigin(NSPoint(x: _x, y: _y))
         }
+    }
+}
+
+class DictWindowDelegate: NSObject, NSWindowDelegate {
+    func windowDidBecomeKey(_ notification: Notification) {
+        print("Dict Window become key")
+    }
+
+    func windowWillClose(_ notification: Notification) {
+        print("Dict Window will close")
+
+        NSApp.setActivationPolicy(.prohibited)
     }
 }
 

@@ -442,7 +442,7 @@
 				CODE_SIGN_ENTITLEMENTS = ShortcutDictionary/ShortcutDictionary.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"ShortcutDictionary/Preview Content\"";
 				DEVELOPMENT_TEAM = Q733AL2HDW;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -452,7 +452,6 @@
 				INFOPLIST_FILE = ShortcutDictionary/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "$(PRODUCT_NAME)";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.reference";
-				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -475,7 +474,7 @@
 				CODE_SIGN_ENTITLEMENTS = ShortcutDictionary/ShortcutDictionary.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_ASSET_PATHS = "\"ShortcutDictionary/Preview Content\"";
 				DEVELOPMENT_TEAM = Q733AL2HDW;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -485,7 +484,6 @@
 				INFOPLIST_FILE = ShortcutDictionary/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "$(PRODUCT_NAME)";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.reference";
-				INFOPLIST_KEY_LSUIElement = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

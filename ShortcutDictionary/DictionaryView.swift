@@ -41,20 +41,24 @@ struct DictionaryView: View {
             Button((isToolbarEnabled ? "􀆅 " : "") + "툴바 표시") {
                 isToolbarEnabled.toggle()
             }
+            .keyboardShortcut("T", modifiers: .command)
 
             Button("새로 고침") {
                 reloadDict()
             }
+            .keyboardShortcut("R", modifiers: .command)
 
             Button("창 닫기") {
                 closeDict()
             }
+            .keyboardShortcut("W", modifiers: .command)
 
             Divider()
 
             Button("종료") {
                 NSApplication.shared.terminate(self)
             }
+            .keyboardShortcut("Q", modifiers: .command)
         }
     }
 
