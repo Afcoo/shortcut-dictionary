@@ -15,8 +15,6 @@ class WindowManager {
     var onboardingWindow: NSWindow?
     var aboutWindow: NSWindow?
 
-    var isDictWindowKey = false
-
     private init() {
         dictWindow = NSWindow(
             contentRect: NSRect(x: 0, y: 0, width: 400, height: 550),
@@ -59,8 +57,6 @@ class WindowManager {
     func showDict() {
         NSApplication.shared.setActivationPolicy(.regular)
 
-        isDictWindowKey = true
-
         if isShowOnMousePos {
             // 마우스 위치가 창의 가운데로 오도록 설정
             let mouseLocation = NSEvent.mouseLocation
@@ -92,8 +88,6 @@ class WindowManager {
     }
 
     func closeDict() {
-        isDictWindowKey = false
-
         dictWindow.close()
     }
 
