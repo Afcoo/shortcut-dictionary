@@ -27,10 +27,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
     // Dock 아이콘 클릭 시 창 표시
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
-        if !flag {
-            WindowManager.shared.showDict()
-        }
-        return true
+        WindowManager.shared.showDict()
+        return false
     }
 
     func quitApp() {
