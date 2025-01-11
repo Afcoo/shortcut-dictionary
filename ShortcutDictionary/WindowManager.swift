@@ -57,6 +57,8 @@ class WindowManager {
         NSApplication.shared.setActivationPolicy(.regular)
         NSApplication.shared.activate(ignoringOtherApps: true)
     }
+
+    var isDictClosing = false
 }
 
 // 사전 창 관련
@@ -80,6 +82,8 @@ extension WindowManager {
     }
 
     func showDict() {
+        guard !isDictClosing else { return }
+
         NSApplication.shared.setActivationPolicy(.regular)
 
         setDictAlwaysOnTop(isShowOnMousePos)
@@ -92,6 +96,7 @@ extension WindowManager {
     }
 
     func closeDict() {
+        isDictClosing = true
         removeClickEventMonitor()
         dictWindow.close()
     }
@@ -287,5 +292,9 @@ class DictWindowDelegate: NSObject, NSWindowDelegate {
         print("Dict Window will close")
 
         NSApp.setActivationPolicy(.prohibited)
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            WindowManager.shared.isDictClosing = false
+        }
     }
 }
