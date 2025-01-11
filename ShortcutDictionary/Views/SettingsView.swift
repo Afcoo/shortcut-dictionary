@@ -158,8 +158,8 @@ struct DictionarySettingsView: View {
             Toggle(isOn: $isToolbarEnabled) {
                 Text("툴바 표시")
             }
-            .onChange(of: isAlwaysOnTop) { _ in
-                WindowManager.shared.setDictAlwaysOnTop()
+            .onChange(of: isAlwaysOnTop) { toValue in
+                WindowManager.shared.setDictAlwaysOnTop(toValue)
             }
 
             // 마우스 위치에 사전 표시
@@ -176,8 +176,8 @@ struct DictionarySettingsView: View {
             Toggle(isOn: $isOutClickToClose) {
                 Text("사전 밖 클릭 시 닫기")
             }
-            .onChange(of: isOutClickToClose) { _ in
-                WindowManager.shared.setOutClickToClose()
+            .onChange(of: isOutClickToClose) { toValue in
+                WindowManager.shared.setOutClickToClose(toValue)
             }
         }
         .formStyle(.grouped)

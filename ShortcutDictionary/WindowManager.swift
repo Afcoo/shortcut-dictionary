@@ -82,16 +82,17 @@ extension WindowManager {
     func showDict() {
         NSApplication.shared.setActivationPolicy(.regular)
 
-        setDictAlwaysOnTop()
+        setDictAlwaysOnTop(isShowOnMousePos)
 
         setShowOnMousePos()
 
-        setOutClickToClose()
+        setOutClickToClose(isOutClickToClose)
 
         goFront(dictWindow)
     }
 
     func closeDict() {
+        removeClickEventMonitor()
         dictWindow.close()
     }
 
@@ -126,8 +127,8 @@ extension WindowManager {
     }
 
     // 사전 창 밖 클릭시 닫기 구현
-    func setOutClickToClose() {
-        if isOutClickToClose {
+    func setOutClickToClose(_ tf: Bool) {
+        if tf {
             // 클릭 이벤트 모니터링
             clickEventMonitor = NSEvent.addGlobalMonitorForEvents(
                 matching: [.leftMouseDown, .rightMouseDown]
@@ -139,8 +140,7 @@ extension WindowManager {
 
                 // 클릭 위치가 창 밖인지 확인, 창 밖 클릭 시 닫기
                 if !NSPointInRect(clickLocation, windowFrame) {
-                    dictWindow.close()
-                    self.removeClickEventMonitor()
+                    closeDict()
                 }
             }
         }
@@ -157,8 +157,8 @@ extension WindowManager {
     }
 
     // 사전 창 항상 위에 표시 구현
-    func setDictAlwaysOnTop() {
-        if isAlwaysOnTop {
+    func setDictAlwaysOnTop(_ tf: Bool) {
+        if tf {
             dictWindow.level = .floating
         }
         else {
