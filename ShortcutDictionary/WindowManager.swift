@@ -78,6 +78,8 @@ extension WindowManager {
         chromeless(dictWindow)
         moveToScreenCenter(dictWindow)
 
+        setDictAlwaysOnTop(isAlwaysOnTop)
+
         dictWindow.delegate = dictWindowDelegate
     }
 
@@ -85,8 +87,6 @@ extension WindowManager {
         guard !isDictClosing else { return }
 
         NSApplication.shared.setActivationPolicy(.regular)
-
-        setDictAlwaysOnTop(isShowOnMousePos)
 
         setShowOnMousePos()
 
@@ -285,6 +285,8 @@ private extension WindowManager {
 class DictWindowDelegate: NSObject, NSWindowDelegate {
     func windowDidBecomeKey(_ notification: Notification) {
         print("Dict Window become key")
+
+        MenubarManager.shared.setupMenu()
     }
 
     func windowWillClose(_ notification: Notification) {

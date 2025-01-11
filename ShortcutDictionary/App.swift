@@ -7,19 +7,16 @@ struct ShortcutDictionaryApp: App {
     @AppStorage("enable_toolbar") var isToolbarEnabled: Bool = true
 
     var body: some Scene {
-        Window("", id: "dummy") {
-            if #available(macOS 14.0, *) {
+        if #available(macOS 14.0, *) {
+            Window("Dummy", id: "dummy") {
                 DummyView()
                     .frame(width: 0, height: 0)
-            } else {
-                LegacyDummyView()
-                    .frame(width: 0, height: 0)
             }
+            .windowResizability(.contentSize)
+            .windowStyle(.hiddenTitleBar)
+            .commandsRemoved()
         }
-        .windowResizability(.contentSize)
-        .windowStyle(.hiddenTitleBar)
-        .commandsRemoved()
-        
+
         Settings {
             SettingsView()
                 .navigationTitle("설정")
@@ -68,8 +65,13 @@ struct ShortcutDictionaryApp: App {
                 Divider()
                 
                 Button("창 닫기") {
-//                    WindowManager.shared.closeDict()
-                    NSApplication.shared.keyWindow?.close()
+                    if let window = NSApplication.shared.keyWindow {
+                        if window == WindowManager.shared.dictWindow {
+                            WindowManager.shared.closeDict()
+                        } else {
+                            NSApplication.shared.keyWindow?.close()
+                        }
+                    }
                 }
                 .keyboardShortcut("W", modifiers: .command)
                 

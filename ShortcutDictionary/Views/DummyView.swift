@@ -19,17 +19,3 @@ struct DummyView: View {
             }
     }
 }
-
-@available(macOS, obsoleted: 14.0)
-struct LegacyDummyView: NSViewRepresentable {
-    func makeNSView(context: Context) -> NSView {
-        let view = NSView()
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            view.window?.close()
-        }
-        return view
-    }
-
-    func updateNSView(_ nsView: NSView, context: Context) {}
-}
