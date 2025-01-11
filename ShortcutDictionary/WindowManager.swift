@@ -41,6 +41,26 @@ class WindowManager {
         removeClickEventMonitor()
     }
 
+    func showSettings() {
+        if #available(macOS 14.0, *) {
+            NotificationCenter.default.post(name: .showSettings, object: nil)
+        }
+        else {
+            if #available(macOS 13.0, *) {
+                NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
+            }
+            else {
+                NSApp.sendAction(Selector(("showPreferencesWindow:")), to: nil, from: nil)
+            }
+        }
+
+        NSApplication.shared.setActivationPolicy(.regular)
+        NSApplication.shared.activate(ignoringOtherApps: true)
+    }
+}
+
+// 사전 창 관련
+extension WindowManager {
     func setDictWindow() {
         dictWindow.isReleasedWhenClosed = false
         dictWindow.close()
@@ -54,7 +74,6 @@ class WindowManager {
         dictWindow.setFrameAutosaveName("DictionaryFrame")
 
         chromeless(dictWindow)
-        setDictAlwaysOnTop(isAlwaysOnTop)
         moveToScreenCenter(dictWindow)
 
         dictWindow.delegate = dictWindowDelegate
@@ -63,6 +82,21 @@ class WindowManager {
     func showDict() {
         NSApplication.shared.setActivationPolicy(.regular)
 
+        setDictAlwaysOnTop()
+
+        setShowOnMousePos()
+
+        setOutClickToClose()
+
+        goFront(dictWindow)
+    }
+
+    func closeDict() {
+        dictWindow.close()
+    }
+
+    // 마우스 위치에 사전 창 표시 구현
+    func setShowOnMousePos() {
         if isShowOnMousePos {
             // 마우스 위치가 창의 가운데로 오도록 설정
             let mouseLocation = NSEvent.mouseLocation
@@ -89,7 +123,10 @@ class WindowManager {
                 dictWindow.setFrameOrigin(NSPoint(x: _x, y: _y))
             }
         }
+    }
 
+    // 사전 창 밖 클릭시 닫기 구현
+    func setOutClickToClose() {
         if isOutClickToClose {
             // 클릭 이벤트 모니터링
             clickEventMonitor = NSEvent.addGlobalMonitorForEvents(
@@ -107,12 +144,9 @@ class WindowManager {
                 }
             }
         }
-
-        goFront(dictWindow)
-    }
-
-    func closeDict() {
-        dictWindow.close()
+        else {
+            removeClickEventMonitor()
+        }
     }
 
     private func removeClickEventMonitor() {
@@ -122,31 +156,14 @@ class WindowManager {
         }
     }
 
-    // 사전 창 항상 위에 표시 설정
-    func setDictAlwaysOnTop(_ tf: Bool) {
-        if tf {
+    // 사전 창 항상 위에 표시 구현
+    func setDictAlwaysOnTop() {
+        if isAlwaysOnTop {
             dictWindow.level = .floating
         }
         else {
             dictWindow.level = .normal
         }
-    }
-
-    func showSettings() {
-        if #available(macOS 14.0, *) {
-            NotificationCenter.default.post(name: .showSettings, object: nil)
-        }
-        else {
-            if #available(macOS 13.0, *) {
-                NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
-            }
-            else {
-                NSApp.sendAction(Selector(("showPreferencesWindow:")), to: nil, from: nil)
-            }
-        }
-
-        NSApplication.shared.setActivationPolicy(.regular)
-        NSApplication.shared.activate(ignoringOtherApps: true)
     }
 }
 

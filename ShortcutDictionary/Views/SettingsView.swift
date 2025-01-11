@@ -20,9 +20,9 @@ struct SettingsView: View {
     @State private var currentView = 0
 
     let viewHeights: [CGFloat] = [
-        120,
+        115,
         170,
-        280,
+        265,
         260
     ]
 
@@ -159,7 +159,7 @@ struct DictionarySettingsView: View {
                 Text("툴바 표시")
             }
             .onChange(of: isAlwaysOnTop) { _ in
-                WindowManager.shared.setDictAlwaysOnTop(isAlwaysOnTop)
+                WindowManager.shared.setDictAlwaysOnTop()
             }
 
             // 마우스 위치에 사전 표시
@@ -175,7 +175,9 @@ struct DictionarySettingsView: View {
             // 사전 바깥 클릭 시 닫기
             Toggle(isOn: $isOutClickToClose) {
                 Text("사전 밖 클릭 시 닫기")
-                Text("변경된 설정은 사전 창을 다시 열 때 적용됩니다")
+            }
+            .onChange(of: isOutClickToClose) { _ in
+                WindowManager.shared.setOutClickToClose()
             }
         }
         .formStyle(.grouped)
