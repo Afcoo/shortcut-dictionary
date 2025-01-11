@@ -96,7 +96,6 @@ extension WindowManager {
     }
 
     func closeDict() {
-        isDictClosing = true
         removeClickEventMonitor()
         dictWindow.close()
     }
@@ -290,6 +289,7 @@ class DictWindowDelegate: NSObject, NSWindowDelegate {
 
     func windowWillClose(_ notification: Notification) {
         print("Dict Window will close")
+        WindowManager.shared.isDictClosing = true
 
         NSApp.setActivationPolicy(.prohibited)
 
