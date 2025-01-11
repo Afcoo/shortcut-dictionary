@@ -272,18 +272,3 @@ class DictWindowDelegate: NSObject, NSWindowDelegate {
         NSApp.setActivationPolicy(.prohibited)
     }
 }
-
-// dummy view for opening settings
-@available(macOS 14.0, *)
-struct DummyView: View {
-    @Environment(\.openSettings) private var openSettings
-    var body: some View {
-        EmptyView()
-            .onReceive(
-                NotificationCenter.default.publisher(for: .showSettings),
-                perform: { _ in
-                    openSettings()
-                }
-            )
-    }
-}

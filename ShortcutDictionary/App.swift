@@ -3,10 +3,23 @@ import SwiftUI
 @main
 struct ShortcutDictionaryApp: App {
     @NSApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
-
+    
     @AppStorage("enable_toolbar") var isToolbarEnabled: Bool = true
 
     var body: some Scene {
+        Window("", id: "dummy") {
+            if #available(macOS 14.0, *) {
+                DummyView()
+                    .frame(width: 0, height: 0)
+            } else {
+                LegacyDummyView()
+                    .frame(width: 0, height: 0)
+            }
+        }
+        .windowResizability(.contentSize)
+        .windowStyle(.hiddenTitleBar)
+        .commandsRemoved()
+        
         Settings {
             SettingsView()
                 .navigationTitle("설정")
@@ -53,7 +66,8 @@ struct ShortcutDictionaryApp: App {
                 Divider()
                 
                 Button("창 닫기") {
-                    WindowManager.shared.closeDict()
+//                    WindowManager.shared.closeDict()
+                    NSApplication.shared.keyWindow?.close()
                 }
                 .keyboardShortcut("W", modifiers: .command)
                 
