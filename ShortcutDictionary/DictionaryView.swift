@@ -42,11 +42,14 @@ struct DictionaryView: View {
                 isToolbarEnabled.toggle()
             }) {
                 HStack {
-                    Image(systemName: "checkmark")
-                        .imageScale(.small)
+                    if isToolbarEnabled {
+                        Image(systemName: "checkmark")
+                            .imageScale(.small)
+                    }
                     Text("툴바 표시")
                 }
             }
+            .keyboardShortcut("T", modifiers: .command)
 
             Button("새로 고침") {
                 reloadDict()

@@ -51,8 +51,10 @@ struct ShortcutDictionaryApp: App {
                     isToolbarEnabled.toggle()
                 }) {
                     HStack {
-                        Image(systemName: "checkmark")
-                            .imageScale(.small)
+                        if isToolbarEnabled {
+                            Image(systemName: "checkmark")
+                                .imageScale(.small)
+                        }
                         Text("툴바 표시")
                     }
                 }
