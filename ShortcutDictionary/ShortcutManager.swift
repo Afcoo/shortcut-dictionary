@@ -14,6 +14,8 @@ class ShortcutManager {
     private let maxChecks = 10
     private let checkDelay = 0.03 // 0.03초 간격 10번 체크
 
+    private init() {}
+
     // register global keyboard shortcuts
     func registerShortcut() {
         KeyboardShortcuts.onKeyDown(for: .dictShortcut, action: { () in self.activateDict() })
