@@ -7,7 +7,12 @@ class ShortcutManager {
 
     static var shared = ShortcutManager()
 
-    private init() {}
+    private let pasteboard = NSPasteboard.general
+
+    var isCopying = false // 선택된 단어 복사가 진행중임을 나타내는 플래그
+    private var checkCount = 0
+    private let maxChecks = 10
+    private let checkDelay = 0.03 // 0.03초 간격 10번 체크
 
     // register global keyboard shortcuts
     func registerShortcut() {
@@ -15,27 +20,71 @@ class ShortcutManager {
 
         if isGlobalShortcutEnabled {
             KeyboardShortcuts.enable(.dictShortcut)
-        }
-        else {
+        } else {
             KeyboardShortcuts.disable(.dictShortcut)
         }
     }
 
     func activateDict(_ doCopyPaste: Bool = true) {
-        if isCopyPasteEnabled, doCopyPaste {
-            // Copy & get clipboard
-            sendCommandC()
-            let clipboard = NSPasteboard.general.string(forType: .string)
-
-            // send clipboard to dictionary
-            NotificationCenter.default.post(name: .updateText, object: clipboard ?? "")
+        // 이미 복사 중이면 무시
+        guard !isCopying else {
+            print("복사 작업이 이미 진행 중입니다")
+            return
         }
 
-        // 사전 창 열기
-        WindowManager.shared.showDict()
+        if isCopyPasteEnabled, doCopyPaste {
+            isCopying = true
+
+            getSelectedText { [weak self] selectedText in
+                if let text = selectedText {
+                    // 복사된 텍스트를 사전으로 전달
+                    NotificationCenter.default.post(name: .updateText, object: text)
+                }
+
+                // 사전 창 열기
+                WindowManager.shared.showDict()
+
+                self?.isCopying = false
+            }
+        } else {
+            WindowManager.shared.showDict()
+        }
     }
 
-    private func sendCommandC() {
+    private func getSelectedText(completion: @escaping (String?) -> Void) {
+        let oldCount = pasteboard.changeCount
+
+        if sendCopyCommand() {
+            checkCount = 0
+            checkClipboardChange(oldCount: oldCount, completion: completion)
+        } else {
+            isCopying = false
+            completion(nil)
+        }
+    }
+
+    private func checkClipboardChange(oldCount: Int, completion: @escaping (String?) -> Void) {
+        // 클립보드 변경 확인
+        if pasteboard.changeCount != oldCount {
+            let newText = pasteboard.string(forType: .string)
+            completion(newText)
+            return
+        }
+
+        checkCount += 1
+        if checkCount < maxChecks {
+            // 0.05초 후 다시 체크
+            DispatchQueue.main.asyncAfter(deadline: .now() + checkDelay) { [weak self] in
+                self?.checkClipboardChange(oldCount: oldCount, completion: completion)
+            }
+        } else {
+            // 시간 초과
+            isCopying = false
+            completion(nil)
+        }
+    }
+
+    private func sendCopyCommand() -> Bool {
         let source = CGEventSource(stateID: CGEventSourceStateID.hidSystemState)
 
         let cmdKey: UInt16 = 0x37
@@ -46,18 +95,28 @@ class ShortcutManager {
         let keyCDown = CGEvent(keyboardEventSource: source, virtualKey: cKey, keyDown: true)
         let keyCUp = CGEvent(keyboardEventSource: source, virtualKey: cKey, keyDown: false)
 
-        let loc = CGEventTapLocation.cghidEventTap
+        guard let cmdDown = cmdDown,
+              let cmdUp = cmdUp,
+              let keyCDown = keyCDown,
+              let keyCUp = keyCUp
+        else {
+            return false
+        }
 
-        cmdDown?.flags = CGEventFlags.maskCommand
-        cmdUp?.flags = CGEventFlags.maskCommand
-        keyCDown?.flags = CGEventFlags.maskCommand
-        keyCUp?.flags = CGEventFlags.maskCommand
+        // Command 키 플래그 설정
+        let flags = CGEventFlags.maskCommand
+        cmdDown.flags = flags
+        cmdUp.flags = flags
+        keyCDown.flags = flags
+        keyCUp.flags = flags
 
-        cmdDown?.post(tap: loc)
-        keyCDown?.post(tap: loc)
-        cmdUp?.post(tap: loc)
-        keyCUp?.post(tap: loc)
+        // 키 이벤트 발생
+        let location = CGEventTapLocation.cghidEventTap
+        cmdDown.post(tap: location)
+        keyCDown.post(tap: location)
+        cmdUp.post(tap: location)
+        keyCUp.post(tap: location)
 
-        usleep(200000)
+        return true
     }
 }
