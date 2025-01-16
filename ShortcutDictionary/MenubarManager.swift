@@ -69,6 +69,10 @@ extension MenubarManager {
             let toolbarMenuItem = NSMenuItem(title: "툴바 표시",
                                              action: #selector(toggleToolbar),
                                              keyEquivalent: "t")
+            // 체크 마크 추가
+            if isToolbarEnabled, let checkImage = NSImage(systemSymbolName: "checkmark", accessibilityDescription: nil) {
+                toolbarMenuItem.image = checkImage
+            }
             toolbarMenuItem.target = self
             viewMenu.addItem(toolbarMenuItem)
 
