@@ -4,10 +4,6 @@ struct DictionaryView: View {
     @AppStorage("selected_dictonary") var selectedDict: Dicts = .daum
     @AppStorage("enable_toolbar") var isToolbarEnabled: Bool = true
 
-    private var webDictView: WebDictView {
-        WebDictView(selectedDict)
-    }
-
     var _padding = 8.0
 
     var body: some View {
@@ -24,9 +20,8 @@ struct DictionaryView: View {
                     .frame(height: _padding)
             }
 
-            // 웹 뷰
-            webDictView
-                .id(selectedDict) // 선택된 사전 변경시 리로드
+            // 사전 웹 뷰
+            WebDictView(selectedDict: selectedDict)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
         }
         .padding(_padding)
