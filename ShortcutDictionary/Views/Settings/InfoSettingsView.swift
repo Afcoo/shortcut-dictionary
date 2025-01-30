@@ -171,7 +171,7 @@ struct InfoView: View {
 
 extension UserDefaults {
     func resetKeys() {
-        for item in UserKeys.allCases {
+        for item in SettingKeys.allCases {
             removeObject(forKey: item.rawValue)
         }
     }

@@ -1,27 +1,4 @@
-import KeyboardShortcuts
 import SwiftUI
-
-extension KeyboardShortcuts.Name {
-    static let dictShortcut = Self("dictShortcut", default: .init(.d, modifiers: [.control, .shift]))
-}
-
-extension Notification.Name {
-    static let updateText = Notification.Name("updateText")
-    static let showSettings = Notification.Name("showSettings")
-    static let reloadDict = Notification.Name("reloadDict")
-}
-
-enum UserKeys: String, CaseIterable { // UserKeys for settings
-    case selectedDict = "selected_dictonary"
-    case isGlobalShortcutEnabled = "enable_global_shortcut"
-    case isCopyPasteEnabled = "enable_copy_paste"
-    case isMenuItemEnabled = "enable_menu_item"
-    case isAlwaysOnTop = "enable_always_on_top"
-    case isToolbarEnabled = "enable_toolbar"
-    case isEscToClose = "enable_close_with_esc"
-    case isOutClickToClose = "enable_close_with_out_click"
-    case isShowOnMousePos = "enable_show_on_mouse_position"
-}
 
 enum Dicts: String, CaseIterable {
     case daum = "https://small.dic.daum.net/top/search.do?dic=eng"
