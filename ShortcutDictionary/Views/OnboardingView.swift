@@ -13,7 +13,8 @@ struct OnboardingPage: Identifiable {
 }
 
 struct OnboardingView: View {
-    @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding = false
+    @AppStorage(SettingKeys.hasCompletedOnboarding.rawValue)
+    private var hasCompletedOnboarding = SettingKeys.hasCompletedOnboarding.defaultValue as! Bool
 
     let maxPage = 2
     @State private var currentPage = 0

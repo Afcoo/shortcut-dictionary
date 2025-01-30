@@ -1,11 +1,20 @@
 import SwiftUI
 
 struct DictionarySettingsView: View {
-    @AppStorage("selected_dictonary") var selectedDict: Dicts = .daum
-    @AppStorage("enable_always_on_top") var isAlwaysOnTop: Bool = false
-    @AppStorage("enable_show_on_mouse_position") var isShowOnMousePos: Bool = true
-    @AppStorage("enable_close_with_esc") var isEscToClose: Bool = true
-    @AppStorage("enable_close_with_out_click") var isOutClickToClose: Bool = true
+    @AppStorage(SettingKeys.selectedDict.rawValue)
+    private var selectedDict = SettingKeys.selectedDict.defaultValue as! Dicts
+
+    @AppStorage(SettingKeys.isAlwaysOnTop.rawValue)
+    private var isAlwaysOnTop = SettingKeys.isAlwaysOnTop.defaultValue as! Bool
+
+    @AppStorage(SettingKeys.isShowOnMousePos.rawValue)
+    private var isShowOnMousePos = SettingKeys.isShowOnMousePos.defaultValue as! Bool
+
+    @AppStorage(SettingKeys.isEscToClose.rawValue)
+    private var isEscToClose = SettingKeys.isEscToClose.defaultValue as! Bool
+
+    @AppStorage(SettingKeys.isOutClickToClose.rawValue)
+    private var isOutClickToClose = SettingKeys.isOutClickToClose.defaultValue as! Bool
 
     var body: some View {
         Form {

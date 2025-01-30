@@ -2,8 +2,11 @@ import Cocoa
 import SwiftUI
 
 class MenubarManager {
-    @AppStorage("enable_menu_item") var isMenuItemEnabled: Bool = true
-    @AppStorage("enable_toolbar") var isToolbarEnabled: Bool = true
+    @AppStorage(SettingKeys.isMenuItemEnabled.rawValue)
+    private var isMenuItemEnabled = SettingKeys.isMenuItemEnabled.defaultValue as! Bool
+
+    @AppStorage(SettingKeys.isToolbarEnabled.rawValue)
+    private var isToolbarEnabled = SettingKeys.isToolbarEnabled.defaultValue as! Bool
 
     static var shared = MenubarManager()
 

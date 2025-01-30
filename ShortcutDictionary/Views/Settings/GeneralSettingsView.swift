@@ -2,7 +2,8 @@ import LaunchAtLogin
 import SwiftUI
 
 struct GeneralSettingsView: View {
-    @AppStorage("enable_menu_item") var isMenuItemEnabled: Bool = true
+    @AppStorage(SettingKeys.isMenuItemEnabled.rawValue)
+    private var isMenuItemEnabled = SettingKeys.isMenuItemEnabled.defaultValue as! Bool
 
     var body: some View {
         Form {

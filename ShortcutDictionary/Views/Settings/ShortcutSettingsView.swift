@@ -3,8 +3,11 @@ import LaunchAtLogin
 import SwiftUI
 
 struct ShortcutSettingsView: View {
-    @AppStorage("enable_global_shortcut") var isGlobalShortcutEnabled: Bool = false
-    @AppStorage("enable_copy_paste") var isCopyPasteEnabled: Bool = true
+    @AppStorage(SettingKeys.isGlobalShortcutEnabled.rawValue)
+    private var isGlobalShortcutEnabled = SettingKeys.isGlobalShortcutEnabled.defaultValue as! Bool
+
+    @AppStorage(SettingKeys.isCopyPasteEnabled.rawValue)
+    private var isCopyPasteEnabled = SettingKeys.isCopyPasteEnabled.defaultValue as! Bool
 
     let accessEnabled = AXIsProcessTrusted() // 손쉬운 사용 권한 확인
 

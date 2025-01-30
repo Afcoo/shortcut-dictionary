@@ -1,7 +1,8 @@
 import SwiftUI
 
 struct AppearanceSettingsView: View {
-    @AppStorage("enable_toolbar") var isToolbarEnabled: Bool = true
+    @AppStorage(SettingKeys.isToolbarEnabled.rawValue)
+    private var isToolbarEnabled = SettingKeys.isToolbarEnabled.defaultValue as! Bool
 
     var body: some View {
         Form {

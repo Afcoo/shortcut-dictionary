@@ -3,7 +3,8 @@ import KeyboardShortcuts
 import SwiftUI
 
 final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
-    @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding = false
+    @AppStorage(SettingKeys.hasCompletedOnboarding.rawValue)
+    private var hasCompletedOnboarding = SettingKeys.hasCompletedOnboarding.defaultValue as! Bool
 
     // 앱 실행 시
     func applicationDidFinishLaunching(_ notification: Notification) {

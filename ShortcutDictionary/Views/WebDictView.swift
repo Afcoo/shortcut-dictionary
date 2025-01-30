@@ -58,7 +58,8 @@ struct WebDictView: NSViewRepresentable {
 
     // Coordinator 클래스: WKNavigationDelegate를 처리
     class Coordinator: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
-        @AppStorage("enable_close_with_esc") var isEscToClose: Bool = true
+        @AppStorage(SettingKeys.isEscToClose.rawValue)
+        private var isEscToClose = SettingKeys.isEscToClose.defaultValue as! Bool
 
         var parent: WebDictView
 

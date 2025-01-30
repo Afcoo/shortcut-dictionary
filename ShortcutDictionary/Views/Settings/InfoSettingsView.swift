@@ -109,7 +109,7 @@ struct InfoSettingsView: View {
 
     // 온보딩 초기화
     func restartOnboarding() {
-        UserDefaults.standard.resetKey("hasCompletedOnboarding")
+        UserDefaults.standard.resetKey(.hasCompletedOnboarding)
     }
 
     // 설정 초기화
@@ -166,17 +166,5 @@ struct InfoView: View {
             return buildNumber
         }
         return "Unknown"
-    }
-}
-
-extension UserDefaults {
-    func resetKeys() {
-        for item in SettingKeys.allCases {
-            removeObject(forKey: item.rawValue)
-        }
-    }
-
-    func resetKey(_ key: String) {
-        removeObject(forKey: key)
     }
 }

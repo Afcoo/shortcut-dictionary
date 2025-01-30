@@ -2,9 +2,14 @@ import KeyboardShortcuts
 import SwiftUI
 
 class WindowManager {
-    @AppStorage("enable_always_on_top") var isAlwaysOnTop: Bool = false
-    @AppStorage("enable_show_on_mouse_position") var isShowOnMousePos: Bool = true
-    @AppStorage("enable_close_with_out_click") var isOutClickToClose: Bool = true
+    @AppStorage(SettingKeys.isAlwaysOnTop.rawValue)
+    private var isAlwaysOnTop = SettingKeys.isAlwaysOnTop.defaultValue as! Bool
+
+    @AppStorage(SettingKeys.isShowOnMousePos.rawValue)
+    private var isShowOnMousePos = SettingKeys.isShowOnMousePos.defaultValue as! Bool
+
+    @AppStorage(SettingKeys.isOutClickToClose.rawValue)
+    private var isOutClickToClose = SettingKeys.isOutClickToClose.defaultValue as! Bool
 
     static var shared = WindowManager()
 
