@@ -33,6 +33,14 @@ struct SettingsView: View {
                     Label("사전", systemImage: "character.book.closed.fill")
                 }
                 .tag(2)
+            AppearanceSettingsView()
+                .getViewSize { size in
+                    viewHeight = size.height
+                }
+                .tabItem {
+                    Label("보기", systemImage: "paintpalette")
+                }
+                .tag(3)
             InfoSettingsView()
                 .getViewSize { size in
                     viewHeight = size.height
@@ -40,7 +48,7 @@ struct SettingsView: View {
                 .tabItem {
                     Label("정보", systemImage: "info.circle")
                 }
-                .tag(3)
+                .tag(4)
         }
         .frame(width: 350, height: viewHeight)
 //        .frame(height: viewHeights[currentView])
