@@ -2,7 +2,7 @@ import SwiftUI
 
 struct DictionarySettingsView: View {
     @AppStorage(SettingKeys.selectedDict.rawValue)
-    private var selectedDict = SettingKeys.selectedDict.defaultValue as! Dicts
+    private var selectedDict = SettingKeys.selectedDict.defaultValue as! DictType
 
     @AppStorage(SettingKeys.isAlwaysOnTop.rawValue)
     private var isAlwaysOnTop = SettingKeys.isAlwaysOnTop.defaultValue as! Bool
@@ -16,14 +16,27 @@ struct DictionarySettingsView: View {
     @AppStorage(SettingKeys.isOutClickToClose.rawValue)
     private var isOutClickToClose = SettingKeys.isOutClickToClose.defaultValue as! Bool
 
+    @State private var showCustomDictSetting = false
+
     var body: some View {
         Form {
             // 사전 선택
             Picker("사전 종류", selection: $selectedDict) {
-                ForEach(Dicts.allCases, id: \.self) { dict in
-                    Text(Dicts.getName(dict)).tag(dict)
+                ForEach(DictType.allCases, id: \.self) { dictType in
+                    Text(WebDicts.shared.getName(dictType)).tag(dictType)
                 }
-            }.pickerStyle(.radioGroup)
+            }.pickerStyle(.menu)
+
+            if selectedDict == .custom {
+                LabeledContent("") {
+                    Button("커스텀 사전 설정") {
+                        showCustomDictSetting = true
+                    }
+                    .sheet(isPresented: $showCustomDictSetting) {
+                        CustomDictSettingSheet(isPresented: $showCustomDictSetting)
+                    }
+                }
+            }
 
             // 항상 위에 표시
             Toggle(isOn: $isAlwaysOnTop) {
