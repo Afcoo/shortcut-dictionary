@@ -1,7 +1,6 @@
 import SwiftUI
 
 enum SettingKeys: String, CaseIterable {
-    case selectedDict = "selected_dictonary"
     case isGlobalShortcutEnabled = "enable_global_shortcut"
     case isCopyPasteEnabled = "enable_copy_paste"
     case isMenuItemEnabled = "enable_menu_item"
@@ -17,9 +16,12 @@ enum SettingKeys: String, CaseIterable {
     case backgroundColor
     case isBackgroundTransparent
 
+    // 사전 종류
+    case selectedDict
+    case customDictData
+
     var defaultValue: Any {
         switch self {
-        case .selectedDict: return Dicts.daum
         case .isGlobalShortcutEnabled: return false
         case .isCopyPasteEnabled: return true
         case .isMenuItemEnabled: return true
@@ -32,6 +34,9 @@ enum SettingKeys: String, CaseIterable {
         // Appearance
         case .backgroundColor: return "0xE7E7E7"
         case .isBackgroundTransparent: return true
+        // 사전 종류
+        case .selectedDict: return DictType.daum
+        case .customDictData: return ""
         }
     }
 }

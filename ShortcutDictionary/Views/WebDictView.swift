@@ -2,7 +2,7 @@ import SwiftUI
 import WebKit
 
 struct WebDictView: NSViewRepresentable {
-    let selectedDict: Dicts
+    let selectedDict: DictType
 
     func makeNSView(context: Context) -> WKWebView {
 //        print("make Web View")
@@ -15,7 +15,7 @@ struct WebDictView: NSViewRepresentable {
 
         context.coordinator.parent = self // Coordinator의 parent 참조 업데이트
 
-        let reqUrl = Dicts.getURL(selectedDict)
+        let reqUrl = WebDicts.shared.getURL(selectedDict)
         if reqUrl != view.url {
             view.load(URLRequest(url: reqUrl))
         }
@@ -46,7 +46,7 @@ struct WebDictView: NSViewRepresentable {
 
         view.customUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
 
-        let url = Dicts.getURL(selectedDict)
+        let url = WebDicts.shared.getURL(selectedDict)
         view.load(URLRequest(url: url))
 
         return view
@@ -114,7 +114,7 @@ struct WebDictView: NSViewRepresentable {
 
             // 지수 백오프를 사용한 재시도 간격
             let delay = Double(pow(2.0, Double(retryCount - 1)))
-            let url = Dicts.getURL(parent.selectedDict)
+            let url = WebDicts.shared.getURL(parent.selectedDict)
 
             retryWorkItem = DispatchWorkItem {
                 self.parent.tryLoad(url, into: view)
@@ -148,7 +148,7 @@ struct WebDictView: NSViewRepresentable {
 
             if let webView {
                 print(parent.selectedDict)
-                let script = Dicts.getPasteScript(parent.selectedDict, value: text)
+                let script = WebDicts.shared.getPasteScript(parent.selectedDict, value: text)
 
                 webView.evaluateJavaScript(script) { _, error in
                     if let error = error {
@@ -162,15 +162,17 @@ struct WebDictView: NSViewRepresentable {
 
         // 초기 페이지로 이동
         @objc func handleReload(_ notification: Notification) {
+            let url = WebDicts.shared.getURL(parent.selectedDict)
+
             if let webView {
-                webView.load(URLRequest(url: Dicts.getURL(parent.selectedDict)))
+                webView.load(URLRequest(url: url))
             } else if isRetrying {
                 retryWorkItem?.cancel()
                 retryCount = 0
                 isRetrying = false
 
                 if let errorWebView {
-                    parent.tryLoad(Dicts.getURL(parent.selectedDict), into: errorWebView)
+                    parent.tryLoad(url, into: errorWebView)
                 }
             }
         }

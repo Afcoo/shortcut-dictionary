@@ -2,7 +2,7 @@ import SwiftUI
 
 struct DictionaryView: View {
     @AppStorage(SettingKeys.selectedDict.rawValue)
-    private var selectedDict = SettingKeys.selectedDict.defaultValue as! Dicts
+    private var selectedDict = SettingKeys.selectedDict.defaultValue as! DictType
 
     @AppStorage(SettingKeys.isToolbarEnabled.rawValue)
     private var isToolbarEnabled = SettingKeys.isToolbarEnabled.defaultValue as! Bool
