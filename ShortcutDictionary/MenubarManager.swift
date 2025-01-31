@@ -62,6 +62,54 @@ extension MenubarManager {
             quitMenuItem.target = self
             appMenu.addItem(quitMenuItem)
 
+            // 편집 메뉴 추가
+            let editMenuItem = NSMenuItem()
+            let editMenu = NSMenu(title: "편집")
+            editMenuItem.submenu = editMenu
+            mainMenu.addItem(editMenuItem)
+
+            // Undo/Redo
+            let undoMenuItem = NSMenuItem(title: "실행 취소",
+                                          action: Selector("undo:"),
+                                          keyEquivalent: "z")
+            editMenu.addItem(undoMenuItem)
+
+            let redoMenuItem = NSMenuItem(title: "실행 복귀",
+                                          action: Selector("redo:"),
+                                          keyEquivalent: "Z")
+            editMenu.addItem(redoMenuItem)
+
+            editMenu.addItem(NSMenuItem.separator())
+
+            // Cut/Copy/Paste
+            let cutMenuItem = NSMenuItem(title: "오려두기",
+                                         action: Selector("cut:"),
+                                         keyEquivalent: "x")
+            editMenu.addItem(cutMenuItem)
+
+            let copyMenuItem = NSMenuItem(title: "복사하기",
+                                          action: Selector("copy:"),
+                                          keyEquivalent: "c")
+            editMenu.addItem(copyMenuItem)
+
+            let pasteMenuItem = NSMenuItem(title: "붙여넣기",
+                                           action: Selector("paste:"),
+                                           keyEquivalent: "v")
+            editMenu.addItem(pasteMenuItem)
+
+            let deleteMenuItem = NSMenuItem(title: "삭제",
+                                            action: Selector("delete:"),
+                                            keyEquivalent: "\u{8}")
+            editMenu.addItem(deleteMenuItem)
+
+            editMenu.addItem(NSMenuItem.separator())
+
+            // Select All
+            let selectAllMenuItem = NSMenuItem(title: "모두 선택",
+                                               action: Selector("selectAll:"),
+                                               keyEquivalent: "a")
+            editMenu.addItem(selectAllMenuItem)
+
             // View 메뉴 (sidebar 대체)
             let viewMenuItem = NSMenuItem()
             let viewMenu = NSMenu(title: "보기")
