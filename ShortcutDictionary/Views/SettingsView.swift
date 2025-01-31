@@ -38,7 +38,7 @@ struct SettingsView: View {
                     viewHeight = size.height
                 }
                 .tabItem {
-                    Label("보기", systemImage: "paintpalette")
+                    Label("외관", systemImage: "paintpalette")
                 }
                 .tag(3)
             InfoSettingsView()
