@@ -15,7 +15,8 @@ struct CustomDictSettingSheet: View {
                 Spacer()
                 ToolbarButton(action: { isPresented = false }, systemName: "xmark.circle")
             }
-            .padding(.all, 8)
+            .padding(.horizontal, 8)
+            .padding(.top, 8)
 
             Form {
                 TextField("URL", text: $dictUrl)
@@ -26,10 +27,13 @@ struct CustomDictSettingSheet: View {
                         TextEditor(text: $dictScript)
                             .multilineTextAlignment(.leading)
                             .frame(height: 150)
+
+                        Text("스크립트는 즉시 실행 함수로 실행됩니다")
                     }
                 }
             }
             .formStyle(.grouped)
+            .fixedSize(horizontal: false, vertical: true)
         }
         .frame(width: 500)
         .onAppear {

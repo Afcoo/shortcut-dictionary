@@ -45,14 +45,16 @@ class WebDicts {
             """
         ),
         .custom: WebDict(
-            name: "커스텀..",
-            url: "https://small.dic.daum.net/top/search.do?dic=eng",
+            name: "커스텀",
+            url: "https://m.daum.net",
             script: """
+            document.querySelector("header").className = "_search_on search_on";
             q.value = SD_clipboard_value;
-            q.select();
-            if(document.getElementById("searchBar") !== null) {
-                searchBar.click();
-            }
+            const inputEvent = new Event('input', {
+                bubbles: true,
+                cancelable: true
+              });
+            q.dispatchEvent(inputEvent);
             """
         ),
     ]
@@ -98,6 +100,11 @@ class WebDicts {
     func getPasteScript(_ dictType: DictType, value: String) -> String {
         guard let dict = dictionaries[dictType] else { return "" }
 
-        return "let SD_clipboard_value = '\(value)';" + dict.script
+        return """
+        (() => {
+            let SD_clipboard_value = `\(value)`;
+            \(dict.script)
+        })();
+        """
     }
 }

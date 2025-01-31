@@ -26,9 +26,9 @@ struct DictionarySettingsView: View {
                     Text(WebDicts.shared.getName(dictType)).tag(dictType)
                 }
             }.pickerStyle(.menu)
+
             if selectedDict == .custom {
-                VStack {
-                    Spacer()
+                LabeledContent("") {
                     Button("커스텀 사전 설정") {
                         showCustomDictSetting = true
                     }
