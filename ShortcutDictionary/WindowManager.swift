@@ -292,8 +292,6 @@ private extension WindowManager {
 class DictWindowDelegate: NSObject, NSWindowDelegate {
     func windowDidBecomeKey(_ notification: Notification) {
         print("Dict Window become key")
-
-        MenubarManager.shared.setupMenu()
     }
 
     func windowWillClose(_ notification: Notification) {

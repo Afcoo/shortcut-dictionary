@@ -9,6 +9,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     // 앱 실행 시
     func applicationDidFinishLaunching(_ notification: Notification) {
         MenubarManager.shared.registerMenuBarItem()
+        MenubarManager.shared.setupMenu()
 
         ShortcutManager.shared.registerShortcut()
 
