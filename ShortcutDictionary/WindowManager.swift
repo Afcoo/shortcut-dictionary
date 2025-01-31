@@ -80,6 +80,8 @@ extension WindowManager {
         dictWindow.title = "단축키 사전"
         dictWindow.setFrameAutosaveName("DictionaryFrame")
 
+        dictWindow.backgroundColor = .clear
+
         chromeless(dictWindow)
         moveToScreenCenter(dictWindow)
 

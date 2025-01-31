@@ -13,6 +13,10 @@ enum SettingKeys: String, CaseIterable {
 
     case hasCompletedOnboarding
 
+    // Appearance
+    case backgroundColor
+    case isBackgroundTransparent
+
     var defaultValue: Any {
         switch self {
         case .selectedDict: return Dicts.daum
@@ -25,6 +29,9 @@ enum SettingKeys: String, CaseIterable {
         case .isOutClickToClose: return true
         case .isShowOnMousePos: return true
         case .hasCompletedOnboarding: return false
+        // Appearance
+        case .backgroundColor: return "0xE7E7E7"
+        case .isBackgroundTransparent: return true
         }
     }
 }

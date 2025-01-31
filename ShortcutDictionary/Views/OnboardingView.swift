@@ -85,13 +85,7 @@ struct OnboardingView: View {
                 .padding(.bottom, 20)
         }
         .frame(width: 400)
-        .background(
-            VisualEffectView(
-                material: NSVisualEffectView.Material.hudWindow,
-                blendingMode: NSVisualEffectView.BlendingMode.behindWindow
-            )
-            .ignoresSafeArea()
-        )
+        .background { ColoredBackground().ignoresSafeArea() }
     }
 
     func prev() {

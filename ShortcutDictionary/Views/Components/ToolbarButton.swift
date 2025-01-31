@@ -4,6 +4,7 @@ struct ToolbarButton: View {
     let action: () -> Void
     let systemName: String
     var useSystem = true
+    var scale: Image.Scale = .large
 
     var body: some View {
         Button(
@@ -11,7 +12,7 @@ struct ToolbarButton: View {
             label: {
                 if useSystem {
                     Image(systemName: systemName)
-                        .imageScale(.large)
+                        .imageScale(scale)
                         .foregroundColor(Color(.tertiaryLabelColor))
                 }
                 else {

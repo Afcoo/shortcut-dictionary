@@ -28,13 +28,7 @@ struct DictionaryView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 10))
         }
         .padding(_padding)
-        .background(
-            VisualEffectView(
-                material: NSVisualEffectView.Material.hudWindow,
-                blendingMode: NSVisualEffectView.BlendingMode.behindWindow
-            )
-            .ignoresSafeArea()
-        )
+        .background { ColoredBackground().ignoresSafeArea() }
         .contextMenu { // Edge 우클릭시 표시
             Button(action: {
                 isToolbarEnabled.toggle()
