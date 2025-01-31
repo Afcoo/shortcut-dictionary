@@ -2,8 +2,11 @@ import KeyboardShortcuts
 import SwiftUI
 
 class ShortcutManager {
-    @AppStorage("enable_copy_paste") var isCopyPasteEnabled: Bool = true
-    @AppStorage("enable_global_shortcut") var isGlobalShortcutEnabled: Bool = false
+    @AppStorage(SettingKeys.isGlobalShortcutEnabled.rawValue)
+    private var isGlobalShortcutEnabled = SettingKeys.isGlobalShortcutEnabled.defaultValue as! Bool
+
+    @AppStorage(SettingKeys.isCopyPasteEnabled.rawValue)
+    private var isCopyPasteEnabled = SettingKeys.isCopyPasteEnabled.defaultValue as! Bool
 
     static var shared = ShortcutManager()
 

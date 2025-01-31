@@ -13,7 +13,8 @@ struct OnboardingPage: Identifiable {
 }
 
 struct OnboardingView: View {
-    @AppStorage("hasCompletedOnboarding") var hasCompletedOnboarding = false
+    @AppStorage(SettingKeys.hasCompletedOnboarding.rawValue)
+    private var hasCompletedOnboarding = SettingKeys.hasCompletedOnboarding.defaultValue as! Bool
 
     let maxPage = 2
     @State private var currentPage = 0
@@ -84,13 +85,7 @@ struct OnboardingView: View {
                 .padding(.bottom, 20)
         }
         .frame(width: 400)
-        .background(
-            VisualEffectView(
-                material: NSVisualEffectView.Material.hudWindow,
-                blendingMode: NSVisualEffectView.BlendingMode.behindWindow
-            )
-            .ignoresSafeArea()
-        )
+        .background { ColoredBackground().ignoresSafeArea() }
     }
 
     func prev() {

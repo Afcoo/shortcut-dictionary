@@ -1,8 +1,11 @@
 import SwiftUI
 
 struct DictionaryView: View {
-    @AppStorage("selected_dictonary") var selectedDict: Dicts = .daum
-    @AppStorage("enable_toolbar") var isToolbarEnabled: Bool = true
+    @AppStorage(SettingKeys.selectedDict.rawValue)
+    private var selectedDict = SettingKeys.selectedDict.defaultValue as! Dicts
+
+    @AppStorage(SettingKeys.isToolbarEnabled.rawValue)
+    private var isToolbarEnabled = SettingKeys.isToolbarEnabled.defaultValue as! Bool
 
     var _padding = 8.0
 
@@ -25,13 +28,7 @@ struct DictionaryView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 10))
         }
         .padding(_padding)
-        .background(
-            VisualEffectView(
-                material: NSVisualEffectView.Material.hudWindow,
-                blendingMode: NSVisualEffectView.BlendingMode.behindWindow
-            )
-            .ignoresSafeArea()
-        )
+        .background { ColoredBackground().ignoresSafeArea() }
         .contextMenu { // Edge 우클릭시 표시
             Button(action: {
                 isToolbarEnabled.toggle()
