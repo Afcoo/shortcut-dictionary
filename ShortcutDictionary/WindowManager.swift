@@ -139,7 +139,7 @@ extension WindowManager {
 
     // 사전 창 밖 클릭시 닫기 구현
     func setOutClickToClose(_ tf: Bool) {
-        if tf {
+        if tf, clickEventMonitor == nil {
             // 클릭 이벤트 모니터링
             clickEventMonitor = NSEvent.addGlobalMonitorForEvents(
                 matching: [.leftMouseDown, .rightMouseDown]
