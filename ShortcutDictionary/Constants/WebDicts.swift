@@ -28,8 +28,8 @@ class WebDicts {
             name: "다음 사전",
             url: "https://small.dic.daum.net/top/search.do?dic=eng",
             script: """
-            q.value = _SD_clipboard_value;
-            q.select()
+            q.value = SD_clipboard_value;
+            q.select();
             if(document.getElementById("searchBar") !== null) {
                 searchBar.click();
             }
@@ -40,10 +40,21 @@ class WebDicts {
             url: "https://en.dict.naver.com",
             script: """
             var input = jQuery('#ac_input');
-            input[0].value = _SD_clipboard_value;
+            input[0].value = SD_clipboard_value;
             input.focus();
             """
-        )
+        ),
+        .custom: WebDict(
+            name: "커스텀..",
+            url: "https://small.dic.daum.net/top/search.do?dic=eng",
+            script: """
+            q.value = SD_clipboard_value;
+            q.select();
+            if(document.getElementById("searchBar") !== null) {
+                searchBar.click();
+            }
+            """
+        ),
     ]
 
     private init() {
@@ -66,6 +77,12 @@ class WebDicts {
         }
     }
 
+    func getDict(_ dictType: DictType) -> WebDict? {
+        guard let dict = dictionaries[dictType] else { return nil }
+
+        return dict
+    }
+
     func getName(_ dictType: DictType) -> String {
         guard let dict = dictionaries[dictType] else { return "" }
 
@@ -81,6 +98,6 @@ class WebDicts {
     func getPasteScript(_ dictType: DictType, value: String) -> String {
         guard let dict = dictionaries[dictType] else { return "" }
 
-        return "let _SD_clipboard_value = '\(value)';" + dict.script
+        return "let SD_clipboard_value = '\(value)';" + dict.script
     }
 }

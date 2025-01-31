@@ -16,6 +16,8 @@ struct DictionarySettingsView: View {
     @AppStorage(SettingKeys.isOutClickToClose.rawValue)
     private var isOutClickToClose = SettingKeys.isOutClickToClose.defaultValue as! Bool
 
+    @State private var showCustomDictSetting = false
+
     var body: some View {
         Form {
             // 사전 선택
@@ -24,6 +26,17 @@ struct DictionarySettingsView: View {
                     Text(WebDicts.shared.getName(dictType)).tag(dictType)
                 }
             }.pickerStyle(.menu)
+            if selectedDict == .custom {
+                VStack {
+                    Spacer()
+                    Button("커스텀 사전 설정") {
+                        showCustomDictSetting = true
+                    }
+                    .sheet(isPresented: $showCustomDictSetting) {
+                        CustomDictSettingSheet(isPresented: $showCustomDictSetting)
+                    }
+                }
+            }
 
             // 항상 위에 표시
             Toggle(isOn: $isAlwaysOnTop) {
