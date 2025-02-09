@@ -13,12 +13,8 @@ struct DictionaryView: View {
         VStack {
             // 툴바
             if isToolbarEnabled {
-                HStack {
-                    ToolbarButton(action: closeDict, systemName: "xmark.circle")
-                    Spacer()
-                    ToolbarButton(action: reloadDict, systemName: "arrow.clockwise.circle")
-                    ToolbarButton(action: openSettingPage, systemName: "gear.circle")
-                }
+                Toolbar()
+                    .accessibilitySortPriority(1)
                 Spacer()
                     .frame(height: _padding)
             }
@@ -26,6 +22,7 @@ struct DictionaryView: View {
             // 사전 웹 뷰
             WebDictView(selectedDict: selectedDict)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
+                .accessibilitySortPriority(2) // 사전에 우선적 포커스
         }
         .padding(_padding)
         .background { ColoredBackground().ignoresSafeArea() }
@@ -44,12 +41,12 @@ struct DictionaryView: View {
             .keyboardShortcut("T", modifiers: .command)
 
             Button("새로 고침") {
-                reloadDict()
+                NotificationCenter.default.post(name: .reloadDict, object: "")
             }
             .keyboardShortcut("R", modifiers: .command)
 
             Button("창 닫기") {
-                closeDict()
+                WindowManager.shared.closeDict()
             }
             .keyboardShortcut("W", modifiers: .command)
 
@@ -60,22 +57,6 @@ struct DictionaryView: View {
             }
             .keyboardShortcut("Q", modifiers: .command)
         }
-    }
-
-    private func openDict() {
-        WindowManager.shared.showDict()
-    }
-
-    private func reloadDict() {
-        NotificationCenter.default.post(name: .reloadDict, object: "")
-    }
-
-    private func closeDict() {
-        WindowManager.shared.closeDict()
-    }
-
-    private func openSettingPage() {
-        WindowManager.shared.showSettings()
     }
 }
 

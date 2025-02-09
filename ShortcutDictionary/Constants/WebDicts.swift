@@ -45,7 +45,7 @@ class WebDicts {
             """
         ),
         .custom: WebDict(
-            name: "커스텀",
+            name: "커스텀 사전",
             url: "https://m.daum.net",
             script: """
             document.querySelector("header").className = "_search_on search_on";
