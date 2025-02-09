@@ -3,6 +3,8 @@ import SwiftUI
 enum DictType: String, CaseIterable {
     case daum
     case naver
+    case deepl
+    case chatgpt
     case custom
 }
 
@@ -42,6 +44,20 @@ class WebDicts {
             var input = jQuery('#ac_input');
             input[0].value = SD_clipboard_value;
             input.focus();
+            """
+        ),
+        .deepl: WebDict(
+            name: "DeepL",
+            url: "https://deepl.com",
+            script: """
+            document.querySelector("d-textarea").firstChild.innerText = SD_clipboard_value;
+            """
+        ),
+        .chatgpt: WebDict(
+            name: "ChatGPT",
+            url: "https://chatgpt.com",
+            script: """
+            document.querySelector(".placeholder").innerText = SD_clipboard_value;
             """
         ),
         .custom: WebDict(
