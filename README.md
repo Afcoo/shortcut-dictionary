@@ -3,10 +3,10 @@
 언제 어디서든 원하는 단축키로 사전을 띄우고, 복사 & 붙여넣기까지 한번에
 
 ## 다운로드
-[<img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" height="50">](https://apps.apple.com/us/app/%EB%8B%A8%EC%B6%95%ED%82%A4-%EC%82%AC%EC%A0%84/id6740014069)<br>
+[<img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" height="50">](https://apps.apple.com/kr/app/id6740014069)<br>
 
 ### Manual Installation
-- [Github Releases](https://github.com/)
+- [Github Releases](https://github.com/Afcoo/shortcut-dictionary/releases)
 
 ## 기능
 
