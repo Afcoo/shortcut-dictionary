@@ -10,6 +10,9 @@ enum SettingKeys: String, CaseIterable {
     case isOutClickToClose = "enable_close_with_out_click"
     case isShowOnMousePos = "enable_show_on_mouse_position"
 
+    // 빠른 검색 활성화
+    case isFastSearchEnabled
+
     case hasCompletedOnboarding
 
     // Appearance
@@ -32,6 +35,8 @@ enum SettingKeys: String, CaseIterable {
         case .isOutClickToClose: return true
         case .isShowOnMousePos: return true
         case .hasCompletedOnboarding: return false
+        // 빠른 검색 활성화
+        case .isFastSearchEnabled: return false
         // Appearance
         case .backgroundColor: return "0xE7E7E7"
         case .isBackgroundTransparent: return true
