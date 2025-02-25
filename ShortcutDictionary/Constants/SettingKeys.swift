@@ -21,6 +21,9 @@ enum SettingKeys: String, CaseIterable {
     case customDictData
     case activatedDicts // 사용 활성화한 사전
 
+    // 모바일 뷰 사용 여부
+    case isMobileView
+
     var defaultValue: Any {
         switch self {
         case .isGlobalShortcutEnabled: return false
@@ -39,6 +42,7 @@ enum SettingKeys: String, CaseIterable {
         case .selectedDict: return "daum_eng"
         case .customDictData: return ""
         case .activatedDicts: return ""
+        case .isMobileView: return true
         }
     }
 }

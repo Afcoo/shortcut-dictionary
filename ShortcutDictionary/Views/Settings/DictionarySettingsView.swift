@@ -4,6 +4,9 @@ struct DictionarySettingsView: View {
     @AppStorage(SettingKeys.selectedDict.rawValue)
     private var selectedDict = SettingKeys.selectedDict.defaultValue as! String
 
+    @AppStorage(SettingKeys.isMobileView.rawValue)
+    private var isMobileView = SettingKeys.isMobileView.defaultValue as! Bool
+
     @AppStorage(SettingKeys.isAlwaysOnTop.rawValue)
     private var isAlwaysOnTop = SettingKeys.isAlwaysOnTop.defaultValue as! Bool
 
@@ -41,6 +44,14 @@ struct DictionarySettingsView: View {
                 .sheet(isPresented: $showDictActivationSetting) {
                     DictActivationSettingSheet(isPresented: $showDictActivationSetting)
                 }
+            }
+
+            // 모바일/PC 뷰 설정
+            Toggle(isOn: $isMobileView) {
+                Text("모바일 뷰 사용")
+            }
+            .onChange(of: isMobileView) { _ in
+                NotificationCenter.default.post(name: .reloadDict, object: "") // 사전 창 새로고침
             }
 
             // 항상 위에 표시

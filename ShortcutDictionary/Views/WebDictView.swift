@@ -2,6 +2,9 @@ import SwiftUI
 import WebKit
 
 struct WebDictView: NSViewRepresentable {
+    @AppStorage(SettingKeys.isMobileView.rawValue)
+    private var isMobileView = SettingKeys.isMobileView.defaultValue as! Bool
+
     let webDict: WebDict
 
     func makeNSView(context: Context) -> WKWebView {
@@ -14,6 +17,11 @@ struct WebDictView: NSViewRepresentable {
 //        print("update Web View")
 
         context.coordinator.parent = self // Coordinator의 parent 참조 업데이트
+
+        // User-Agent 업데이트
+        if isMobileView {
+            view.customUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
+        }
 
         if let reqUrl = URL(string: webDict.url),
            reqUrl != view.url
@@ -46,7 +54,9 @@ struct WebDictView: NSViewRepresentable {
         let view = WKWebView(frame: .zero, configuration: config)
         view.navigationDelegate = context.coordinator // WKNavigationDelegate 설정
 
-        view.customUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
+        if isMobileView {
+            view.customUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
+        }
 
         if let url = URL(string: webDict.url) {
             view.load(URLRequest(url: url))
