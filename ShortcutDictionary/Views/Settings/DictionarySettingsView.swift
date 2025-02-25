@@ -49,6 +49,7 @@ struct DictionarySettingsView: View {
             // 모바일/PC 뷰 설정
             Toggle(isOn: $isMobileView) {
                 Text("모바일 뷰 사용")
+                Text("설정을 적용하기 위해 재시작이 필요합니다")
             }
             .onChange(of: isMobileView) { _ in
                 NotificationCenter.default.post(name: .reloadDict, object: "") // 사전 창 새로고침
