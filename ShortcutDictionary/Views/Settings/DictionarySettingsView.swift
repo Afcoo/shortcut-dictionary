@@ -22,7 +22,7 @@ struct DictionarySettingsView: View {
         Form {
             // 사전 선택
             Picker("사전 종류", selection: $selectedDict) {
-                ForEach(WebDictManager.shared.getAllDicts(), id: \.self) { dict in
+                ForEach(WebDictManager.shared.getActivatedDicts(), id: \.self) { dict in
                     Text(dict.getName())
                         .tag(dict.id)
                 }

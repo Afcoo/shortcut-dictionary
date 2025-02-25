@@ -55,18 +55,39 @@ class WebDictManager {
         }
     }
 
+    func getActivation(dict: WebDict) -> Bool {
+        return self.activatedDicts.contains(dict.id)
+    }
+
+    func addActivation(dict: WebDict) -> Bool {
+        if self.activatedDicts.contains(dict.id) || self.getAllDicts().contains(dict) {
+            return false
+        }
+
+        self.activatedDicts.append(dict.id)
+        return true
+    }
+
+    func removeActivation(dict: WebDict) -> Bool {
+        if !self.activatedDicts.contains(dict.id) || !self.getAllDicts().contains(dict) {
+            return false
+        }
+
+        self.activatedDicts.removeAll { $0 == dict.id }
+        return true
+    }
+
     func getDict(_ dictId: String) -> WebDict? {
         return self.getAllDicts().first { $0.id == dictId }
     }
 
-    func getAllDicts(getDeactivatedDicts: Bool = false) -> [WebDict] {
+    func getAllDicts() -> [WebDict] {
         let allDicts = defaultWebDicts + [self.customDict]
 
-        if getDeactivatedDicts {
-            return allDicts
-        }
-        else {
-            return allDicts.filter { self.activatedDicts.contains($0.id) }
-        }
+        return allDicts
+    }
+
+    func getActivatedDicts() -> [WebDict] {
+        return self.getAllDicts().filter { self.activatedDicts.contains($0.id) }
     }
 }

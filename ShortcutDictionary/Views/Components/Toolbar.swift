@@ -36,7 +36,7 @@ struct Toolbar: View {
                 arrowEdge: .bottom
             ) {
                 VStack {
-                    ForEach(WebDictManager.shared.getAllDicts(), id: \.self) { dict in
+                    ForEach(WebDictManager.shared.getActivatedDicts(), id: \.self) { dict in
                         Button(
                             dict.getName(),
                             action: {
