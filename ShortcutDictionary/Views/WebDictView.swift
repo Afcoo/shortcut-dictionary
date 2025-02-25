@@ -64,6 +64,9 @@ struct WebDictView: NSViewRepresentable {
         @AppStorage(SettingKeys.isEscToClose.rawValue)
         private var isEscToClose = SettingKeys.isEscToClose.defaultValue as! Bool
 
+        @AppStorage(SettingKeys.isFastSearchEnabled.rawValue)
+        private var isFastSearchEnabled = SettingKeys.isFastSearchEnabled.defaultValue as! Bool
+
         var parent: WebDictView
 
         private var webView: WKWebView?
@@ -150,7 +153,7 @@ struct WebDictView: NSViewRepresentable {
             print(text)
 
             if let webView {
-                let script = parent.webDict.getPasteScript(value: text) ?? ""
+                let script = parent.webDict.getPasteScript(value: text, fastSearch: isFastSearchEnabled) ?? ""
 
                 webView.evaluateJavaScript(script) { _, error in
                     if let error = error {

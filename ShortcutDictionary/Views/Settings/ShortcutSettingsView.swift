@@ -51,9 +51,6 @@ struct ShortcutSettingsView: View {
                 Text("빠른 검색 활성화")
                 Text("이 기능을 활성화하면 복사된 단어를 바로 검색합니다")
             }
-            .onChange(of: isFastSearchEnabled) { _ in
-                
-            }
         }
         .formStyle(.grouped)
         .scrollContentBackground(.hidden)
