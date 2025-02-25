@@ -10,7 +10,7 @@ class WebDictManager {
         script: ""
     )
 
-    private var activatedDicts = ["daum_eng"]
+    var activatedDicts = ["daum_eng"]
 
     private init() {
         self.loadCustomDict()
@@ -38,7 +38,7 @@ class WebDictManager {
     }
 
     func loadActivatedDicts() {
-        guard let savedActivatedDicts = UserDefaults.standard.data(forKey: SettingKeys.customDictData.rawValue),
+        guard let savedActivatedDicts = UserDefaults.standard.data(forKey: SettingKeys.activatedDicts.rawValue),
               let loadedActivatedDicts = try? JSONDecoder().decode([String].self, from: savedActivatedDicts)
         else { return }
 
@@ -60,11 +60,12 @@ class WebDictManager {
     }
 
     func addActivation(dict: WebDict) -> Bool {
-        if self.activatedDicts.contains(dict.id) || self.getAllDicts().contains(dict) {
+        if self.activatedDicts.contains(dict.id) || !self.getAllDicts().contains(dict) {
             return false
         }
 
         self.activatedDicts.append(dict.id)
+        self.saveActivatedDicts()
         return true
     }
 
@@ -74,6 +75,7 @@ class WebDictManager {
         }
 
         self.activatedDicts.removeAll { $0 == dict.id }
+        self.saveActivatedDicts()
         return true
     }
 
