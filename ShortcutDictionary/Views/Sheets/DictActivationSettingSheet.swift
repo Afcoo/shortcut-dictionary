@@ -31,6 +31,7 @@ struct DictActivationSettingSheet: View {
             }
             .padding(.horizontal, 8)
             .padding(.top, 8)
+
             List {
                 ForEach(allDicts.indices, id: \.self) { index in
                     let dict = allDicts[index]
@@ -57,14 +58,16 @@ struct DictActivationSettingSheet: View {
                     .disabled(isOns[index] == true && dictManager.activatedDicts.count <= 1)
                 }
             }
-            .frame(height: 200)
 
             Button("커스텀 사전 설정") {
                 showCustomDictSetting = true
             }
+            
+            .padding(.bottom, 12)
             .sheet(isPresented: $showCustomDictSetting) {
                 CustomDictSettingSheet(isPresented: $showCustomDictSetting)
             }
         }
+        .frame(width: 200, height: 250)
     }
 }
