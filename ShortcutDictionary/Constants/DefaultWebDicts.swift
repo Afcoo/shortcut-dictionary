@@ -6,10 +6,78 @@ let defaultWebDicts = [
         script: daumScript
     ),
     WebDict(
+        id: "daum_ee",
+        name: "다음 영영사전",
+        url: "https://small.dic.daum.net/top/search.do?dic=ee",
+        script: daumScript
+    ),
+    
+    WebDict(
+        id: "daum_kor",
+        name: "다음 국어사전",
+        url: "https://small.dic.daum.net/top/search.do?dic=kor",
+        script: daumScript
+    ),
+    
+    WebDict(
+        id: "daum_jp",
+        name: "다음 일본어사전",
+        url: "https://small.dic.daum.net/top/search.do?dic=jp",
+        script: daumScript
+    ),
+    
+    WebDict(
+        id: "daum_ch",
+        name: "다음 중국어사전",
+        url: "https://small.dic.daum.net/top/search.do?dic=ch",
+        script: daumScript
+    ),
+    
+    WebDict(
+        id: "daum_hanja",
+        name: "다음 한자사전",
+        url: "https://small.dic.daum.net/top/search.do?dic=hanja",
+        script: daumScript
+    ),
+    WebDict(
         id: "naver_eng",
         name: "네이버 영어사전",
         url: "https://en.dict.naver.com",
         script: naverScript
+    ),
+    WebDict(
+        id: "daum_ee",
+        name: "네이버 영영사전",
+        url: "https://english.dict.naver.com",
+        script: daumScript
+    ),
+    
+    WebDict(
+        id: "daum_kor",
+        name: "네이버 국어사전",
+        url: "https://ko.dict.naver.com",
+        script: daumScript
+    ),
+    
+    WebDict(
+        id: "daum_jp",
+        name: "네이버 일본어사전",
+        url: "https://ja.dict.naver.com",
+        script: daumScript
+    ),
+    
+    WebDict(
+        id: "daum_ch",
+        name: "네이버 중국어사전",
+        url: "https://zh.dict.naver.com",
+        script: daumScript
+    ),
+    
+    WebDict(
+        id: "daum_hanja",
+        name: "네이버 한자사전",
+        url: "https://hanja.dict.naver.com",
+        script: daumScript
     ),
     WebDict(
         id: "deepl",
