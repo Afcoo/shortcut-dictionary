@@ -19,6 +19,7 @@ enum SettingKeys: String, CaseIterable {
     // 사전 종류
     case selectedDict
     case customDictData
+    case activatedDicts // 사용 활성화한 사전
 
     var defaultValue: Any {
         switch self {
@@ -37,6 +38,7 @@ enum SettingKeys: String, CaseIterable {
         // 사전 종류
         case .selectedDict: return "daum_eng"
         case .customDictData: return ""
+        case .activatedDicts: return ""
         }
     }
 }
