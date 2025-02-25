@@ -2,14 +2,14 @@ let defaultWebDicts = [
     WebDict(
         id: "daum_eng",
         name: "다음 영어사전",
-        url: "https://small.dic.daum.net/top/search.do?dic=eng",
+        url: "https://dic.daum.net/top/search.do?dic=eng",
         script: daumScript,
         postScript: daumPostScript
     ),
     WebDict(
         id: "daum_ee",
         name: "다음 영영사전",
-        url: "https://small.dic.daum.net/top/search.do?dic=ee",
+        url: "https://dic.daum.net/top/search.do?dic=ee",
         script: daumScript,
         postScript: daumPostScript
     ),
@@ -17,7 +17,7 @@ let defaultWebDicts = [
     WebDict(
         id: "daum_kor",
         name: "다음 국어사전",
-        url: "https://small.dic.daum.net/top/search.do?dic=kor",
+        url: "https://dic.daum.net/top/search.do?dic=kor",
         script: daumScript,
         postScript: daumPostScript
     ),
@@ -25,7 +25,7 @@ let defaultWebDicts = [
     WebDict(
         id: "daum_jp",
         name: "다음 일본어사전",
-        url: "https://small.dic.daum.net/top/search.do?dic=jp",
+        url: "https://dic.daum.net/top/search.do?dic=jp",
         script: daumScript,
         postScript: daumPostScript
     ),
@@ -33,7 +33,7 @@ let defaultWebDicts = [
     WebDict(
         id: "daum_ch",
         name: "다음 중국어사전",
-        url: "https://small.dic.daum.net/top/search.do?dic=ch",
+        url: "https://dic.daum.net/top/search.do?dic=ch",
         script: daumScript,
         postScript: daumPostScript
     ),
@@ -41,7 +41,7 @@ let defaultWebDicts = [
     WebDict(
         id: "daum_hanja",
         name: "다음 한자사전",
-        url: "https://small.dic.daum.net/top/search.do?dic=hanja",
+        url: "https://dic.daum.net/top/search.do?dic=hanja",
         script: daumScript,
         postScript: daumPostScript
     ),
@@ -115,6 +115,11 @@ q.select();
 if(document.getElementById("searchBar") !== null) {
     searchBar.click();
 }
+const inputEvent = new Event('input', {
+    bubbles: true,
+    cancelable: true
+  });
+q.dispatchEvent(inputEvent); // 모바일 뷰에서 검색 이벤트 발생
 """
 
 let daumPostScript = """
