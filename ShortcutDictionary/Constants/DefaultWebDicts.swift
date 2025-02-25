@@ -130,4 +130,6 @@ input.focus();
 let naverPostScript = """
 var btn = jQuery('#searchBtn')
 btn.click()
+
+document.querySelector(".btn_search").click() // PC판 검색 코드
 """
