@@ -52,8 +52,6 @@ struct DictActivationSettingSheet: View {
                         }
 
                         // 에러 처리?
-
-                        print(dictManager.getActivatedDicts())
                     }
                     // 활성화된 사전이 1개 뿐일 때 비활성화 하지 못하게 방지
                     .disabled(isOns[index] == true && dictManager.activatedDicts.count <= 1)
