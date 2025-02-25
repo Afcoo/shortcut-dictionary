@@ -35,7 +35,7 @@ enum SettingKeys: String, CaseIterable {
         case .backgroundColor: return "0xE7E7E7"
         case .isBackgroundTransparent: return true
         // 사전 종류
-        case .selectedDict: return DictType.daum
+        case .selectedDict: return "daum_eng"
         case .customDictData: return ""
         }
     }

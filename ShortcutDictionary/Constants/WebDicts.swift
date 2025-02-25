@@ -1,82 +1,48 @@
 import SwiftUI
 
-enum DictType: String, CaseIterable {
-    case daum
-    case naver
-    case deepl
-    case chatgpt
-    case custom
-}
+struct WebDict: Hashable, Codable {
+    var id: String // 고유 id
+    var name: String? // 표시 이름
 
-struct WebDict: Identifiable, Codable {
-    let id: UUID
-    var name: String
     var url: String
-    var script: String
 
-    init(name: String, url: String, script: String) {
-        self.id = UUID()
-        self.name = name
-        self.url = url
-        self.script = script
+    var script: String
+    var postScript: String? // 즉시 검색 함수
+
+    // 검색 단어 전/후 추가 문자열
+    var prefix: String?
+    var postfix: String?
+
+    func getName() -> String {
+        return self.name ?? self.id
+    }
+
+    func getPasteScript(value: String) -> String? {
+        return """
+        (() => {
+            let SD_clipboard_value = `\(value)`;
+            \((self.prefix ?? "") + self.script + (self.postfix ?? ""))
+        })();
+        """ + (self.postScript ?? "")
+    }
+
+    func getURL() -> URL? {
+        return URL(string: self.url)
     }
 }
 
 class WebDicts {
     static let shared = WebDicts()
 
-    private var dictionaries: [DictType: WebDict] = [
-        .daum: WebDict(
-            name: "다음 사전",
-            url: "https://small.dic.daum.net/top/search.do?dic=eng",
-            script: """
-            q.value = SD_clipboard_value;
-            q.select();
-            if(document.getElementById("searchBar") !== null) {
-                searchBar.click();
-            }
-            """
-        ),
-        .naver: WebDict(
-            name: "네이버 사전",
-            url: "https://en.dict.naver.com",
-            script: """
-            var input = jQuery('#ac_input');
-            input[0].value = SD_clipboard_value;
-            input.focus();
-            """
-        ),
-        .deepl: WebDict(
-            name: "DeepL",
-            url: "https://deepl.com",
-            script: """
-            document.querySelector("d-textarea").firstChild.innerText = SD_clipboard_value;
-            """
-        ),
-        .chatgpt: WebDict(
-            name: "ChatGPT",
-            url: "https://chatgpt.com",
-            script: """
-            document.querySelector(".placeholder").innerText = SD_clipboard_value;
-            """
-        ),
-        .custom: WebDict(
-            name: "커스텀 사전",
-            url: "https://m.daum.net",
-            script: """
-            document.querySelector("header").className = "_search_on search_on";
-            q.value = SD_clipboard_value;
-            const inputEvent = new Event('input', {
-                bubbles: true,
-                cancelable: true
-              });
-            q.dispatchEvent(inputEvent);
-            """
-        ),
-    ]
+    private var customDict = WebDict(
+        id: "custom",
+        name: "커스텀 사전",
+        url: "https://www.google.com",
+        script: ""
+    )
 
     private init() {
-        loadCustomDict()
+        self.loadCustomDict()
     }
 
     func loadCustomDict() {
@@ -84,43 +50,22 @@ class WebDicts {
               let loadedCustomDict = try? JSONDecoder().decode(WebDict.self, from: savedCustomDict)
         else { return }
 
-        dictionaries[.custom] = loadedCustomDict
+        self.customDict = loadedCustomDict
     }
 
     func saveCustomDict(_ dict: WebDict) {
-        dictionaries[.custom] = dict
+        self.customDict = dict
 
         if let encoded = try? JSONEncoder().encode(dict) {
             UserDefaults.standard.set(encoded, forKey: SettingKeys.customDictData.rawValue)
         }
     }
 
-    func getDict(_ dictType: DictType) -> WebDict? {
-        guard let dict = dictionaries[dictType] else { return nil }
-
-        return dict
+    func getDict(_ dictId: String) -> WebDict? {
+        return self.getAllDicts().first { $0.id == dictId }
     }
 
-    func getName(_ dictType: DictType) -> String {
-        guard let dict = dictionaries[dictType] else { return "" }
-
-        return dict.name
-    }
-
-    func getURL(_ dictType: DictType) -> URL {
-        guard let dict = dictionaries[dictType] else { return URL(string: "https://small.dic.daum.net")! }
-
-        return URL(string: dict.url)!
-    }
-
-    func getPasteScript(_ dictType: DictType, value: String) -> String {
-        guard let dict = dictionaries[dictType] else { return "" }
-
-        return """
-        (() => {
-            let SD_clipboard_value = `\(value)`;
-            \(dict.script)
-        })();
-        """
+    func getAllDicts() -> [WebDict] {
+        return defaultWebDicts + [self.customDict]
     }
 }
