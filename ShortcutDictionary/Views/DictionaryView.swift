@@ -20,8 +20,8 @@ struct DictionaryView: View {
             }
 
             // 사전 웹 뷰
-            if WebDicts.shared.getDict(selectedDict) != nil {
-                WebDictView(webDict: WebDicts.shared.getDict(selectedDict)!)
+            if WebDictManager.shared.getDict(selectedDict) != nil {
+                WebDictView(webDict: WebDictManager.shared.getDict(selectedDict)!)
                     .clipShape(RoundedRectangle(cornerRadius: 10))
                     .accessibilitySortPriority(2) // 사전에 우선적 포커스
             }

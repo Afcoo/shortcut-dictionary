@@ -24,7 +24,7 @@ struct Toolbar: View {
             // 사전 전환 메뉴
             Button(action: { showMenu.toggle() }) {
                 HStack {
-                    Text(WebDicts.shared.getDict(selectedDict)?.getName() ?? "error")
+                    Text(WebDictManager.shared.getDict(selectedDict)?.getName() ?? "error")
 
                     Image(systemName: "chevron.down")
                         .imageScale(.small)
@@ -36,7 +36,7 @@ struct Toolbar: View {
                 arrowEdge: .bottom
             ) {
                 VStack {
-                    ForEach(WebDicts.shared.getAllDicts(), id: \.self) { dict in
+                    ForEach(WebDictManager.shared.getAllDicts(), id: \.self) { dict in
                         Button(
                             dict.getName(),
                             action: {
