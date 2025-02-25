@@ -46,38 +46,38 @@ let defaultWebDicts = [
         script: naverScript
     ),
     WebDict(
-        id: "daum_ee",
+        id: "naver_ee",
         name: "네이버 영영사전",
         url: "https://english.dict.naver.com",
-        script: daumScript
+        script: naverScript
     ),
     
     WebDict(
-        id: "daum_kor",
+        id: "naver_kor",
         name: "네이버 국어사전",
         url: "https://ko.dict.naver.com",
-        script: daumScript
+        script: naverScript
     ),
     
     WebDict(
-        id: "daum_jp",
+        id: "naver_jp",
         name: "네이버 일본어사전",
         url: "https://ja.dict.naver.com",
-        script: daumScript
+        script: naverScript
     ),
     
     WebDict(
-        id: "daum_ch",
+        id: "naver_ch",
         name: "네이버 중국어사전",
         url: "https://zh.dict.naver.com",
-        script: daumScript
+        script: naverScript
     ),
     
     WebDict(
-        id: "daum_hanja",
+        id: "naver_hanja",
         name: "네이버 한자사전",
         url: "https://hanja.dict.naver.com",
-        script: daumScript
+        script: naverScript
     ),
     WebDict(
         id: "deepl",
