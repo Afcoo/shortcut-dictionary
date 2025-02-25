@@ -25,11 +25,13 @@ struct Toolbar: View {
             Button(action: { showMenu.toggle() }) {
                 HStack {
                     Text(WebDictManager.shared.getDict(selectedDict)?.getName() ?? "error")
+                        .lineLimit(1)
 
                     Image(systemName: "chevron.down")
                         .imageScale(.small)
                         .foregroundColor(Color(.tertiaryLabelColor))
                 }
+                .frame(alignment: .center)
             }
             .popover(
                 isPresented: $showMenu,
@@ -41,7 +43,6 @@ struct Toolbar: View {
                             dict.getName(),
                             action: {
                                 selectedDict = dict.id
-                                print(selectedDict)
                                 showMenu.toggle()
                             }
                         )
@@ -53,7 +54,7 @@ struct Toolbar: View {
 
             .buttonStyle(.borderless)
             .foregroundStyle(.tertiary)
-            .frame(width: 80)
+            .frame(maxWidth: 150)
 
             Spacer()
 
