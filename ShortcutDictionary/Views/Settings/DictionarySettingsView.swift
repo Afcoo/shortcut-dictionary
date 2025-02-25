@@ -2,7 +2,7 @@ import SwiftUI
 
 struct DictionarySettingsView: View {
     @AppStorage(SettingKeys.selectedDict.rawValue)
-    private var selectedDict = SettingKeys.selectedDict.defaultValue as! DictType
+    private var selectedDict = SettingKeys.selectedDict.defaultValue as! String
 
     @AppStorage(SettingKeys.isAlwaysOnTop.rawValue)
     private var isAlwaysOnTop = SettingKeys.isAlwaysOnTop.defaultValue as! Bool
@@ -16,25 +16,30 @@ struct DictionarySettingsView: View {
     @AppStorage(SettingKeys.isOutClickToClose.rawValue)
     private var isOutClickToClose = SettingKeys.isOutClickToClose.defaultValue as! Bool
 
-    @State private var showCustomDictSetting = false
+    @AppStorage(SettingKeys.activatedDicts.rawValue)
+    private var activatedDicts = SettingKeys.activatedDicts.defaultValue as! String
+
+    @State private var showDictActivationSetting = false
 
     var body: some View {
         Form {
             // 사전 선택
             Picker("사전 종류", selection: $selectedDict) {
-                ForEach(DictType.allCases, id: \.self) { dictType in
-                    Text(WebDicts.shared.getName(dictType)).tag(dictType)
+                ForEach(WebDictManager.shared.getActivatedDicts(), id: \.self) { dict in
+                    Text(dict.getName())
+                        .tag(dict.id)
                 }
-            }.pickerStyle(.menu)
+            }
+            .pickerStyle(.menu)
+            .id(activatedDicts)
 
-            if selectedDict == .custom {
-                LabeledContent("") {
-                    Button("커스텀 사전 설정") {
-                        showCustomDictSetting = true
-                    }
-                    .sheet(isPresented: $showCustomDictSetting) {
-                        CustomDictSettingSheet(isPresented: $showCustomDictSetting)
-                    }
+            // 사전 종류 관리
+            LabeledContent("") {
+                Button("사전 종류 관리") {
+                    showDictActivationSetting = true
+                }
+                .sheet(isPresented: $showDictActivationSetting) {
+                    DictActivationSettingSheet(isPresented: $showDictActivationSetting)
                 }
             }
 

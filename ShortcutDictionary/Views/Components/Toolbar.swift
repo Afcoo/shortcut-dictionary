@@ -2,7 +2,7 @@ import SwiftUI
 
 struct Toolbar: View {
     @AppStorage(SettingKeys.selectedDict.rawValue)
-    private var selectedDict = SettingKeys.selectedDict.defaultValue as! DictType
+    private var selectedDict = SettingKeys.selectedDict.defaultValue as! String
 
     @State private var showMenu = false
 
@@ -13,7 +13,7 @@ struct Toolbar: View {
                 action: { WindowManager.shared.closeDict() },
                 systemName: "xmark.circle"
             )
-            
+
             // 좌우 간격 맞추기용
             Image(systemName: "space")
                 .foregroundStyle(.clear)
@@ -24,28 +24,29 @@ struct Toolbar: View {
             // 사전 전환 메뉴
             Button(action: { showMenu.toggle() }) {
                 HStack {
-                    Text(WebDicts.shared.getName(selectedDict))
+                    Text(WebDictManager.shared.getDict(selectedDict)?.getName() ?? "error")
+                        .lineLimit(1)
 
                     Image(systemName: "chevron.down")
                         .imageScale(.small)
                         .foregroundColor(Color(.tertiaryLabelColor))
                 }
+                .frame(alignment: .center)
             }
             .popover(
                 isPresented: $showMenu,
                 arrowEdge: .bottom
             ) {
                 VStack {
-                    ForEach(DictType.allCases, id: \.self) { dictType in
+                    ForEach(WebDictManager.shared.getActivatedDicts(), id: \.self) { dict in
                         Button(
-                            WebDicts.shared.getName(dictType),
+                            dict.getName(),
                             action: {
-                                selectedDict = dictType
+                                selectedDict = dict.id
                                 showMenu.toggle()
                             }
                         )
                         .buttonStyle(.borderless)
-                        .tag(dictType)
                     }
                 }
                 .padding(.all, 8)
@@ -53,7 +54,7 @@ struct Toolbar: View {
 
             .buttonStyle(.borderless)
             .foregroundStyle(.tertiary)
-            .frame(width: 80)
+            .frame(maxWidth: 150)
 
             Spacer()
 

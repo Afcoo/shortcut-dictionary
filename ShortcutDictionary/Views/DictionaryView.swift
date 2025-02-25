@@ -2,7 +2,7 @@ import SwiftUI
 
 struct DictionaryView: View {
     @AppStorage(SettingKeys.selectedDict.rawValue)
-    private var selectedDict = SettingKeys.selectedDict.defaultValue as! DictType
+    private var selectedDict = SettingKeys.selectedDict.defaultValue as! String
 
     @AppStorage(SettingKeys.isToolbarEnabled.rawValue)
     private var isToolbarEnabled = SettingKeys.isToolbarEnabled.defaultValue as! Bool
@@ -20,9 +20,11 @@ struct DictionaryView: View {
             }
 
             // 사전 웹 뷰
-            WebDictView(selectedDict: selectedDict)
-                .clipShape(RoundedRectangle(cornerRadius: 10))
-                .accessibilitySortPriority(2) // 사전에 우선적 포커스
+            if WebDictManager.shared.getDict(selectedDict) != nil {
+                WebDictView(webDict: WebDictManager.shared.getDict(selectedDict)!)
+                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                    .accessibilitySortPriority(2) // 사전에 우선적 포커스
+            }
         }
         .padding(_padding)
         .background { ColoredBackground().ignoresSafeArea() }

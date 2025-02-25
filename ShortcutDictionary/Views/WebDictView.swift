@@ -2,7 +2,7 @@ import SwiftUI
 import WebKit
 
 struct WebDictView: NSViewRepresentable {
-    let selectedDict: DictType
+    let webDict: WebDict
 
     func makeNSView(context: Context) -> WKWebView {
 //        print("make Web View")
@@ -15,8 +15,10 @@ struct WebDictView: NSViewRepresentable {
 
         context.coordinator.parent = self // Coordinator의 parent 참조 업데이트
 
-        let reqUrl = WebDicts.shared.getURL(selectedDict)
-        if reqUrl != view.url {
+        if let reqUrl = URL(string: webDict.url),
+           reqUrl != view.url
+        {
+            view.stopLoading()
             view.load(URLRequest(url: reqUrl))
         }
     }
@@ -46,8 +48,9 @@ struct WebDictView: NSViewRepresentable {
 
         view.customUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
 
-        let url = WebDicts.shared.getURL(selectedDict)
-        view.load(URLRequest(url: url))
+        if let url = URL(string: webDict.url) {
+            view.load(URLRequest(url: url))
+        }
 
         return view
     }
@@ -114,12 +117,12 @@ struct WebDictView: NSViewRepresentable {
 
             // 지수 백오프를 사용한 재시도 간격
             let delay = Double(pow(2.0, Double(retryCount - 1)))
-            let url = WebDicts.shared.getURL(parent.selectedDict)
-
-            retryWorkItem = DispatchWorkItem {
-                self.parent.tryLoad(url, into: view)
+            if let url = URL(string: parent.webDict.url) {
+                retryWorkItem = DispatchWorkItem {
+                    self.parent.tryLoad(url, into: view)
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: retryWorkItem!)
             }
-            DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: retryWorkItem!)
         }
 
         // Javascript 메시지 처리
@@ -147,8 +150,7 @@ struct WebDictView: NSViewRepresentable {
             print(text)
 
             if let webView {
-                print(parent.selectedDict)
-                let script = WebDicts.shared.getPasteScript(parent.selectedDict, value: text)
+                let script = parent.webDict.getPasteScript(value: text) ?? ""
 
                 webView.evaluateJavaScript(script) { _, error in
                     if let error = error {
@@ -162,7 +164,9 @@ struct WebDictView: NSViewRepresentable {
 
         // 초기 페이지로 이동
         @objc func handleReload(_ notification: Notification) {
-            let url = WebDicts.shared.getURL(parent.selectedDict)
+            guard let url = URL(string: parent.webDict.url) else {
+                return
+            }
 
             if let webView {
                 webView.load(URLRequest(url: url))
