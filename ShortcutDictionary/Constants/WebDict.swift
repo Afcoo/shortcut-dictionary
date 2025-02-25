@@ -17,17 +17,16 @@ struct WebDict: Hashable, Codable {
         return self.name ?? self.id
     }
 
-    func getPasteScript(value: String) -> String? {
+    func getPasteScript(value: String, fastSearch: Bool = false) -> String? {
         return """
         (() => {
             let SD_clipboard_value = `\(value)`;
             \((self.prefix ?? "") + self.script + (self.postfix ?? ""))
         })();
-        """ + (self.postScript ?? "")
+        """ + (fastSearch ? (self.postScript ?? "") : "")
     }
 
     func getURL() -> URL? {
         return URL(string: self.url)
     }
 }
-

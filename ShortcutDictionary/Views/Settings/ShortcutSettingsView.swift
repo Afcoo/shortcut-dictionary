@@ -9,6 +9,9 @@ struct ShortcutSettingsView: View {
     @AppStorage(SettingKeys.isCopyPasteEnabled.rawValue)
     private var isCopyPasteEnabled = SettingKeys.isCopyPasteEnabled.defaultValue as! Bool
 
+    @AppStorage(SettingKeys.isFastSearchEnabled.rawValue)
+    private var isFastSearchEnabled = SettingKeys.isFastSearchEnabled.defaultValue as! Bool
+
     let accessEnabled = AXIsProcessTrusted() // 손쉬운 사용 권한 확인
 
     var body: some View {
@@ -23,7 +26,6 @@ struct ShortcutSettingsView: View {
 
             // 단축키 설정
             KeyboardShortcuts.Recorder("단축키", name: .dictShortcut)
-                //                .padding(.leading, 20)
                 .disabled(!isGlobalShortcutEnabled)
 
             // 단축키 입력시 복사 유무 결정
@@ -42,8 +44,13 @@ struct ShortcutSettingsView: View {
                     .buttonStyle(.borderless)
                 }
             }
-            //                .padding(.leading, 20)
             .disabled(!isGlobalShortcutEnabled)
+
+            // 빠른 검색 활성화 여부
+            Toggle(isOn: $isFastSearchEnabled) {
+                Text("빠른 검색 활성화")
+                Text("이 기능을 활성화하면 복사된 단어를 바로 검색합니다")
+            }
         }
         .formStyle(.grouped)
         .scrollContentBackground(.hidden)
