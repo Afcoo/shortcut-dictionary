@@ -96,7 +96,14 @@ let defaultWebDicts = [
         name: "DeepL",
         url: "https://deepl.com",
         script: """
-        document.querySelector("d-textarea").firstChild.innerText = SD_clipboard_value;
+        let q = document.querySelector("d-textarea").firstChild;
+        q.innerText = SD_clipboard_value;
+        
+        const inputEvent = new Event('input', {
+            bubbles: true,
+            cancelable: true
+          });
+        q.dispatchEvent(inputEvent); // 검색 이벤트 발생
         """
     ),
     WebDict(
