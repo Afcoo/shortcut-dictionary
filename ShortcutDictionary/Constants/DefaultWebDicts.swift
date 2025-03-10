@@ -112,6 +112,11 @@ let defaultWebDicts = [
         url: "https://chatgpt.com",
         script: """
         document.querySelector(".ProseMirror").innerText = SD_clipboard_value;
+        """,
+        postScript: """
+        setTimeout(() => {
+            document.querySelector('[data-testid="send-button"]').click();
+        }, 100);
         """
     ),
 ]
