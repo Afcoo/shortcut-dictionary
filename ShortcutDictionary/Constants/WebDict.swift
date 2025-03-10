@@ -7,7 +7,7 @@ struct WebDict: Hashable, Codable {
     var url: String
 
     var script: String
-    var postScript: String? // 즉시 검색 함수
+    var postScript: String? // 즉시 검색 스크립트
 
     // 검색 단어 전/후 추가 문자열
     var prefix: String?

@@ -96,7 +96,14 @@ let defaultWebDicts = [
         name: "DeepL",
         url: "https://deepl.com",
         script: """
-        document.querySelector("d-textarea").firstChild.innerText = SD_clipboard_value;
+        let q = document.querySelector("d-textarea").firstChild;
+        q.innerText = SD_clipboard_value;
+        
+        const inputEvent = new Event('input', {
+            bubbles: true,
+            cancelable: true
+          });
+        q.dispatchEvent(inputEvent); // 입력 이벤트 발생
         """
     ),
     WebDict(
@@ -104,7 +111,12 @@ let defaultWebDicts = [
         name: "ChatGPT",
         url: "https://chatgpt.com",
         script: """
-        document.querySelector(".placeholder").innerText = SD_clipboard_value;
+        document.querySelector(".ProseMirror").innerText = SD_clipboard_value;
+        """,
+        postScript: """
+        setTimeout(() => {
+            document.querySelector('[data-testid="send-button"]').click();
+        }, 100);
         """
     ),
 ]
@@ -119,7 +131,7 @@ const inputEvent = new Event('input', {
     bubbles: true,
     cancelable: true
   });
-q.dispatchEvent(inputEvent); // 모바일 뷰에서 검색 이벤트 발생
+q.dispatchEvent(inputEvent); // 모바일 뷰에서 입력 이벤트 발생
 """
 
 let daumPostScript = """
