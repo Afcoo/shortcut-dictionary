@@ -107,6 +107,21 @@ let defaultWebDicts = [
         """
     ),
     WebDict(
+        id: "google_translate",
+        name: "Google 번역",
+        url: "https://translate.google.com",
+        script: """
+        let q = document.querySelector("textarea");
+        q.innerText = SD_clipboard_value;
+        
+        const inputEvent = new Event('input', {
+            bubbles: true,
+            cancelable: true
+        });
+        q.dispatchEvent(inputEvent); // 입력 이벤트 발생
+        """
+    ),
+    WebDict(
         id: "chatgpt",
         name: "ChatGPT",
         url: "https://chatgpt.com",

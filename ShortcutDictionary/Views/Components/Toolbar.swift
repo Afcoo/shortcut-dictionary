@@ -5,6 +5,7 @@ struct Toolbar: View {
     private var selectedDict = SettingKeys.selectedDict.defaultValue as! String
 
     @State private var showMenu = false
+    @State private var showDictActivationSetting = false
 
     var body: some View {
         HStack {
@@ -48,6 +49,13 @@ struct Toolbar: View {
                         )
                         .buttonStyle(.borderless)
                     }
+                    
+                        Button("사전 종류 관리") {
+                            showDictActivationSetting = true
+                        }
+                        .sheet(isPresented: $showDictActivationSetting) {
+                            DictActivationSettingSheet(isPresented: $showDictActivationSetting)
+                        }
                 }
                 .padding(.all, 8)
             }
