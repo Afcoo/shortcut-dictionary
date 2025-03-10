@@ -103,7 +103,7 @@ let defaultWebDicts = [
             bubbles: true,
             cancelable: true
           });
-        q.dispatchEvent(inputEvent); // 검색 이벤트 발생
+        q.dispatchEvent(inputEvent); // 입력 이벤트 발생
         """
     ),
     WebDict(
@@ -131,7 +131,7 @@ const inputEvent = new Event('input', {
     bubbles: true,
     cancelable: true
   });
-q.dispatchEvent(inputEvent); // 모바일 뷰에서 검색 이벤트 발생
+q.dispatchEvent(inputEvent); // 모바일 뷰에서 입력 이벤트 발생
 """
 
 let daumPostScript = """
