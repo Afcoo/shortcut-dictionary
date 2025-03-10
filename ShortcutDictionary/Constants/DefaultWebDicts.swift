@@ -111,7 +111,7 @@ let defaultWebDicts = [
         name: "ChatGPT",
         url: "https://chatgpt.com",
         script: """
-        document.querySelector(".placeholder").innerText = SD_clipboard_value;
+        document.querySelector(".ProseMirror").innerText = SD_clipboard_value;
         """
     ),
 ]
