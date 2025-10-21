@@ -13,12 +13,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
         ShortcutManager.shared.registerShortcut()
 
+        NSApplication.shared.setActivationPolicy(.regular)
+
         if !hasCompletedOnboarding {
-            NSApplication.shared.setActivationPolicy(.regular)
             WindowManager.shared.showOnboarding()
         }
         else {
-            NSApplication.shared.setActivationPolicy(.prohibited)
+            WindowManager.shared.showDict()
         }
     }
 
