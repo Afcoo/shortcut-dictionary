@@ -8,6 +8,9 @@ class MenubarManager {
     @AppStorage(SettingKeys.isToolbarEnabled.rawValue)
     private var isToolbarEnabled = SettingKeys.isToolbarEnabled.defaultValue as! Bool
 
+    @AppStorage(SettingKeys.selectedDict.rawValue)
+    private var selectedDict = SettingKeys.selectedDict.defaultValue as! String
+
     static var shared = MenubarManager()
 
     var statusBarItem: NSStatusItem!
@@ -110,6 +113,32 @@ extension MenubarManager {
                                                keyEquivalent: "a")
             editMenu.addItem(selectAllMenuItem)
 
+            // 창 메뉴 (사전 간 전환)
+            let windowMenuItem = NSMenuItem()
+            let windowMenu = NSMenu(title: "창")
+            windowMenuItem.submenu = windowMenu
+            mainMenu.addItem(windowMenuItem)
+
+            let activatedDicts = WebDictManager.shared.getActivatedDicts()
+            for index in activatedDicts.indices {
+                let dictQuickChangeMenuItem: NSMenuItem
+
+                if index < 9 {
+                    dictQuickChangeMenuItem = NSMenuItem(title: activatedDicts[index].name ?? "",
+                                                         action: #selector(changeDict(_:)),
+                                                         keyEquivalent: String(index + 1))
+                } else {
+                    dictQuickChangeMenuItem = NSMenuItem(title: activatedDicts[index].name ?? "",
+                                                         action: #selector(changeDict(_:)),
+                                                         keyEquivalent: "")
+                }
+
+                dictQuickChangeMenuItem.target = self
+                dictQuickChangeMenuItem.tag = index
+
+                windowMenu.addItem(dictQuickChangeMenuItem)
+            }
+
             // View 메뉴 (sidebar 대체)
             let viewMenuItem = NSMenuItem()
             let viewMenu = NSMenu(title: "보기")
@@ -148,7 +177,7 @@ extension MenubarManager {
 
 // 메뉴바 아이템 (MenubarExtra) 관련
 extension MenubarManager {
-    public func setupMenuBarItem() {
+    func setupMenuBarItem() {
         if statusBarItem != nil {
             return
         }
@@ -187,7 +216,7 @@ extension MenubarManager {
         statusBarMenu = menu
     }
 
-    public func removeMenuBarItem() {
+    func removeMenuBarItem() {
         statusBarItem = nil
     }
 
@@ -221,6 +250,12 @@ extension MenubarManager {
 
     @objc func toggleToolbar() {
         isToolbarEnabled.toggle()
+    }
+
+    @objc func changeDict(_ sender: NSMenuItem) {
+        let index = sender.tag
+
+        selectedDict = WebDictManager.shared.getActivatedDicts()[index].id
     }
 
     @objc func reloadDict() {
