@@ -158,6 +158,19 @@ let defaultWebDicts = [
         }, 100);
         """
     ),
+    WebDict(
+        id: "gemini",
+        name: "Gemini",
+        url: "https://gemini.google.com/",
+        script: """
+        document.querySelector(".ql-editor").innerText = SD_clipboard_value;
+        """,
+        postScript: """
+        setTimeout(() => {
+            document.querySelector(".send-button").click();
+        }, 100);
+        """
+    ),
 ]
 
 let daumScript = """
