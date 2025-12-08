@@ -134,6 +134,30 @@ let defaultWebDicts = [
         }, 100);
         """
     ),
+    WebDict(
+        id: "claude",
+        name: "Claude",
+        url: "https://claude.ai/",
+        script: """
+        document.querySelector(".ProseMirror").innerText = SD_clipboard_value;
+        """,
+        postScript: """
+        setTimeout(() => {
+            const q = document.querySelector(".ProseMirror")
+            const enterEvent = new KeyboardEvent('keydown', { 
+                key: 'Enter',
+                code: 'Enter',
+                keyCode: 13,
+                which: 13,
+                bubbles: true,
+                cancelable: true,
+                metaKey: true
+            }); // cmd + enter 단축키 전송
+            
+            q.dispatchEvent(enterEvent);
+        }, 100);
+        """
+    ),
 ]
 
 let daumScript = """
