@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		F70943622CC9350D007EA02E /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = F70943612CC9350D007EA02E /* KeyboardShortcuts */; };
 		F731F1112CE134FC00ACAEB8 /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = F731F1102CE134F700ACAEB8 /* .gitignore */; };
+		F74E97882EE70F1700CFDC07 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = F74E97872EE70F1700CFDC07 /* AppIcon.icon */; };
 		F756E4322D1C488700B237B5 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = F756E4302D1C488700B237B5 /* InfoPlist.strings */; };
 		F7F7011E2CFCB9B700E110EA /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = F7F7011D2CFCB9B700E110EA /* LaunchAtLogin */; };
 /* End PBXBuildFile section */
@@ -32,6 +33,7 @@
 
 /* Begin PBXFileReference section */
 		F731F1102CE134F700ACAEB8 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		F74E97872EE70F1700CFDC07 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		F756E4312D1C488700B237B5 /* ko */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ko; path = ko.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		F756E4332D1C489000B237B5 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		F790FF872CC377DC00A6AB1C /* ShortcutDictionary.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShortcutDictionary.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -106,6 +108,7 @@
 				F790FF9B2CC377E000A6AB1C /* ShortcutDictionaryTests */,
 				F790FFA52CC377E000A6AB1C /* ShortcutDictionaryUITests */,
 				F790FF882CC377DC00A6AB1C /* Products */,
+				F74E97872EE70F1700CFDC07 /* AppIcon.icon */,
 			);
 			sourceTree = "<group>";
 		};
@@ -247,6 +250,7 @@
 			files = (
 				F756E4322D1C488700B237B5 /* InfoPlist.strings in Resources */,
 				F731F1112CE134FC00ACAEB8 /* .gitignore in Resources */,
+				F74E97882EE70F1700CFDC07 /* AppIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -439,6 +443,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = ShortcutDictionary/ShortcutDictionary.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
@@ -471,6 +476,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = NO;
 				CODE_SIGN_ENTITLEMENTS = ShortcutDictionary/ShortcutDictionary.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
