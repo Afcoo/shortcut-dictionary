@@ -1,5 +1,5 @@
 # 단축키 사전
-<img width="150" alt="앱 아이콘" src="https://github.com/user-attachments/assets/3cab0afd-e4df-48c7-a003-48588e343cf9" /><br />
+<img width="150" alt="앱 아이콘" src="https://github.com/user-attachments/assets/5aef8a63-08fa-4559-bed0-414a1214aebd" /><br />
 언제 어디서든 원하는 단축키로 사전을 띄우고, 복사 & 붙여넣기까지 한번에
 
 ## 다운로드
