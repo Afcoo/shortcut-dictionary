@@ -9,14 +9,24 @@ struct ColoredBackground: View {
     @AppStorage(SettingKeys.isBackgroundTransparent.rawValue)
     private var isBackgroundTransparent = SettingKeys.isBackgroundTransparent.defaultValue as! Bool
 
+    var color: Color {
+        Color(nsColor: NSColor(hexString: backgroundColor) ?? NSColor.windowBackgroundColor)
+    }
+
     var body: some View {
         if isBackgroundTransparent {
-            Color(nsColor: NSColor(hexString: backgroundColor) ?? NSColor.windowBackgroundColor)
-                .opacity(colorScheme == .dark ? 0.3 : 0.15)
-                .background(Material.thin)
+            if #available(macOS 26.0, *) {
+                Rectangle()
+                    .glassEffect(.regular.tint(color.opacity(0.1)), in: .rect)
+            }
+            else {
+                color
+                    .opacity(colorScheme == .dark ? 0.3 : 0.15)
+                    .background(Material.thin)
+            }
         }
         else {
-            Color(nsColor: NSColor(hexString: backgroundColor) ?? NSColor.windowBackgroundColor)
+            color
         }
     }
 }
