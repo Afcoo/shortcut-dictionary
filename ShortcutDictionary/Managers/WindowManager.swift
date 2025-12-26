@@ -182,7 +182,7 @@ extension WindowManager {
 extension WindowManager {
     func showOnboarding() {
         let window = NSWindow(
-            contentRect: NSRect(x: 0, y: 0, width: 0, height: 0),
+            contentRect: NSRect(x: 0, y: 0, width: 400, height: 248),
             styleMask: [.titled],
             backing: .buffered,
             defer: false
