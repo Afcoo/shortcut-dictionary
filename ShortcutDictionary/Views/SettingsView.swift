@@ -51,7 +51,6 @@ struct SettingsView: View {
                 .tag(4)
         }
         .frame(width: 350, height: viewHeight)
-//        .frame(height: viewHeights[currentView])
         .onDisappear {
             if !WindowManager.shared.dictWindow.isVisible {
                 NSApplication.shared.setActivationPolicy(.prohibited)
