@@ -28,7 +28,8 @@ struct OnboardingView: View {
             content: AnyView(
                 VStack {
                     Text("단축키 사전을 사용해볼까요?")
-                    Spacer().frame(height: 20)
+                        .font(.headline)
+                    Spacer().frame(height: 28)
                 }
                 .fixedSize()
             )
@@ -64,7 +65,7 @@ struct OnboardingView: View {
             // 하단 버튼
             Button(currentPage < onboardingPages.endIndex ? "다음" : "시작하기", action: next)
                 .buttonStyle(NextButton())
-                .padding(.bottom, -titleBarHeight)
+                .padding(.bottom, -titleBarHeight + 22)
         }
         .ignoresSafeArea()
         .frame(width: 400)
@@ -77,6 +78,7 @@ struct OnboardingView: View {
                 self.isReady = true
             }
         }
+        .getViewSize { size in print(size.height) }
     }
 
     func prev() {
@@ -120,7 +122,7 @@ struct OnboardingViewDetails: View {
             Spacer().frame(height: 20)
 
             Text(page.title)
-                .font(.title)
+                .font(.largeTitle)
                 .bold()
 
             Spacer().frame(height: 14)
@@ -134,10 +136,14 @@ struct NextButton: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .padding(0)
-            .frame(width: 60, height: 25)
+            .frame(width: 70, height: 32)
             .background(.blue)
-            .font(.caption2)
+            .font(.callout)
             .foregroundStyle(.white)
             .clipShape(Capsule())
     }
+}
+
+#Preview {
+    OnboardingView()
 }
