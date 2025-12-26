@@ -9,43 +9,39 @@ struct OnboardingPage: Identifiable {
     let systemIcon: String
     let title: String
     let content: AnyView
-    let height: CGFloat
 }
 
 struct OnboardingView: View {
     @AppStorage(SettingKeys.hasCompletedOnboarding.rawValue)
     private var hasCompletedOnboarding = SettingKeys.hasCompletedOnboarding.defaultValue as! Bool
 
-    let maxPage = 2
-    @State private var currentPage = 0
-    @State private var currentHeight: CGFloat = 120
+    @State private var isReady = false
 
-    let onboardingPages = [
+    @State private var titleBarHeight: CGFloat = 0.0
+
+    @State private var currentPage = 0
+
+    @State private var onboardingPages = [
         OnboardingPage(
             systemIcon: "character.book.closed.fill",
             title: "환영합니다!",
             content: AnyView(
-                Text("단축키 사전을 사용해볼까요?")
-            ),
-            height: 260
+                VStack {
+                    Text("단축키 사전을 사용해볼까요?")
+                    Spacer().frame(height: 20)
+                }
+                .fixedSize()
+            )
         ),
         OnboardingPage(
             systemIcon: "keyboard",
             title: "어디서든 단축키로 사전 열기",
-            content: AnyView(
-                ShortcutSettingsView()
-                    .padding(.bottom, -50)
-            ),
-            height: 360
+            content: AnyView(ShortcutSettingsView())
         ),
         OnboardingPage(
             systemIcon: "checkmark.seal",
             title: "준비 완료!",
-            content: AnyView(
-                GeneralSettingsView()
-                    .padding(.bottom, -50)
-            ),
-            height: 330
+            content: AnyView(GeneralSettingsView())
         ),
     ]
 
@@ -57,55 +53,79 @@ struct OnboardingView: View {
                     ToolbarButton(action: prev, systemName: "chevron.backward")
                 }
                 Spacer()
-                if currentPage != maxPage {
+                if currentPage != onboardingPages.endIndex {
                     ToolbarButton(action: { NSApplication.shared.terminate(self) }, systemName: "xmark.circle")
                 }
             }
             .padding(8)
 
-            Image(systemName: onboardingPages[currentPage].systemIcon)
-                .font(.system(size: 60))
-                .foregroundColor(.accentColor)
-
-            Spacer().frame(height: 10)
-
-            Text(onboardingPages[currentPage].title)
-                .font(.title)
-                .bold()
-
-            Spacer().frame(height: 10)
-
-            onboardingPages[currentPage].content
-
-            Spacer()
+            OnboardingViewDetails(page: onboardingPages[currentPage])
 
             // 하단 버튼
-            Button(currentPage < maxPage ? "다음" : "시작하기", action: next)
+            Button(currentPage < onboardingPages.endIndex ? "다음" : "시작하기", action: next)
                 .buttonStyle(NextButton())
-                .padding(.bottom, 20)
+                .padding(.bottom, -titleBarHeight)
         }
+        .ignoresSafeArea()
         .frame(width: 400)
         .background { ColoredBackground().ignoresSafeArea() }
+        .opacity(isReady ? 1 : 0)
+        .getTitleBarHeight { height in
+            self.titleBarHeight = height
+
+            withAnimation {
+                self.isReady = true
+            }
+        }
     }
 
     func prev() {
-        withAnimation(.spring) {
-            currentPage -= 1
-        }
-        WindowManager.shared.resizeOnboarding(width: 400, height: onboardingPages[currentPage].height)
+        changePage(-1)
     }
 
     func next() {
-        if currentPage < 2 {
-            withAnimation(.spring) {
-                currentPage += 1
-                WindowManager.shared.resizeOnboarding(width: 400, height: onboardingPages[currentPage].height)
-            }
+        if currentPage < onboardingPages.endIndex {
+            changePage(1)
         }
         else {
-            hasCompletedOnboarding = true
-            WindowManager.shared.closeOnboarding()
-            WindowManager.shared.showDict()
+            end()
+        }
+    }
+
+    func changePage(_ num: Int) {
+        currentPage += num
+
+        isReady = false
+        withAnimation(.smooth(duration: 1.5)) {
+            self.isReady = true
+        }
+    }
+
+    func end() {
+        hasCompletedOnboarding = true
+        WindowManager.shared.closeOnboarding()
+        WindowManager.shared.showDict()
+    }
+}
+
+struct OnboardingViewDetails: View {
+    let page: OnboardingPage
+
+    var body: some View {
+        VStack {
+            Image(systemName: page.systemIcon)
+                .font(.system(size: 60))
+                .foregroundColor(.accentColor)
+
+            Spacer().frame(height: 20)
+
+            Text(page.title)
+                .font(.title)
+                .bold()
+
+            Spacer().frame(height: 14)
+
+            page.content
         }
     }
 }
