@@ -181,38 +181,28 @@ extension WindowManager {
 // 온보딩 윈도우 관리
 extension WindowManager {
     func showOnboarding() {
-        let window = NSWindow()
-        window.styleMask = [.titled]
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 400, height: 248),
+            styleMask: [.titled],
+            backing: .buffered,
+            defer: false
+        )
         window.isReleasedWhenClosed = true
 
-        let hostingView = NSHostingView(
+        window.contentView = NSHostingView(
             rootView: OnboardingView()
-                .ignoresSafeArea()
         )
-        window.contentView = hostingView
-        window.setContentSize(hostingView.intrinsicContentSize)
-
         window.title = "환영합니다!"
+
         chromeless(window)
         window.backgroundColor = .clear
+
+        window.animationBehavior = .utilityWindow
 
         moveToScreenCenter(window)
         goFront(window)
 
         onboardingWindow = window
-    }
-
-    func resizeOnboarding(width: CGFloat, height: CGFloat) {
-        guard let onboardingWindow else {
-            return
-        }
-        let prevWidth = onboardingWindow.frame.width
-        let prevHeight = onboardingWindow.frame.height
-
-        let _x = onboardingWindow.frame.origin.x + (prevWidth - width) / 2 // 가운데 유지
-        let _y = onboardingWindow.frame.origin.y + prevHeight - height // 아래로 높이 변화가 일어나게 수정
-
-        onboardingWindow.setFrame(NSRect(x: _x, y: _y, width: width, height: height), display: true, animate: true)
     }
 
     func closeOnboarding() {
