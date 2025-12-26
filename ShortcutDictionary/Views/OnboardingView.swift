@@ -54,7 +54,7 @@ struct OnboardingView: View {
                     ToolbarButton(action: prev, systemName: "chevron.backward")
                 }
                 Spacer()
-                if currentPage != onboardingPages.endIndex {
+                if currentPage != onboardingPages.count - 1 {
                     ToolbarButton(action: { NSApplication.shared.terminate(self) }, systemName: "xmark.circle")
                 }
             }
@@ -63,7 +63,7 @@ struct OnboardingView: View {
             OnboardingViewDetails(page: onboardingPages[currentPage])
 
             // 하단 버튼
-            Button(currentPage < onboardingPages.endIndex ? "다음" : "시작하기", action: next)
+            Button(currentPage < onboardingPages.count - 1 ? "다음" : "시작하기", action: next)
                 .buttonStyle(NextButton())
                 .padding(.bottom, -titleBarHeight + 22)
         }
@@ -78,7 +78,6 @@ struct OnboardingView: View {
                 self.isReady = true
             }
         }
-        .getViewSize { size in print(size.height) }
     }
 
     func prev() {
@@ -86,7 +85,7 @@ struct OnboardingView: View {
     }
 
     func next() {
-        if currentPage < onboardingPages.endIndex {
+        if currentPage < onboardingPages.count - 1 {
             changePage(1)
         }
         else {
