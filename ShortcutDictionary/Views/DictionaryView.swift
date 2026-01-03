@@ -13,7 +13,7 @@ struct DictionaryView: View {
         VStack {
             // 툴바
             if isToolbarEnabled {
-                Toolbar()
+                DictToolbar()
                     .accessibilitySortPriority(1)
                 Spacer()
                     .frame(height: _padding)
