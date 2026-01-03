@@ -81,6 +81,7 @@ extension WindowManager {
         dictWindow.setFrameAutosaveName("DictionaryFrame")
 
         dictWindow.backgroundColor = .clear
+        dictWindow.isOpaque = false
 
         chromeless(dictWindow)
         moveToScreenCenter(dictWindow)
@@ -196,6 +197,7 @@ extension WindowManager {
 
         chromeless(window)
         window.backgroundColor = .clear
+        window.isOpaque = false
 
         window.animationBehavior = .utilityWindow
 
