@@ -103,10 +103,7 @@ struct DictToolbarV2: View {
         }
         .padding(8)
         .contentShape(.rect) // 툴바 공간을 클릭 가능하게
-        .contextMenu {
-            Button(action: {})
-                {}
-        }
+        .setDictViewContextMenu() // 툴바 우클릭 시 메뉴 표시
         // TODO: 웹 페이지 맞춰서 색상 설정하기
         .background {}
     }

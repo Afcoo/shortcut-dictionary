@@ -28,37 +28,7 @@ struct DictionaryView: View {
         }
         .padding(_padding)
         .background { ColoredBackground().ignoresSafeArea() }
-        .contextMenu { // Edge 우클릭시 표시
-            Button(action: {
-                isToolbarEnabled.toggle()
-            }) {
-                HStack {
-                    if isToolbarEnabled {
-                        Image(systemName: "checkmark")
-                            .imageScale(.small)
-                    }
-                    Text("툴바 표시")
-                }
-            }
-            .keyboardShortcut("T", modifiers: .command)
-
-            Button("새로 고침") {
-                NotificationCenter.default.post(name: .reloadDict, object: "")
-            }
-            .keyboardShortcut("R", modifiers: .command)
-
-            Button("창 닫기") {
-                WindowManager.shared.closeDict()
-            }
-            .keyboardShortcut("W", modifiers: .command)
-
-            Divider()
-
-            Button("종료") {
-                NSApplication.shared.terminate(self)
-            }
-            .keyboardShortcut("Q", modifiers: .command)
-        }
+        .setDictViewContextMenu() // Edge 우클릭 시 메뉴 표시
     }
 }
 
