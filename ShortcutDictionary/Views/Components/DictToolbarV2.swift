@@ -54,8 +54,8 @@ struct DictToolbarV2: View {
                         )
                         .buttonStyle(.borderless)
                     }
-
-                    Button("사전 종류 관리") {}
+//                    TODO: 새로운 사전 관리 페이지 연결
+//                    Button("사전 종류 관리") {}
                 }
                 .padding(.all, 8)
                 .frame(maxWidth: 180)
@@ -70,24 +70,27 @@ struct DictToolbarV2: View {
 
             Spacer()
 
-            // 뒤로/앞으로 버튼
-            GlassEffectContainer {
-                HStack {
-                    ToolbarButtonV2(
-                        action: {},
-                        systemName: "chevron.left"
-                    )
-                    .glassEffectUnion(id: "bnf", namespace: namespace)
-
-//                    TODO: seperator 추가
-
-                    ToolbarButtonV2(
-                        action: {},
-                        systemName: "chevron.right"
-                    )
-                    .glassEffectUnion(id: "bnf", namespace: namespace)
-                }
-            }
+//            TODO: 뒤로/앞으로 버튼 구현
+//            GlassEffectContainer {
+//                HStack(spacing: 0.0) {
+//                    ToolbarButtonV2(
+//                        action: {},
+//                        systemName: "chevron.left"
+//                    )
+//                    .glassEffectUnion(id: "bnf", namespace: namespace)
+//
+//                    Divider()
+//                        .frame(height: 20)
+//                        .glassEffect()
+//                        .glassEffectUnion(id: "bnf", namespace: namespace)
+//
+//                    ToolbarButtonV2(
+//                        action: {},
+//                        systemName: "chevron.right"
+//                    )
+//                    .glassEffectUnion(id: "bnf", namespace: namespace)
+//                }
+//            }
 
             // 새로고침 버튼
             ToolbarButtonV2(
@@ -104,8 +107,6 @@ struct DictToolbarV2: View {
         .padding(8)
         .contentShape(.rect) // 툴바 공간을 클릭 가능하게
         .setDictViewContextMenu() // 툴바 우클릭 시 메뉴 표시
-        // TODO: 웹 페이지 맞춰서 색상 설정하기
-        .background {}
     }
 }
 
