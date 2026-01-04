@@ -61,7 +61,7 @@ struct DictToolbarV2: View {
                 .frame(maxWidth: 180)
             }
             .buttonStyle(.borderless)
-            .buttonBorderShape(.capsule)
+            .glassEffect(.identity)
             .onHover { isHover in
                 withAnimation {
                     showChevron = isHover
