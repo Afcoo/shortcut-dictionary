@@ -27,7 +27,7 @@ struct AppearanceSettingsView: View {
 
             // 사전 뷰 Padding 조절
             Slider(value: $dictViewPadding, in: 0.0 ... 28.0, step: 4.0) {
-                Text("배경 두꼐 설정")
+                Text("배경 두께 설정")
             }
 
             // 배경 색상
