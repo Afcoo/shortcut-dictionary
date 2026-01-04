@@ -26,6 +26,7 @@ struct DictionaryView: View {
                     .accessibilitySortPriority(2) // 사전에 우선적 포커스
                     .padding([.horizontal, .bottom], dictViewPadding)
                     .padding(.top, (!isLiquidGlassEnabled && isToolbarEnabled) ? 36.0 : dictViewPadding)
+                    .id([isToolbarEnabled, isLiquidGlassEnabled]) // 해당 값이 바뀔 때 뷰 새로고침
             }
 
             // 툴바
