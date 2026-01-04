@@ -23,18 +23,19 @@ struct DictToolbarV2: View {
 
             // 사전 전환 메뉴
             Button(action: { showMenu.toggle() }) {
-                HStack(alignment: .center) {
+                ZStack(alignment: .trailing) {
                     Text(WebDictManager.shared.getDict(selectedDict)?.getName() ?? "error")
                         .lineLimit(1)
-                        .frame(maxWidth: 100)
-                        .fixedSize()
                         .font(.system(size: 14))
                         .foregroundStyle(.primary)
+                        .padding(.horizontal, 8)
+                        .offset(x: showChevron || showMenu ? -6 : 0)
 
                     if showChevron || showMenu {
                         Image(systemName: "chevron.down")
                             .font(.system(size: 12, weight: .bold))
                             .foregroundStyle(.secondary)
+                            .offset(x: 6)
                     }
                 }
             }
@@ -57,6 +58,7 @@ struct DictToolbarV2: View {
                     Button("사전 종류 관리") {}
                 }
                 .padding(.all, 8)
+                .frame(maxWidth: 180)
             }
             .buttonStyle(.borderless)
             .buttonBorderShape(.capsule)
@@ -86,6 +88,12 @@ struct DictToolbarV2: View {
                     .glassEffectUnion(id: "bnf", namespace: namespace)
                 }
             }
+
+            // 새로고침 버튼
+            ToolbarButtonV2(
+                action: { NotificationCenter.default.post(name: .reloadDict, object: "") },
+                systemName: "arrow.trianglehead.clockwise"
+            )
 
             // 설정 버튼
             ToolbarButtonV2(
