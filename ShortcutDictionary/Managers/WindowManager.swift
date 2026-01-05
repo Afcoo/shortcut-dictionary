@@ -215,12 +215,17 @@ extension WindowManager {
         )
         window.title = "환영합니다!"
 
-        chromeless(window)
+        if isLiquidGlassEnabled {
+            window.toolbar = NSToolbar()
+            window.toolbarStyle = .unified
+        }
+
         window.backgroundColor = .clear
         window.isOpaque = false
 
-        window.animationBehavior = .utilityWindow
+        window.animationBehavior = .alertPanel
 
+        chromeless(window)
         moveToScreenCenter(window)
         goFront(window)
 

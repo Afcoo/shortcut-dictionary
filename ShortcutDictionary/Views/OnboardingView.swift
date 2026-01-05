@@ -15,9 +15,8 @@ struct OnboardingView: View {
     @AppStorage(SettingKeys.hasCompletedOnboarding.rawValue)
     private var hasCompletedOnboarding = SettingKeys.hasCompletedOnboarding.defaultValue as! Bool
 
-    @State private var isReady = false
-
-    @State private var titleBarHeight: CGFloat = 0.0
+    @AppStorage(SettingKeys.isLiquidGlassEnabled.rawValue)
+    private var isLiquidGlassEnabled = SettingKeys.isLiquidGlassEnabled.defaultValue as! Bool
 
     @State private var currentPage = 0
 
@@ -26,12 +25,10 @@ struct OnboardingView: View {
             systemIcon: "character.book.closed.fill",
             title: "환영합니다!",
             content: AnyView(
-                VStack {
-                    Text("단축키 사전을 사용해볼까요?")
-                        .font(.headline)
-                    Spacer().frame(height: 28)
-                }
-                .fixedSize()
+                Text("단축키 사전을 사용해볼까요?")
+                    .font(.headline)
+                    .padding(.top, 12)
+                    .padding(.bottom, 48)
             )
         ),
         OnboardingPage(
@@ -47,37 +44,48 @@ struct OnboardingView: View {
     ]
 
     var body: some View {
-        VStack {
+        VStack(spacing: 0.0) {
             // 상단 버튼
             HStack {
-                if currentPage > 0 {
-                    ToolbarButton(action: prev, systemName: "chevron.backward")
+                let _action = currentPage > 0
+                    ? prev
+                    : { NSApplication.shared.terminate(self) }
+
+                let _systemName = currentPage > 0
+                    ? "chevron.backward"
+                    : "xmark"
+
+                if #available(macOS 26.0, *), isLiquidGlassEnabled {
+                    ToolbarButtonV2(action: _action, systemName: _systemName)
                 }
+                else {
+                    ToolbarButton(action: _action, systemName: _systemName)
+                }
+
                 Spacer()
-                if currentPage != onboardingPages.count - 1 {
-                    ToolbarButton(action: { NSApplication.shared.terminate(self) }, systemName: "xmark.circle")
+
+                let nextButton =
+                    Button(currentPage < onboardingPages.count - 1 ? "다음" : "시작하기", action: next)
+
+                if #available(macOS 26.0, *), isLiquidGlassEnabled {
+                    nextButton
+                        .buttonStyle(.glassProminent)
+                        .buttonBorderShape(.capsule)
+                        .controlSize(.extraLarge)
+                }
+                else {
+                    nextButton
+                        .buttonStyle(.borderedProminent)
+                        .controlSize(.large)
                 }
             }
             .padding(8)
 
             OnboardingViewDetails(page: onboardingPages[currentPage])
-
-            // 하단 버튼
-            Button(currentPage < onboardingPages.count - 1 ? "다음" : "시작하기", action: next)
-                .buttonStyle(NextButton())
-                .padding(.bottom, -titleBarHeight + 22)
         }
-        .ignoresSafeArea()
         .frame(width: 400)
-        .background { ColoredBackground().ignoresSafeArea() }
-        .opacity(isReady ? 1 : 0)
-        .getTitleBarHeight { height in
-            self.titleBarHeight = height
-
-            withAnimation {
-                self.isReady = true
-            }
-        }
+        .setViewColoredBackground()
+        .clipShape(RoundedRectangle(cornerRadius: isLiquidGlassEnabled ? 26.0 : 15.0))
     }
 
     func prev() {
@@ -95,11 +103,6 @@ struct OnboardingView: View {
 
     func changePage(_ num: Int) {
         currentPage += num
-
-        isReady = false
-        withAnimation(.smooth(duration: 1.5)) {
-            self.isReady = true
-        }
     }
 
     func end() {
@@ -113,9 +116,9 @@ struct OnboardingViewDetails: View {
     let page: OnboardingPage
 
     var body: some View {
-        VStack {
+        VStack(spacing: 0.0) {
             Image(systemName: page.systemIcon)
-                .font(.system(size: 60))
+                .font(.system(size: 70))
                 .foregroundColor(.accentColor)
 
             Spacer().frame(height: 20)
@@ -123,8 +126,6 @@ struct OnboardingViewDetails: View {
             Text(page.title)
                 .font(.largeTitle)
                 .bold()
-
-            Spacer().frame(height: 14)
 
             page.content
         }
