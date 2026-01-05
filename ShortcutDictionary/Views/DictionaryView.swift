@@ -44,7 +44,7 @@ struct DictionaryView: View {
                 }
             }
         }
-        .background { ColoredBackground().ignoresSafeArea() }
+        .setViewColoredBackground() // 배경 색상 설정
         .setDictViewContextMenu() // Edge 우클릭 시 메뉴 표시
     }
 }
