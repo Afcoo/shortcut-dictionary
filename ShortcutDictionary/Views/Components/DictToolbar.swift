@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct Toolbar: View {
+struct DictToolbar: View {
     @AppStorage(SettingKeys.selectedDict.rawValue)
     private var selectedDict = SettingKeys.selectedDict.defaultValue as! String
 
@@ -100,5 +100,5 @@ struct Toolbar: View {
 }
 
 #Preview {
-    Toolbar()
+    DictToolbar()
 }

@@ -18,6 +18,8 @@ enum SettingKeys: String, CaseIterable {
     // Appearance
     case backgroundColor
     case isBackgroundTransparent
+    case dictViewPadding
+    case isLiquidGlassEnabled
 
     // 사전 종류
     case selectedDict
@@ -43,6 +45,8 @@ enum SettingKeys: String, CaseIterable {
         // Appearance
         case .backgroundColor: return "0xE7E7E7"
         case .isBackgroundTransparent: return true
+        case .dictViewPadding: return if #available(macOS 26.0, *) { 0.0 } else { 8.0 }
+        case .isLiquidGlassEnabled: return if #available(macOS 26.0, *) { true } else { false } // macOS Tahoe에서만 기본 설정
         // 사전 종류
         case .selectedDict: return "daum_eng"
         case .customDictData: return ""

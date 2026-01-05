@@ -5,6 +5,12 @@ struct WebDictView: NSViewRepresentable {
     @AppStorage(SettingKeys.isMobileView.rawValue)
     private var isMobileView = SettingKeys.isMobileView.defaultValue as! Bool
 
+    @AppStorage(SettingKeys.isToolbarEnabled.rawValue)
+    private var isToolbarEnabled = SettingKeys.isToolbarEnabled.defaultValue as! Bool
+
+    @AppStorage(SettingKeys.isLiquidGlassEnabled.rawValue)
+    private var isLiquidGlassEnabled = SettingKeys.isLiquidGlassEnabled.defaultValue as! Bool
+
     let webDict: WebDict
 
     func makeNSView(context: Context) -> WKWebView {
@@ -21,6 +27,11 @@ struct WebDictView: NSViewRepresentable {
         // User-Agent 업데이트
         if isMobileView {
             view.customUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
+        }
+
+        // Liquid Glass 툴바 디자인을 위한 상단 offset
+        if #available(macOS 26.0, *), isToolbarEnabled, isLiquidGlassEnabled {
+            view.obscuredContentInsets = .init(top: 52, left: 0, bottom: 0, right: 0)
         }
 
         if let reqUrl = URL(string: webDict.url),

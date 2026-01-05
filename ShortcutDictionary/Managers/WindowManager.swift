@@ -11,6 +11,9 @@ class WindowManager {
     @AppStorage(SettingKeys.isOutClickToClose.rawValue)
     private var isOutClickToClose = SettingKeys.isOutClickToClose.defaultValue as! Bool
 
+    @AppStorage(SettingKeys.isLiquidGlassEnabled.rawValue)
+    private var isLiquidGlassEnabled = SettingKeys.isLiquidGlassEnabled.defaultValue as! Bool
+
     static var shared = WindowManager()
 
     let dictWindow: NSWindow
@@ -81,6 +84,14 @@ extension WindowManager {
         dictWindow.setFrameAutosaveName("DictionaryFrame")
 
         dictWindow.backgroundColor = .clear
+        dictWindow.isOpaque = false
+
+        dictWindow.isMovableByWindowBackground = true
+
+        if isLiquidGlassEnabled {
+            dictWindow.toolbarStyle = .unified
+            dictWindow.toolbar = NSToolbar()
+        }
 
         chromeless(dictWindow)
         moveToScreenCenter(dictWindow)
@@ -176,6 +187,16 @@ extension WindowManager {
             dictWindow.level = .normal
         }
     }
+
+    // 사전 창의 Liquid Glass 스타일 변경
+    func setDictWindowLiquidGlass(_ tf: Bool) {
+        if tf {
+            dictWindow.toolbar = NSToolbar()
+        }
+        else {
+            dictWindow.toolbar = nil
+        }
+    }
 }
 
 // 온보딩 윈도우 관리
@@ -194,11 +215,19 @@ extension WindowManager {
         )
         window.title = "환영합니다!"
 
-        chromeless(window)
+        if isLiquidGlassEnabled {
+            window.toolbar = NSToolbar()
+            window.toolbarStyle = .unified
+        }
+
         window.backgroundColor = .clear
+        window.isOpaque = false
 
-        window.animationBehavior = .utilityWindow
+        window.animationBehavior = .alertPanel
+        
+        window.isMovableByWindowBackground = true
 
+        chromeless(window)
         moveToScreenCenter(window)
         goFront(window)
 
