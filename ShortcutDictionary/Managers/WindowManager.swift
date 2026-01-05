@@ -224,6 +224,8 @@ extension WindowManager {
         window.isOpaque = false
 
         window.animationBehavior = .alertPanel
+        
+        window.isMovableByWindowBackground = true
 
         chromeless(window)
         moveToScreenCenter(window)
