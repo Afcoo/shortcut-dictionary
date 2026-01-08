@@ -3,14 +3,14 @@ import SwiftUI
 class WebDictManager {
     static let shared = WebDictManager()
 
-    private var customDict = WebDict(
+    var customDict = WebDict(
         id: "custom",
         name: "커스텀 사전",
         url: "https://www.google.com",
         script: ""
     )
 
-    var activatedDicts = ["daum_eng"]
+    var activatedDictIDs: Set<String> = ["daum_eng"]
 
     private init() {
         self.loadCustomDict()
@@ -20,13 +20,15 @@ class WebDictManager {
     deinit {
         self.saveActivatedDicts()
     }
+}
 
+extension WebDictManager {
     func loadCustomDict() {
-        guard let savedCustomDict = UserDefaults.standard.data(forKey: SettingKeys.customDictData.rawValue),
-              let loadedCustomDict = try? JSONDecoder().decode(WebDict.self, from: savedCustomDict)
+        guard let data = UserDefaults.standard.data(forKey: SettingKeys.customDictData.rawValue),
+              let decoded = try? JSONDecoder().decode(WebDict.self, from: data)
         else { return }
 
-        self.customDict = loadedCustomDict
+        self.customDict = decoded
     }
 
     func saveCustomDict(_ dict: WebDict) {
@@ -38,58 +40,62 @@ class WebDictManager {
     }
 
     func loadActivatedDicts() {
-        guard let savedActivatedDicts = UserDefaults.standard.data(forKey: SettingKeys.activatedDicts.rawValue),
-              let loadedActivatedDicts = try? JSONDecoder().decode([String].self, from: savedActivatedDicts)
+        guard let data = UserDefaults.standard.data(forKey: SettingKeys.activatedDicts.rawValue),
+              let decoded = try? JSONDecoder().decode([String].self, from: data)
         else { return }
 
-        self.activatedDicts = loadedActivatedDicts
-
-        if self.activatedDicts.isEmpty { // 활성 사전이 0개인경우 다음 영어사전 강제 추가
-            self.activatedDicts.append("daum_eng")
+        if decoded.isEmpty {
+            self.activatedDictIDs = ["daum_eng"] // 활성 사전이 0개인경우 다음 영어사전 강제 추가
+        } else {
+            self.activatedDictIDs = Set(decoded)
         }
     }
 
     func saveActivatedDicts() {
-        if let encoded = try? JSONEncoder().encode(activatedDicts) {
+        if let encoded = try? JSONEncoder().encode(activatedDictIDs) {
             UserDefaults.standard.set(encoded, forKey: SettingKeys.activatedDicts.rawValue)
         }
     }
+}
 
-    func getActivation(dict: WebDict) -> Bool {
-        return self.activatedDicts.contains(dict.id)
+extension WebDictManager {
+    func isActivated(id: String) -> Bool {
+        return self.activatedDictIDs.contains(id)
     }
 
-    func addActivation(dict: WebDict) -> Bool {
-        if self.activatedDicts.contains(dict.id) || !self.getAllDicts().contains(dict) {
-            return false
+    func setActivation(_ to: Bool, id: String) {
+        if to {
+            self.activatedDictIDs.insert(id)
+        } else {
+            self.activatedDictIDs.remove(id)
         }
 
-        self.activatedDicts.append(dict.id)
         self.saveActivatedDicts()
-        return true
     }
+}
 
-    func removeActivation(dict: WebDict) -> Bool {
-        if !self.activatedDicts.contains(dict.id) || !self.getAllDicts().contains(dict) {
-            return false
-        }
-
-        self.activatedDicts.removeAll { $0 == dict.id }
-        self.saveActivatedDicts()
-        return true
-    }
-
-    func getDict(_ dictId: String) -> WebDict? {
-        return self.getAllDicts().first { $0.id == dictId }
+extension WebDictManager {
+    func getDict(_ id: String) -> WebDict? {
+        return self.getAllSelectableDicts().first { $0.id == id }
     }
 
     func getAllDicts() -> [WebDict] {
-        let allDicts = defaultWebDicts + [self.customDict]
+        return DefaultWebDicts.all + [self.customDict]
+    }
 
-        return allDicts
+    func getAllSelectableDicts() -> [WebDict] {
+        let filtered = DefaultWebDicts.all.flatMap { rootDict in
+            rootDict.filterRecursively { dict in !dict.isEmptyParent }
+        }
+
+        return filtered + [self.customDict]
     }
 
     func getActivatedDicts() -> [WebDict] {
-        return self.getAllDicts().filter { self.activatedDicts.contains($0.id) }
+        let allDicts = self.getAllSelectableDicts()
+
+        return allDicts.filter { dict in
+            self.activatedDictIDs.contains(dict.id)
+        }
     }
 }

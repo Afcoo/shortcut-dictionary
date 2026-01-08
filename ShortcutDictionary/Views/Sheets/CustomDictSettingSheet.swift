@@ -37,10 +37,11 @@ struct CustomDictSettingSheet: View {
         }
         .frame(width: 500)
         .onAppear {
-            if let dict = WebDictManager.shared.getDict("custom") {
-                dictUrl = dict.url
-                dictScript = dict.script
-            }
+            WebDictManager.shared.loadCustomDict()
+            let customDict = WebDictManager.shared.customDict
+
+            dictUrl = customDict.url
+            dictScript = customDict.script
         }
         .onDisappear {
             let webDict = WebDict(
