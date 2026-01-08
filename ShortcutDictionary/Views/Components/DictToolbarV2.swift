@@ -24,7 +24,7 @@ struct DictToolbarV2: View {
             // 사전 전환 메뉴
             Button(action: { showMenu.toggle() }) {
                 ZStack(alignment: .trailing) {
-                    Text(WebDictManager.shared.getDict(selectedDict)?.getName() ?? "error")
+                    Text(WebDictManager.shared.getDict(selectedDict)?.wrappedName ?? "error")
                         .lineLimit(1)
                         .font(.system(size: 14))
                         .foregroundStyle(.primary)
@@ -46,7 +46,7 @@ struct DictToolbarV2: View {
                 VStack {
                     ForEach(WebDictManager.shared.getActivatedDicts(), id: \.self) { dict in
                         Button(
-                            dict.getName(),
+                            dict.wrappedName,
                             action: {
                                 selectedDict = dict.id
                                 showMenu.toggle()

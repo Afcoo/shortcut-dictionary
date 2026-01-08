@@ -1,8 +1,12 @@
 import SwiftUI
 
-struct WebDict: Hashable, Codable {
+struct WebDict: Hashable, Codable, Identifiable {
     var id: String // 고유 id
     var name: String? // 표시 이름
+
+    var wrappedName: String {
+        self.name ?? self.id
+    }
 
     var url: String
 
@@ -12,10 +16,6 @@ struct WebDict: Hashable, Codable {
     // 검색 단어 전/후 추가 문자열
     var prefix: String?
     var postfix: String?
-
-    func getName() -> String {
-        return self.name ?? self.id
-    }
 
     func getPasteScript(value: String, fastSearch: Bool = false) -> String? {
         return """

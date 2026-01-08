@@ -25,7 +25,7 @@ struct DictToolbar: View {
             // 사전 전환 메뉴
             Button(action: { showMenu.toggle() }) {
                 HStack {
-                    Text(WebDictManager.shared.getDict(selectedDict)?.getName() ?? "error")
+                    Text(WebDictManager.shared.getDict(selectedDict)?.wrappedName ?? "error")
                         .lineLimit(1)
 
                     Image(systemName: "chevron.down")
@@ -41,7 +41,7 @@ struct DictToolbar: View {
                 VStack {
                     ForEach(WebDictManager.shared.getActivatedDicts(), id: \.self) { dict in
                         Button(
-                            dict.getName(),
+                            dict.wrappedName,
                             action: {
                                 selectedDict = dict.id
                                 showMenu.toggle()
