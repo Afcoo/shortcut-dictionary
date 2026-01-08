@@ -1,6 +1,6 @@
 import SwiftUI
 
-class WebDictManager {
+class WebDictManager: ObservableObject {
     @AppStorage(SettingKeys.selectedDict.rawValue)
     private var selectedDict = SettingKeys.selectedDict.defaultValue as! String
 
@@ -13,7 +13,7 @@ class WebDictManager {
         script: ""
     )
 
-    var activatedDictIDs: Set<String> = ["daum_eng"]
+    @Published var activatedDictIDs: Set<String> = ["daum_eng"]
 
     private init() {
         self.loadCustomDict()

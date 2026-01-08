@@ -8,6 +8,8 @@ struct DictActivationSettingSheet: View {
 
     @State private var showCustomDictSetting = false
 
+    @ObservedObject var webDictManager = WebDictManager.shared
+
     init(isPresented: Binding<Bool>) {
         _isPresented = isPresented
     }
@@ -25,13 +27,13 @@ struct DictActivationSettingSheet: View {
                 Spacer()
             }
 
-            List(WebDictManager.shared.getAllDicts(), children: \.children) { dict in
+            List(webDictManager.getAllDicts(), children: \.children) { dict in
                 if dict.children == nil {
                     Toggle(dict.wrappedName, isOn: Binding(
-                        get: { WebDictManager.shared.isActivated(id: dict.id) },
-                        set: { value in WebDictManager.shared.setActivation(value, id: dict.id) }
+                        get: { webDictManager.isActivated(id: dict.id) },
+                        set: { value in webDictManager.setActivation(value, id: dict.id) }
                     ))
-                    .disabled(WebDictManager.shared.isActivated(id: dict.id) && WebDictManager.shared.activatedDictIDs.count <= 1)
+                    .disabled(webDictManager.isActivated(id: dict.id) && webDictManager.activatedDictIDs.count <= 1)
                 }
                 else {
                     Text(dict.wrappedName)
