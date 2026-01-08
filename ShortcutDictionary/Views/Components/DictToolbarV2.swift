@@ -8,6 +8,7 @@ struct DictToolbarV2: View {
 
     @State private var showChevron = false
     @State private var showMenu = false
+    @State private var showDictActivationSetting = false
 
     @Namespace private var namespace
 
@@ -54,8 +55,16 @@ struct DictToolbarV2: View {
                         )
                         .buttonStyle(.borderless)
                     }
-//                    TODO: 새로운 사전 관리 페이지 연결
-//                    Button("사전 종류 관리") {}
+
+                    Button("사전 종류 관리") {
+//                        showMenu = false
+                        showDictActivationSetting = true
+                    }
+                    .buttonStyle(.glass)
+                    .buttonBorderShape(.capsule)
+                    .sheet(isPresented: $showDictActivationSetting) {
+                        DictActivationSettingSheet(isPresented: $showDictActivationSetting)
+                    }
                 }
                 .padding(.all, 8)
                 .frame(maxWidth: 180)
