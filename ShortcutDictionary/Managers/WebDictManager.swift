@@ -1,6 +1,9 @@
 import SwiftUI
 
 class WebDictManager {
+    @AppStorage(SettingKeys.selectedDict.rawValue)
+    private var selectedDict = SettingKeys.selectedDict.defaultValue as! String
+
     static let shared = WebDictManager()
 
     var customDict = WebDict(
@@ -68,6 +71,10 @@ extension WebDictManager {
             self.activatedDictIDs.insert(id)
         } else {
             self.activatedDictIDs.remove(id)
+
+            if id == self.selectedDict {
+                self.selectedDict = self.activatedDictIDs.first ?? ""
+            }
         }
 
         self.saveActivatedDicts()

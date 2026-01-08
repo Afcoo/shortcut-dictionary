@@ -1,73 +1,52 @@
 import SwiftUI
 
 struct DictActivationSettingSheet: View {
-    @AppStorage(SettingKeys.selectedDict.rawValue)
-    private var selectedDict = SettingKeys.selectedDict.defaultValue as! String
+    @AppStorage(SettingKeys.isLiquidGlassEnabled.rawValue)
+    private var isLiquidGlassEnabled = SettingKeys.isLiquidGlassEnabled.defaultValue as! Bool
 
     @Binding var isPresented: Bool
 
     @State private var showCustomDictSetting = false
 
-    @State private var isOns: [Bool] = []
-
-    let dictManager = WebDictManager.shared
-    let allDicts = WebDictManager.shared.getAllDicts()
-
     init(isPresented: Binding<Bool>) {
         _isPresented = isPresented
-        _isOns = State(initialValue: allDicts.map { dict in
-            dictManager.getActivation(dict: dict)
-        })
     }
 
     var body: some View {
         VStack {
             HStack {
-                Text("사전 종류 관리")
-                    .font(.headline)
-                    .foregroundColor(Color(.tertiaryLabelColor))
+                if #available(macOS 26.0, *), isLiquidGlassEnabled {
+                    ToolbarButtonV2(action: { isPresented = false }, systemName: "xmark")
+                }
+                else {
+                    ToolbarButton(action: { isPresented = false }, systemName: "xmark.circle")
+                }
+
                 Spacer()
-                ToolbarButton(action: { isPresented = false }, systemName: "xmark.circle")
             }
-            .padding(.horizontal, 8)
-            .padding(.top, 8)
 
-            List {
-                ForEach(allDicts.indices, id: \.self) { index in
-                    let dict = allDicts[index]
-
-                    Toggle(
-                        dict.getName(),
-                        isOn: $isOns[index]
-                    )
-                    .onChange(of: isOns[index]) { toValue in
-
-                        if toValue {
-                            dictManager.addActivation(dict: dict)
-//                            selectedDict = allDicts[index].id
-                        }
-                        else {
-                            dictManager.removeActivation(dict: dict)
-
-                            selectedDict = allDicts[isOns.firstIndex(of: true) ?? 0].id
-                        }
-
-                        // 에러 처리?
-                    }
-                    // 활성화된 사전이 1개 뿐일 때 비활성화 하지 못하게 방지
-                    .disabled(isOns[index] == true && dictManager.activatedDicts.count <= 1)
+            List(WebDictManager.shared.getAllDicts(), children: \.children) { dict in
+                if dict.children == nil {
+                    Toggle(dict.wrappedName, isOn: Binding(
+                        get: { WebDictManager.shared.isActivated(id: dict.id) },
+                        set: { value in WebDictManager.shared.setActivation(value, id: dict.id) }
+                    ))
+                    .disabled(WebDictManager.shared.isActivated(id: dict.id) && WebDictManager.shared.activatedDictIDs.count <= 1)
+                }
+                else {
+                    Text(dict.wrappedName)
                 }
             }
 
             Button("커스텀 사전 설정") {
                 showCustomDictSetting = true
             }
-            
-            .padding(.bottom, 12)
             .sheet(isPresented: $showCustomDictSetting) {
                 CustomDictSettingSheet(isPresented: $showCustomDictSetting)
             }
         }
-        .frame(width: 200, height: 250)
+        .padding(8)
+        .frame(width: 250, height: 350)
+        .setViewColoredBackground()
     }
 }
