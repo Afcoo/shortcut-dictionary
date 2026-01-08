@@ -29,7 +29,7 @@ struct DictionarySettingsView: View {
             // 사전 선택
             Picker("사전 종류", selection: $selectedDict) {
                 ForEach(WebDictManager.shared.getActivatedDicts(), id: \.self) { dict in
-                    Text(dict.getName())
+                    Text(dict.wrappedName)
                         .tag(dict.id)
                 }
             }

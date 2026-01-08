@@ -8,6 +8,7 @@ struct DictToolbarV2: View {
 
     @State private var showChevron = false
     @State private var showMenu = false
+    @State private var showDictActivationSetting = false
 
     @Namespace private var namespace
 
@@ -24,7 +25,7 @@ struct DictToolbarV2: View {
             // 사전 전환 메뉴
             Button(action: { showMenu.toggle() }) {
                 ZStack(alignment: .trailing) {
-                    Text(WebDictManager.shared.getDict(selectedDict)?.getName() ?? "error")
+                    Text(WebDictManager.shared.getDict(selectedDict)?.wrappedName ?? "error")
                         .lineLimit(1)
                         .font(.system(size: 14))
                         .foregroundStyle(.primary)
@@ -46,7 +47,7 @@ struct DictToolbarV2: View {
                 VStack {
                     ForEach(WebDictManager.shared.getActivatedDicts(), id: \.self) { dict in
                         Button(
-                            dict.getName(),
+                            dict.wrappedName,
                             action: {
                                 selectedDict = dict.id
                                 showMenu.toggle()
@@ -54,8 +55,13 @@ struct DictToolbarV2: View {
                         )
                         .buttonStyle(.borderless)
                     }
-//                    TODO: 새로운 사전 관리 페이지 연결
-//                    Button("사전 종류 관리") {}
+
+                    Button("사전 종류 관리") {
+//                        showMenu = false
+                        showDictActivationSetting = true
+                    }
+                    .buttonStyle(.glass)
+                    .buttonBorderShape(.capsule)
                 }
                 .padding(.all, 8)
                 .frame(maxWidth: 180)
@@ -107,6 +113,9 @@ struct DictToolbarV2: View {
         .padding(8)
         .contentShape(.rect) // 툴바 공간을 클릭 가능하게
         .setDictViewContextMenu() // 툴바 우클릭 시 메뉴 표시
+        .sheet(isPresented: $showDictActivationSetting) {
+            DictActivationSettingSheet(isPresented: $showDictActivationSetting)
+        }
     }
 }
 

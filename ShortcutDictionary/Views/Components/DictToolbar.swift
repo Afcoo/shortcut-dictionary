@@ -25,7 +25,7 @@ struct DictToolbar: View {
             // 사전 전환 메뉴
             Button(action: { showMenu.toggle() }) {
                 HStack {
-                    Text(WebDictManager.shared.getDict(selectedDict)?.getName() ?? "error")
+                    Text(WebDictManager.shared.getDict(selectedDict)?.wrappedName ?? "error")
                         .lineLimit(1)
 
                     Image(systemName: "chevron.down")
@@ -41,7 +41,7 @@ struct DictToolbar: View {
                 VStack {
                     ForEach(WebDictManager.shared.getActivatedDicts(), id: \.self) { dict in
                         Button(
-                            dict.getName(),
+                            dict.wrappedName,
                             action: {
                                 selectedDict = dict.id
                                 showMenu.toggle()
@@ -49,13 +49,10 @@ struct DictToolbar: View {
                         )
                         .buttonStyle(.borderless)
                     }
-                    
-                        Button("사전 종류 관리") {
-                            showDictActivationSetting = true
-                        }
-                        .sheet(isPresented: $showDictActivationSetting) {
-                            DictActivationSettingSheet(isPresented: $showDictActivationSetting)
-                        }
+
+                    Button("사전 종류 관리") {
+                        showDictActivationSetting = true
+                    }
                 }
                 .padding(.all, 8)
             }
@@ -79,6 +76,9 @@ struct DictToolbar: View {
                 action: { WindowManager.shared.showSettings() },
                 systemName: "gear.circle"
             )
+        }
+        .sheet(isPresented: $showDictActivationSetting) {
+            DictActivationSettingSheet(isPresented: $showDictActivationSetting)
         }
     }
 //
