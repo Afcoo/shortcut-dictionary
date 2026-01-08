@@ -62,9 +62,6 @@ struct DictToolbarV2: View {
                     }
                     .buttonStyle(.glass)
                     .buttonBorderShape(.capsule)
-                    .sheet(isPresented: $showDictActivationSetting) {
-                        DictActivationSettingSheet(isPresented: $showDictActivationSetting)
-                    }
                 }
                 .padding(.all, 8)
                 .frame(maxWidth: 180)
@@ -116,6 +113,9 @@ struct DictToolbarV2: View {
         .padding(8)
         .contentShape(.rect) // 툴바 공간을 클릭 가능하게
         .setDictViewContextMenu() // 툴바 우클릭 시 메뉴 표시
+        .sheet(isPresented: $showDictActivationSetting) {
+            DictActivationSettingSheet(isPresented: $showDictActivationSetting)
+        }
     }
 }
 

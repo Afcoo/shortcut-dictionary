@@ -49,13 +49,10 @@ struct DictToolbar: View {
                         )
                         .buttonStyle(.borderless)
                     }
-                    
-                        Button("사전 종류 관리") {
-                            showDictActivationSetting = true
-                        }
-                        .sheet(isPresented: $showDictActivationSetting) {
-                            DictActivationSettingSheet(isPresented: $showDictActivationSetting)
-                        }
+
+                    Button("사전 종류 관리") {
+                        showDictActivationSetting = true
+                    }
                 }
                 .padding(.all, 8)
             }
@@ -79,6 +76,9 @@ struct DictToolbar: View {
                 action: { WindowManager.shared.showSettings() },
                 systemName: "gear.circle"
             )
+        }
+        .sheet(isPresented: $showDictActivationSetting) {
+            DictActivationSettingSheet(isPresented: $showDictActivationSetting)
         }
     }
 //
