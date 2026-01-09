@@ -12,7 +12,7 @@ struct ShortcutSettingsView: View {
     @AppStorage(SettingKeys.isFastSearchEnabled.rawValue)
     private var isFastSearchEnabled = SettingKeys.isFastSearchEnabled.defaultValue as! Bool
 
-    let accessEnabled = AXIsProcessTrusted() // 손쉬운 사용 권한 확인
+    @State var accessEnabled = AXIsProcessTrusted() // 손쉬운 사용 권한 유무
 
     var body: some View {
         Form {
@@ -45,6 +45,14 @@ struct ShortcutSettingsView: View {
                 }
             }
             .disabled(!isGlobalShortcutEnabled)
+            .onChange(of: isCopyPasteEnabled) { value in
+                // 처음 활성화 시 빈 키 입력을 발생시켜 손쉬운 사용 권한 설정 팝업 표시
+                if value { ShortcutManager.shared.sendEmptyCommand() }
+            }
+            // 앱이 다시 Focus 되었을 때 손쉬운 사용 권한 재확인
+            .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in
+                self.accessEnabled = AXIsProcessTrusted()
+            }
 
             // 빠른 검색 활성화 여부
             Toggle(isOn: $isFastSearchEnabled) {

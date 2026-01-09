@@ -124,4 +124,12 @@ class ShortcutManager {
 
         return true
     }
+
+    func sendEmptyCommand() {
+        let source = CGEventSource(stateID: .hidSystemState)
+
+        let event = CGEvent(keyboardEventSource: source, virtualKey: 0x37, keyDown: false)
+
+        event?.post(tap: .cghidEventTap)
+    }
 }
