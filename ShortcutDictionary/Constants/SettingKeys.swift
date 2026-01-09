@@ -32,7 +32,7 @@ enum SettingKeys: String, CaseIterable {
     var defaultValue: Any {
         switch self {
         case .isGlobalShortcutEnabled: return false
-        case .isCopyPasteEnabled: return true
+        case .isCopyPasteEnabled: return false
         case .isMenuItemEnabled: return true
         case .isAlwaysOnTop: return false
         case .isToolbarEnabled: return true
