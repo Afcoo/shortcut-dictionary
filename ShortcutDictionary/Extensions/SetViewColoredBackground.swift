@@ -2,13 +2,13 @@ import SwiftUI
 
 extension View {
     @ViewBuilder
-    func setViewColoredBackground(shape: some Shape = .rect) -> some View {
+    func setViewColoredBackground<S: Shape>(shape: S = .rect) -> some View {
         modifier(SetViewColoredBackground(shape: shape))
     }
 }
 
-struct SetViewColoredBackground: ViewModifier {
-    var shape: any Shape
+struct SetViewColoredBackground<S: Shape>: ViewModifier {
+    var shape: S
 
     @Environment(\.colorScheme) var colorScheme
 
