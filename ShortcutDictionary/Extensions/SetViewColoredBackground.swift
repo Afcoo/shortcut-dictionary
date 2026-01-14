@@ -32,10 +32,15 @@ struct SetViewColoredBackground: ViewModifier {
         else {
             content
                 .background {
-                    color
-                        .opacity(colorScheme == .dark ? 0.3 : 0.15)
-                        .background(Material.thin)
-                        .ignoresSafeArea()
+                    if isBackgroundTransparent {
+                        color
+                            .opacity(colorScheme == .dark ? 0.3 : 0.15)
+                            .background(Material.thin)
+                            .ignoresSafeArea()
+                    }
+                    else {
+                        color
+                    }
                 }
         }
     }
