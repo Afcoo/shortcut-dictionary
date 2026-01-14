@@ -17,6 +17,7 @@ enum SettingKeys: String, CaseIterable {
 
     // Appearance
     case backgroundColor
+    case backgroundDarkColor
     case isBackgroundTransparent
     case dictViewPadding
     case isLiquidGlassEnabled
@@ -43,7 +44,8 @@ enum SettingKeys: String, CaseIterable {
         // 빠른 검색 활성화
         case .isFastSearchEnabled: return false
         // Appearance
-        case .backgroundColor: return "0xE7E7E7"
+        case .backgroundColor: return "0xFFFFFF" // 라이트 모드 배경 색상
+        case .backgroundDarkColor: return "0x000000" // 다크 모드 배경 색상
         case .isBackgroundTransparent: return true
         case .dictViewPadding: return if #available(macOS 26.0, *) { 0.0 } else { 8.0 }
         case .isLiquidGlassEnabled: return if #available(macOS 26.0, *) { true } else { false } // macOS Tahoe에서만 기본 설정
