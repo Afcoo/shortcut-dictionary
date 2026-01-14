@@ -133,6 +133,6 @@ struct ToolbarButtonV2: View {
         }
         .buttonStyle(.accessoryBar)
         .buttonBorderShape(.circle)
-        .glassEffect()
+        .setViewColoredBackground(shape: .circle)
     }
 }
