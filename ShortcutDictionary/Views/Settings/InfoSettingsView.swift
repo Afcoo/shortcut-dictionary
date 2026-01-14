@@ -103,7 +103,7 @@ struct InfoView: View {
 
             Spacer().frame(height: 10)
 
-            Text("ⓒ 2024-2025. Afcoo. All rights reserved.")
+            Text("ⓒ 2024-2026. Afcoo. All rights reserved.")
         }
     }
 
