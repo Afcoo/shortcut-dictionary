@@ -2,6 +2,14 @@ import SwiftUI
 import WebKit
 
 struct WebDictView: NSViewRepresentable {
+    @Environment(\.colorScheme) var colorScheme // 다크모드 변경 감지용
+
+    @AppStorage(SettingKeys.backgroundColor.rawValue)
+    private var backgroundColor = SettingKeys.backgroundColor.defaultValue as! String
+
+    @AppStorage(SettingKeys.backgroundDarkColor.rawValue)
+    private var backgroundDarkColor = SettingKeys.backgroundDarkColor.defaultValue as! String
+
     @AppStorage(SettingKeys.isMobileView.rawValue)
     private var isMobileView = SettingKeys.isMobileView.defaultValue as! Bool
 
@@ -33,6 +41,12 @@ struct WebDictView: NSViewRepresentable {
         if #available(macOS 26.0, *), isToolbarEnabled, isLiquidGlassEnabled {
             view.obscuredContentInsets = .init(top: 52, left: 0, bottom: 0, right: 0)
         }
+
+        // Liquid Glass 툴바 여백 색상 설정
+        view.underPageBackgroundColor =
+            colorScheme == .light
+                ? NSColor(Color(hexString: backgroundColor))
+                : NSColor(Color(hexString: backgroundDarkColor))
 
         if let reqUrl = URL(string: webDict.url),
            reqUrl != view.url
