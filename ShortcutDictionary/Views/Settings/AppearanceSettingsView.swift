@@ -7,6 +7,9 @@ struct AppearanceSettingsView: View {
     @AppStorage(SettingKeys.backgroundColor.rawValue)
     private var backgroundColor = SettingKeys.backgroundColor.defaultValue as! String
 
+    @AppStorage(SettingKeys.backgroundDarkColor.rawValue)
+    private var backgroundDarkColor = SettingKeys.backgroundDarkColor.defaultValue as! String
+
     @AppStorage(SettingKeys.isBackgroundTransparent.rawValue)
     private var isBackgroundTransparent = SettingKeys.isBackgroundTransparent.defaultValue as! Bool
 
@@ -15,8 +18,6 @@ struct AppearanceSettingsView: View {
 
     @AppStorage(SettingKeys.isLiquidGlassEnabled.rawValue)
     private var isLiquidGlassEnabled = SettingKeys.isLiquidGlassEnabled.defaultValue as! Bool
-
-    @State private var bgColor = NSColor.windowBackgroundColor
 
     var body: some View {
         Form {
@@ -34,18 +35,47 @@ struct AppearanceSettingsView: View {
             HStack {
                 Text("배경 색상")
                 Spacer()
-                ToolbarButton(
-                    action: { bgColor = NSColor.windowBackgroundColor }, // 배경 색상 리셋
-                    systemName: "arrow.trianglehead.2.clockwise",
-                    scale: .medium
-                )
-                ColorWell(selectedColor: $bgColor)
-                    .frame(maxWidth: 40)
-                    .onAppear {
-                        bgColor = NSColor(hexString: backgroundColor) ?? NSColor.windowBackgroundColor
+
+                // 리셋 버튼
+                Button(
+                    action: {
+                        backgroundColor = SettingKeys.backgroundColor.defaultValue as! String
+                        backgroundDarkColor = SettingKeys.backgroundDarkColor.defaultValue as! String
+                    },
+                    label: {
+                        Image(systemName: "arrow.trianglehead.2.clockwise")
                     }
-                    .onChange(of: bgColor) { value in
-                        backgroundColor = value.hexString
+                )
+                .buttonStyle(.borderless)
+
+                // 라이트 모드 색상 선택
+                ColorPicker("라이트 모드 색상",
+                            selection: Binding(
+                                get: { Color(hexString: backgroundColor) },
+                                set: { newColor in backgroundColor = newColor.toHex() }
+                            ),
+                            supportsOpacity: false)
+                    .labelsHidden()
+                    .overlay {
+                        Image(systemName: "sun.max.fill")
+                            .foregroundColor(.init(white: 0.2))
+                            .font(.system(size: 14))
+                            .allowsHitTesting(false)
+                    }
+
+                // 다크 모드 색상 선택
+                ColorPicker("다크 모드 색상",
+                            selection: Binding(
+                                get: { Color(hexString: backgroundDarkColor) },
+                                set: { newColor in backgroundDarkColor = newColor.toHex() }
+                            ),
+                            supportsOpacity: false)
+                    .labelsHidden()
+                    .overlay {
+                        Image(systemName: "moon.fill")
+                            .foregroundColor(.init(white: 0.9))
+                            .font(.system(size: 10))
+                            .allowsHitTesting(false)
                     }
             }
 
