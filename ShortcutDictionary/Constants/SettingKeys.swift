@@ -10,6 +10,11 @@ enum SettingKeys: String, CaseIterable {
     case isOutClickToClose = "enable_close_with_out_click"
     case isShowOnMousePos = "enable_show_on_mouse_position"
 
+    // 마우스 위치에 사전 표시 상세 설정
+    case dictWindowCursorPlacement
+    case dictWindowCursorGap
+    case isDictWindowKeepInScreen
+
     // 빠른 검색 활성화
     case isFastSearchEnabled
 
@@ -40,6 +45,9 @@ enum SettingKeys: String, CaseIterable {
         case .isEscToClose: return true
         case .isOutClickToClose: return true
         case .isShowOnMousePos: return true
+        case .dictWindowCursorPlacement: return DictWindowCursorPlacement.center.rawValue
+        case .dictWindowCursorGap: return 12.0
+        case .isDictWindowKeepInScreen: return true
         case .hasCompletedOnboarding: return false
         // 빠른 검색 활성화
         case .isFastSearchEnabled: return false
@@ -70,5 +78,34 @@ extension UserDefaults {
 
     func resetKey(_ key: SettingKeys) {
         removeObject(forKey: key.rawValue)
+    }
+}
+
+enum DictWindowCursorPlacement: String, CaseIterable, Identifiable {
+    case topLeading
+    case top
+    case topTrailing
+    case leading
+    case center
+    case trailing
+    case bottomLeading
+    case bottom
+    case bottomTrailing
+
+    var id: Self { self }
+
+    var displayName: String {
+        switch self {
+        // displayName is where the window appears relative to cursor
+        case .topLeading: return "오른쪽 아래"
+        case .top: return "아래"
+        case .topTrailing: return "왼쪽 아래"
+        case .leading: return "오른쪽"
+        case .center: return "가운데"
+        case .trailing: return "왼쪽"
+        case .bottomLeading: return "오른쪽 위"
+        case .bottom: return "위"
+        case .bottomTrailing: return "왼쪽 위"
+        }
     }
 }
