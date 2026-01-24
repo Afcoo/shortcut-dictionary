@@ -8,6 +8,15 @@ class WindowManager {
     @AppStorage(SettingKeys.isShowOnMousePos.rawValue)
     private var isShowOnMousePos = SettingKeys.isShowOnMousePos.defaultValue as! Bool
 
+    @AppStorage(SettingKeys.dictWindowCursorPlacement.rawValue)
+    private var dictWindowCursorPlacement = SettingKeys.dictWindowCursorPlacement.defaultValue as! String
+
+    @AppStorage(SettingKeys.dictWindowCursorGap.rawValue)
+    private var dictWindowCursorGap = SettingKeys.dictWindowCursorGap.defaultValue as! Double
+
+    @AppStorage(SettingKeys.isDictWindowKeepInScreen.rawValue)
+    private var isDictWindowKeepInScreen = SettingKeys.isDictWindowKeepInScreen.defaultValue as! Bool
+
     @AppStorage(SettingKeys.isOutClickToClose.rawValue)
     private var isOutClickToClose = SettingKeys.isOutClickToClose.defaultValue as! Bool
 
@@ -121,31 +130,88 @@ extension WindowManager {
     // 마우스 위치에 사전 창 표시 구현
     func setShowOnMousePos() {
         if isShowOnMousePos {
-            // 마우스 위치가 창의 가운데로 오도록 설정
             let mouseLocation = NSEvent.mouseLocation
             let screens = NSScreen.screens
             if let screenWithMouse = (screens.first { NSMouseInRect(mouseLocation, $0.frame, false) }) {
-                let width = dictWindow.contentLayoutRect.width
-                let height = dictWindow.contentLayoutRect.height
+                // 설정에 맞는 사전 창 위치 계산
+                let origin = Self.getDictWindowOrigin(
+                    mouseLocation: mouseLocation,
+                    dictFrame: dictWindow.frame,
+                    screenFrame: screenWithMouse.frame,
+                    placement: DictWindowCursorPlacement(rawValue: dictWindowCursorPlacement) ?? .center,
+                    gap: CGFloat(dictWindowCursorGap),
+                    keepInScreen: isDictWindowKeepInScreen
+                )
 
-                var _x = mouseLocation.x - width / 2
-                var _y = mouseLocation.y - height / 2
-
-                // 창이 화면 넘어가지 않게 보정
-                if _x < screenWithMouse.frame.minX { // 좌측
-                    _x = screenWithMouse.frame.minX
-                }
-                if _x > screenWithMouse.frame.maxX - width { // 우측
-                    _x = screenWithMouse.frame.maxX - width
-                }
-                if _y < screenWithMouse.frame.minY { // 하단
-                    _y = screenWithMouse.frame.minY
-                }
-
-                // set window position
-                dictWindow.setFrameOrigin(NSPoint(x: _x, y: _y))
+                // 사전 창 위치 설정
+                dictWindow.setFrameOrigin(origin)
             }
         }
+    }
+
+    static func getDictWindowOrigin(
+        mouseLocation: NSPoint,
+        dictFrame: CGRect,
+        screenFrame: CGRect,
+        placement: DictWindowCursorPlacement,
+        gap: CGFloat,
+        keepInScreen: Bool
+    ) -> NSPoint {
+        let width = dictFrame.width
+        let height = dictFrame.height
+
+        var x: CGFloat
+        var y: CGFloat
+
+        let mlx = mouseLocation.x
+        let mly = mouseLocation.y
+
+        switch placement {
+        case .topLeading:
+            x = mlx + gap
+            y = mly - gap - height
+        case .top:
+            x = mlx - width / 2
+            y = mly - gap - height
+        case .topTrailing:
+            x = mlx - gap - width
+            y = mly - gap - height
+        case .leading:
+            x = mlx + gap
+            y = mly - height / 2
+        case .center:
+            x = mlx - width / 2
+            y = mly - height / 2
+        case .trailing:
+            x = mlx - gap - width
+            y = mly - height / 2
+        case .bottomLeading:
+            x = mlx + gap
+            y = mly + gap
+        case .bottom:
+            x = mlx - width / 2
+            y = mly + gap
+        case .bottomTrailing:
+            x = mlx - gap - width
+            y = mly + gap
+        }
+
+        // 창이 화면 넘어가지 않게 보정
+        if keepInScreen {
+            func clamp(_ value: CGFloat, minValue: CGFloat, maxValue: CGFloat) -> CGFloat {
+                max(minValue, min(value, maxValue))
+            }
+
+            let minX = screenFrame.minX
+            let maxX = screenFrame.maxX - width
+            x = clamp(x, minValue: minX, maxValue: maxX)
+
+            let minY = screenFrame.minY
+            let maxY = screenFrame.maxY - height
+            y = clamp(y, minValue: minY, maxValue: maxY)
+        }
+
+        return NSPoint(x: x, y: y)
     }
 
     // 사전 창 밖 클릭시 닫기 구현
@@ -224,7 +290,7 @@ extension WindowManager {
         window.isOpaque = false
 
         window.animationBehavior = .alertPanel
-        
+
         window.isMovableByWindowBackground = true
 
         chromeless(window)
