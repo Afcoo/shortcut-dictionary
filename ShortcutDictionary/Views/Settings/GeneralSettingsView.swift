@@ -20,8 +20,6 @@ struct GeneralSettingsView: View {
         }
         .formStyle(.grouped)
         .scrollContentBackground(.hidden)
-        .scrollDisabled(true)
-        .fixedSize(horizontal: false, vertical: true)
     }
 
     func setMenuItemEnabled() {
