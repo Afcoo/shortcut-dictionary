@@ -376,13 +376,12 @@ private extension WindowManager {
             let width = window.contentLayoutRect.width
             let height = window.contentLayoutRect.height
 
-            let screenWidth = screenWithMouse.frame.maxX - screenWithMouse.frame.minX
-            let screenHeight = screenWithMouse.frame.maxY - screenWithMouse.frame.minY
+            let screenFrame = screenWithMouse.frame
 
-            let _x = screenWidth / 2 - width / 2
-            let _y = screenHeight / 2 - height / 2
+            let x = screenFrame.minX + screenFrame.width / 2 - width / 2
+            let y = screenFrame.minY + screenFrame.height / 2 - height / 2
 
-            window.setFrameOrigin(NSPoint(x: _x, y: _y))
+            window.setFrameOrigin(NSPoint(x: x, y: y))
         }
     }
 }
