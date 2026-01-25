@@ -13,11 +13,6 @@ struct SettingsView: View {
         }
         .navigationSplitViewStyle(.balanced)
         .frame(width: 480, height: 320)
-        .onAppear {
-            DispatchQueue.main.async {
-                WindowManager.shared.removeSettingsSidebarToggle()
-            }
-        }
     }
 
     // MARK: - 사이드바
