@@ -80,6 +80,14 @@ class WindowManager {
         NSApplication.shared.activate(ignoringOtherApps: true)
     }
 
+    func removeSidebarToggle() {
+        guard let toolbar = settingsWindow?.toolbar else { return }
+        let toggleId = NSToolbarItem.Identifier("com.apple.SwiftUI.navigationSplitView.toggleSidebar")
+        if let index = toolbar.items.firstIndex(where: { $0.itemIdentifier == toggleId }) {
+            toolbar.removeItem(at: index)
+        }
+    }
+
     var isDictClosing = false
 }
 

@@ -1,7 +1,6 @@
 import KeyboardShortcuts
 import LaunchAtLogin
 import SwiftUI
-import WebKit
 
 struct SettingsView: View {
     @State private var selectedPage: SettingsPage = .general
@@ -14,6 +13,11 @@ struct SettingsView: View {
         }
         .navigationSplitViewStyle(.balanced)
         .frame(width: 480, height: 320)
+        .onAppear {
+            DispatchQueue.main.async {
+                WindowManager.shared.removeSidebarToggle()
+            }
+        }
     }
 
     // MARK: - 사이드바
