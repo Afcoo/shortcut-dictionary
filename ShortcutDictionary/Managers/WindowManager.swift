@@ -28,9 +28,9 @@ class WindowManager {
     let dictWindow: NSWindow
     let dictWindowDelegate = DictWindowDelegate()
 
-    var dummyWindow: NSWindow?
     var onboardingWindow: NSWindow?
     var aboutWindow: NSWindow?
+    var settingsWindow: NSWindow?
 
     private var clickEventMonitor: Any?
 
@@ -42,16 +42,6 @@ class WindowManager {
             defer: false
         )
         setDictWindow()
-
-        // NSWindow 및 Notification을 사용한 설정 열기
-        // macOS 14.0 이상 NSApp.sendAction 사용 불가 대응
-        if #available(macOS 14.0, *) {
-            dummyWindow = NSWindow()
-            dummyWindow!.isReleasedWhenClosed = false
-            dummyWindow!.close()
-
-            dummyWindow!.contentView = NSHostingView(rootView: DummyView())
-        }
     }
 
     deinit {
@@ -59,16 +49,31 @@ class WindowManager {
     }
 
     func showSettings() {
-        if #available(macOS 14.0, *) {
-            NotificationCenter.default.post(name: .showSettings, object: nil)
+        if let window = settingsWindow {
+            moveToScreenCenter(window)
+            window.makeKeyAndOrderFront(nil)
         }
         else {
-            if #available(macOS 13.0, *) {
-                NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
-            }
-            else {
-                NSApp.sendAction(Selector(("showPreferencesWindow:")), to: nil, from: nil)
-            }
+            let window = NSWindow(
+                contentRect: NSRect(x: 0, y: 0, width: 520, height: 480),
+                styleMask: [.closable, .titled, .fullSizeContentView],
+                backing: .buffered,
+                defer: false
+            )
+            window.contentView = NSHostingView(rootView: SettingsView())
+            window.isReleasedWhenClosed = false
+
+            window.title = "설정"
+            window.titlebarAppearsTransparent = true
+            window.titleVisibility = .hidden
+
+            window.toolbar = NSToolbar()
+            window.toolbarStyle = .unified
+
+            moveToScreenCenter(window)
+            window.makeKeyAndOrderFront(nil)
+
+            settingsWindow = window
         }
 
         NSApplication.shared.setActivationPolicy(.regular)
