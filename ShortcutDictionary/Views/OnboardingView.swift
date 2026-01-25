@@ -128,6 +128,8 @@ struct OnboardingViewDetails: View {
                 .bold()
 
             page.content
+                .frame(width: 400)
+                .fixedSize()
         }
     }
 }
