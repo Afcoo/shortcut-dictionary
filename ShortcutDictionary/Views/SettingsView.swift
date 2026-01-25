@@ -15,7 +15,7 @@ struct SettingsView: View {
         .frame(width: 480, height: 320)
         .onAppear {
             DispatchQueue.main.async {
-                WindowManager.shared.removeSidebarToggle()
+                WindowManager.shared.removeSettingsSidebarToggle()
             }
         }
     }
