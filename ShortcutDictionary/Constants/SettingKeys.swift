@@ -9,6 +9,7 @@ enum SettingKeys: String, CaseIterable {
     case isEscToClose = "enable_close_with_esc"
     case isOutClickToClose = "enable_close_with_out_click"
     case isShowOnMousePos = "enable_show_on_mouse_position"
+    case isShowOnScreenCenter
 
     // 마우스 위치에 사전 표시 상세 설정
     case dictWindowCursorPlacement
@@ -45,6 +46,7 @@ enum SettingKeys: String, CaseIterable {
         case .isEscToClose: return true
         case .isOutClickToClose: return true
         case .isShowOnMousePos: return true
+        case .isShowOnScreenCenter: return false
         case .dictWindowCursorPlacement: return DictWindowCursorPlacement.center.rawValue
         case .dictWindowCursorGap: return 12.0
         case .isDictWindowKeepInScreen: return true

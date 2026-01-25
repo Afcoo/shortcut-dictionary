@@ -10,6 +10,9 @@ struct DictionarySettingsView: View {
     @AppStorage(SettingKeys.isAlwaysOnTop.rawValue)
     private var isAlwaysOnTop = SettingKeys.isAlwaysOnTop.defaultValue as! Bool
 
+    @AppStorage(SettingKeys.isShowOnScreenCenter.rawValue)
+    private var isShowOnScreenCenter = SettingKeys.isShowOnScreenCenter.defaultValue as! Bool
+
     @AppStorage(SettingKeys.isShowOnMousePos.rawValue)
     private var isShowOnMousePos = SettingKeys.isShowOnMousePos.defaultValue as! Bool
 
@@ -73,9 +76,20 @@ struct DictionarySettingsView: View {
                     WindowManager.shared.setDictAlwaysOnTop(toValue)
                 }
 
+                // 항상 화면 중앙에 표시
+                Toggle(isOn: $isShowOnScreenCenter) {
+                    Text("항상 화면 중앙에 표시")
+                }
+                .onChange(of: isShowOnScreenCenter) { newValue in
+                    if newValue { isShowOnMousePos = false }
+                }
+
                 // 마우스 위치에 사전 표시
                 Toggle(isOn: $isShowOnMousePos) {
                     Text("마우스 위치에 사전 표시")
+                }
+                .onChange(of: isShowOnMousePos) { newValue in
+                    if newValue { isShowOnScreenCenter = false }
                 }
 
                 if isShowOnMousePos {
