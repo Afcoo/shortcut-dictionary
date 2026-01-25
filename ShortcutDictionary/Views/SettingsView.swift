@@ -1,60 +1,81 @@
 import KeyboardShortcuts
 import LaunchAtLogin
 import SwiftUI
-import WebKit
 
 struct SettingsView: View {
-    @State private var currentView = 0
-    @State private var viewHeight: CGFloat = 0
+    @State private var selectedPage: SettingsPage = .general
 
     var body: some View {
-        TabView(selection: $currentView) {
-            GeneralSettingsView()
-                .getViewSize { size in
-                    viewHeight = size.height
-                }
-                .tabItem {
-                    Label("일반", systemImage: "switch.2")
-                }
-                .tag(0)
-            ShortcutSettingsView()
-                .getViewSize { size in
-                    viewHeight = size.height
-                }
-                .tabItem {
-                    Label("단축키", systemImage: "keyboard")
-                }
-                .tag(1)
-            DictionarySettingsView()
-                .getViewSize { size in
-                    viewHeight = size.height
-                }
-                .tabItem {
-                    Label("사전", systemImage: "character.book.closed.fill")
-                }
-                .tag(2)
-            AppearanceSettingsView()
-                .getViewSize { size in
-                    viewHeight = size.height
-                }
-                .tabItem {
-                    Label("외관", systemImage: "paintpalette")
-                }
-                .tag(3)
-            InfoSettingsView()
-                .getViewSize { size in
-                    viewHeight = size.height
-                }
-                .tabItem {
-                    Label("정보", systemImage: "info.circle")
-                }
-                .tag(4)
+        NavigationSplitView {
+            settingsSidebar
+        } detail: {
+            settingsDetail
         }
-        .frame(width: 350, height: viewHeight)
-        .onDisappear {
-            if !WindowManager.shared.dictWindow.isVisible {
-                NSApplication.shared.setActivationPolicy(.prohibited)
+        .navigationSplitViewStyle(.balanced)
+        .frame(width: 480, height: 320)
+        .onAppear {
+            DispatchQueue.main.async {
+                WindowManager.shared.removeSettingsSidebarToggle()
             }
+        }
+    }
+
+    // MARK: - 사이드바
+
+    private var settingsSidebar: some View {
+        List(SettingsPage.allCases, selection: $selectedPage) { page in
+            Label(page.title, systemImage: page.icon)
+                .tag(page)
+        }
+        .navigationSplitViewColumnWidth(150)
+        .listStyle(.sidebar)
+    }
+
+    // MARK: - 상세 뷰
+
+    @ViewBuilder
+    private var settingsDetail: some View {
+        switch selectedPage {
+        case .general:
+            GeneralSettingsView()
+        case .shortcut:
+            ShortcutSettingsView()
+        case .dictionary:
+            DictionarySettingsView()
+        case .appearance:
+            AppearanceSettingsView()
+        case .info:
+            InfoSettingsView()
+        }
+    }
+}
+
+enum SettingsPage: String, CaseIterable, Identifiable {
+    case general
+    case shortcut
+    case dictionary
+    case appearance
+    case info
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .general: return "일반"
+        case .shortcut: return "단축키"
+        case .dictionary: return "사전"
+        case .appearance: return "외관"
+        case .info: return "정보"
+        }
+    }
+
+    var icon: String {
+        switch self {
+        case .general: return "switch.2"
+        case .shortcut: return "keyboard"
+        case .dictionary: return "character.book.closed.fill"
+        case .appearance: return "paintpalette"
+        case .info: return "info.circle"
         }
     }
 }

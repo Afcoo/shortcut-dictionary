@@ -28,11 +28,12 @@ class WindowManager {
     let dictWindow: NSWindow
     let dictWindowDelegate = DictWindowDelegate()
 
-    var dummyWindow: NSWindow?
     var onboardingWindow: NSWindow?
     var aboutWindow: NSWindow?
+    var settingsWindow: NSWindow?
 
     private var clickEventMonitor: Any?
+    var isDictClosing = false
 
     private init() {
         dictWindow = NSWindow(
@@ -42,43 +43,15 @@ class WindowManager {
             defer: false
         )
         setDictWindow()
-
-        // NSWindow 및 Notification을 사용한 설정 열기
-        // macOS 14.0 이상 NSApp.sendAction 사용 불가 대응
-        if #available(macOS 14.0, *) {
-            dummyWindow = NSWindow()
-            dummyWindow!.isReleasedWhenClosed = false
-            dummyWindow!.close()
-
-            dummyWindow!.contentView = NSHostingView(rootView: DummyView())
-        }
     }
 
     deinit {
         removeClickEventMonitor()
     }
-
-    func showSettings() {
-        if #available(macOS 14.0, *) {
-            NotificationCenter.default.post(name: .showSettings, object: nil)
-        }
-        else {
-            if #available(macOS 13.0, *) {
-                NSApp.sendAction(Selector(("showSettingsWindow:")), to: nil, from: nil)
-            }
-            else {
-                NSApp.sendAction(Selector(("showPreferencesWindow:")), to: nil, from: nil)
-            }
-        }
-
-        NSApplication.shared.setActivationPolicy(.regular)
-        NSApplication.shared.activate(ignoringOtherApps: true)
-    }
-
-    var isDictClosing = false
 }
 
-// 사전 창 관련
+// MARK: - 사전 윈도우 관리
+
 extension WindowManager {
     func setDictWindow() {
         dictWindow.isReleasedWhenClosed = false
@@ -265,7 +238,52 @@ extension WindowManager {
     }
 }
 
-// 온보딩 윈도우 관리
+// MARK: - 설정 윈도우 관리
+
+extension WindowManager {
+    func showSettings() {
+        if let window = settingsWindow {
+            moveToScreenCenter(window)
+            window.makeKeyAndOrderFront(nil)
+        }
+        else {
+            let window = NSWindow(
+                contentRect: NSRect(x: 0, y: 0, width: 520, height: 480),
+                styleMask: [.closable, .titled, .fullSizeContentView],
+                backing: .buffered,
+                defer: false
+            )
+            window.contentView = NSHostingView(rootView: SettingsView())
+            window.isReleasedWhenClosed = false
+
+            window.title = "설정"
+            window.titlebarAppearsTransparent = true
+            window.titleVisibility = .hidden
+
+            window.toolbar = NSToolbar()
+            window.toolbarStyle = .unified
+
+            moveToScreenCenter(window)
+            window.makeKeyAndOrderFront(nil)
+
+            settingsWindow = window
+        }
+
+        NSApplication.shared.setActivationPolicy(.regular)
+        NSApplication.shared.activate(ignoringOtherApps: true)
+    }
+
+    func removeSettingsSidebarToggle() {
+        guard let toolbar = settingsWindow?.toolbar else { return }
+        let toggleId = NSToolbarItem.Identifier("com.apple.SwiftUI.navigationSplitView.toggleSidebar")
+        if let index = toolbar.items.firstIndex(where: { $0.itemIdentifier == toggleId }) {
+            toolbar.removeItem(at: index)
+        }
+    }
+}
+
+// MARK: - 온보딩 윈도우 관리
+
 extension WindowManager {
     func showOnboarding() {
         let window = NSWindow(
@@ -301,39 +319,41 @@ extension WindowManager {
     }
 
     func closeOnboarding() {
-        guard let onboardingWindow else {
-            return
-        }
-
+        guard let onboardingWindow else { return }
         onboardingWindow.close()
     }
 }
 
-// About 윈도우 관리
+// MARK: - About 윈도우 관리
+
 extension WindowManager {
     func showAbout() {
         if let window = aboutWindow {
             // 이미 있다면 앞으로 가져오기
             window.makeKeyAndOrderFront(nil)
+            return
         }
-        else {
-            aboutWindow = NSWindow(
-                contentRect: NSRect(x: 0, y: 0, width: 550, height: 300),
-                styleMask: [.closable, .titled],
-                backing: .buffered,
-                defer: false
-            )
-            aboutWindow?.isReleasedWhenClosed = false
-            aboutWindow?.contentView = NSHostingView(
-                rootView: InfoView()
-                    .frame(width: 300, height: 250)
-            )
-            aboutWindow?.title = "단축키 사전에 관하여"
-            aboutWindow?.center()
-            aboutWindow?.makeKeyAndOrderFront(nil)
-        }
+
+        let window = NSWindow(
+            contentRect: NSRect(x: 0, y: 0, width: 550, height: 300),
+            styleMask: [.closable, .titled],
+            backing: .buffered,
+            defer: false
+        )
+        window.isReleasedWhenClosed = false
+        window.contentView = NSHostingView(
+            rootView: InfoView()
+                .frame(width: 300, height: 250)
+        )
+        window.title = "단축키 사전에 관하여"
+        window.center()
+        window.makeKeyAndOrderFront(nil)
+
+        aboutWindow = window
     }
 }
+
+// MARK: - 윈도우 유틸리티
 
 private extension WindowManager {
     // 타이틀 바 완전 제거
@@ -373,6 +393,8 @@ private extension WindowManager {
         }
     }
 }
+
+// MARK: - DictWindowDelegate
 
 class DictWindowDelegate: NSObject, NSWindowDelegate {
     func windowDidBecomeKey(_ notification: Notification) {

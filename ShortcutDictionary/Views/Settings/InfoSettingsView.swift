@@ -54,9 +54,6 @@ struct InfoSettingsView: View {
 //                ToolbarButton(action: showInfo, systemName: "info.circle")
             }
             .padding(.all, 20)
-            .scrollContentBackground(.hidden)
-            .scrollDisabled(true)
-            .fixedSize(horizontal: false, vertical: true)
         }
     }
 
@@ -94,6 +91,8 @@ struct InfoView: View {
 
     var body: some View {
         VStack {
+            Spacer()
+
             Image(nsImage: appIcon)
                 .resizable()
                 .frame(width: 100, height: 100)
@@ -104,6 +103,8 @@ struct InfoView: View {
             Spacer().frame(height: 10)
 
             Text("ⓒ 2024-2026. Afcoo. All rights reserved.")
+
+            Spacer()
         }
     }
 

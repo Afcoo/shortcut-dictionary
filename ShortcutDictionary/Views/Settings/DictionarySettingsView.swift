@@ -121,7 +121,5 @@ struct DictionarySettingsView: View {
         }
         .formStyle(.grouped)
         .scrollContentBackground(.hidden)
-        .scrollDisabled(true)
-        .fixedSize(horizontal: false, vertical: true)
     }
 }
