@@ -10,6 +10,7 @@ struct SettingsView: View {
             settingsSidebar
         } detail: {
             settingsDetail
+                .navigationTitle(selectedPage.title)
         }
         .navigationSplitViewStyle(.balanced)
         .frame(width: 480, height: 320)
