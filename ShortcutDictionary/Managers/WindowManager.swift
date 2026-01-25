@@ -8,6 +8,9 @@ class WindowManager {
     @AppStorage(SettingKeys.isShowOnMousePos.rawValue)
     private var isShowOnMousePos = SettingKeys.isShowOnMousePos.defaultValue as! Bool
 
+    @AppStorage(SettingKeys.isShowOnScreenCenter.rawValue)
+    private var isShowOnScreenCenter = SettingKeys.isShowOnScreenCenter.defaultValue as! Bool
+
     @AppStorage(SettingKeys.dictWindowCursorPlacement.rawValue)
     private var dictWindowCursorPlacement = SettingKeys.dictWindowCursorPlacement.defaultValue as! String
 
@@ -88,6 +91,10 @@ extension WindowManager {
         guard !isDictClosing else { return }
 
         NSApplication.shared.setActivationPolicy(.regular)
+
+        if isShowOnScreenCenter {
+            moveToScreenCenter(dictWindow)
+        }
 
         setShowOnMousePos()
 
