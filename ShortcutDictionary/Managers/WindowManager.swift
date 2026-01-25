@@ -27,6 +27,7 @@ class WindowManager {
 
     let dictWindow: NSWindow
     let dictWindowDelegate = DictWindowDelegate()
+    let settingsToolbarObserver = SettingsToolbarObserver()
 
     var onboardingWindow: NSWindow?
     var aboutWindow: NSWindow?
@@ -272,14 +273,6 @@ extension WindowManager {
         NSApplication.shared.setActivationPolicy(.regular)
         NSApplication.shared.activate(ignoringOtherApps: true)
     }
-
-    func removeSettingsSidebarToggle() {
-        guard let toolbar = settingsWindow?.toolbar else { return }
-        let toggleId = NSToolbarItem.Identifier("com.apple.SwiftUI.navigationSplitView.toggleSidebar")
-        if let index = toolbar.items.firstIndex(where: { $0.itemIdentifier == toggleId }) {
-            toolbar.removeItem(at: index)
-        }
-    }
 }
 
 // MARK: - 온보딩 윈도우 관리
@@ -412,5 +405,31 @@ class DictWindowDelegate: NSObject, NSWindowDelegate {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
             WindowManager.shared.isDictClosing = false
         }
+    }
+}
+
+// MARK: - SettingsToolbarObserver
+
+/// 설정 창 NavigationSplitView의 사이드바 토글 버튼 숨김 처리
+class SettingsToolbarObserver: NSObject {
+    private let sidebarToggleId = NSToolbarItem.Identifier("com.apple.SwiftUI.navigationSplitView.toggleSidebar")
+
+    override init() {
+        super.init()
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(toolbarWillAddItem(_:)),
+            name: NSToolbar.willAddItemNotification,
+            object: nil
+        )
+    }
+
+    @objc func toolbarWillAddItem(_ notification: Notification) {
+        guard let item = notification.userInfo?["item"] as? NSToolbarItem,
+              item.itemIdentifier == sidebarToggleId
+        else { return }
+
+        item.view?.isHidden = true
+        item.menuFormRepresentation = nil
     }
 }
