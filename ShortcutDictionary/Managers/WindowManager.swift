@@ -8,6 +8,9 @@ class WindowManager {
     @AppStorage(SettingKeys.isShowOnMousePos.rawValue)
     private var isShowOnMousePos = SettingKeys.isShowOnMousePos.defaultValue as! Bool
 
+    @AppStorage(SettingKeys.isShowOnScreenCenter.rawValue)
+    private var isShowOnScreenCenter = SettingKeys.isShowOnScreenCenter.defaultValue as! Bool
+
     @AppStorage(SettingKeys.dictWindowCursorPlacement.rawValue)
     private var dictWindowCursorPlacement = SettingKeys.dictWindowCursorPlacement.defaultValue as! String
 
@@ -37,7 +40,7 @@ class WindowManager {
     var isDictClosing = false
 
     private init() {
-        dictWindow = NSWindow(
+        dictWindow = DictWindow(
             contentRect: NSRect(x: 0, y: 0, width: 400, height: 550),
             styleMask: [.closable, .titled, .resizable],
             backing: .buffered,
@@ -89,6 +92,10 @@ extension WindowManager {
 
         NSApplication.shared.setActivationPolicy(.regular)
 
+        if isShowOnScreenCenter {
+            moveToScreenCenter(dictWindow)
+        }
+
         setShowOnMousePos()
 
         setOutClickToClose(isOutClickToClose)
@@ -112,6 +119,7 @@ extension WindowManager {
                     mouseLocation: mouseLocation,
                     dictFrame: dictWindow.frame,
                     screenFrame: screenWithMouse.frame,
+                    visibleFrame: screenWithMouse.visibleFrame,
                     placement: DictWindowCursorPlacement(rawValue: dictWindowCursorPlacement) ?? .center,
                     gap: CGFloat(dictWindowCursorGap),
                     keepInScreen: isDictWindowKeepInScreen
@@ -127,6 +135,7 @@ extension WindowManager {
         mouseLocation: NSPoint,
         dictFrame: CGRect,
         screenFrame: CGRect,
+        visibleFrame: CGRect,
         placement: DictWindowCursorPlacement,
         gap: CGFloat,
         keepInScreen: Bool
@@ -172,17 +181,13 @@ extension WindowManager {
 
         // 창이 화면 넘어가지 않게 보정
         if keepInScreen {
-            func clamp(_ value: CGFloat, minValue: CGFloat, maxValue: CGFloat) -> CGFloat {
-                max(minValue, min(value, maxValue))
-            }
+            let minX = visibleFrame.minX
+            let maxX = max(minX, visibleFrame.maxX - width)
+            x = max(minX, min(x, maxX))
 
-            let minX = screenFrame.minX
-            let maxX = screenFrame.maxX - width
-            x = clamp(x, minValue: minX, maxValue: maxX)
-
-            let minY = screenFrame.minY
-            let maxY = screenFrame.maxY - height
-            y = clamp(y, minValue: minY, maxValue: maxY)
+            let minY = visibleFrame.minY
+            let maxY = max(minY, visibleFrame.maxY - height)
+            y = max(minY, min(y, maxY))
         }
 
         return NSPoint(x: x, y: y)
@@ -376,13 +381,12 @@ private extension WindowManager {
             let width = window.contentLayoutRect.width
             let height = window.contentLayoutRect.height
 
-            let screenWidth = screenWithMouse.frame.maxX - screenWithMouse.frame.minX
-            let screenHeight = screenWithMouse.frame.maxY - screenWithMouse.frame.minY
+            let screenFrame = screenWithMouse.frame
 
-            let _x = screenWidth / 2 - width / 2
-            let _y = screenHeight / 2 - height / 2
+            let x = screenFrame.minX + screenFrame.width / 2 - width / 2
+            let y = screenFrame.minY + screenFrame.height / 2 - height / 2
 
-            window.setFrameOrigin(NSPoint(x: _x, y: _y))
+            window.setFrameOrigin(NSPoint(x: x, y: y))
         }
     }
 }
@@ -431,5 +435,14 @@ class SettingsToolbarObserver: NSObject {
 
         item.view?.isHidden = true
         item.menuFormRepresentation = nil
+    }
+}
+
+// MARK: - DictWindow
+
+/// 메뉴바 위로도 이동 가능한 사전 창
+class DictWindow: NSWindow {
+    override func constrainFrameRect(_ frameRect: NSRect, to screen: NSScreen?) -> NSRect {
+        return frameRect
     }
 }
