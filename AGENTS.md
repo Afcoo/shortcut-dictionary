@@ -67,7 +67,9 @@ shortcut-dictionary/
 
 ### Commit Message Style
 - Use a head-first subject line that starts with the purpose or conclusion.
+- Write commit subjects and body bullets in Korean by default.
 - Keep the commit body as bullet-only detail lines prefixed with `-` (no narrative sentences).
+- For Korean body bullets, avoid endings like `-함`; use concise phrase endings instead.
 
 ### Architecture
 - No Storyboard. SwiftUI + AppKit (`NSWindow`, `NSMenu`, `WKWebView`) hybrid.
