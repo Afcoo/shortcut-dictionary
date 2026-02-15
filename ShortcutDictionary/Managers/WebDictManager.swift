@@ -6,19 +6,15 @@ class WebDictManager: ObservableObject {
 
     static let shared = WebDictManager()
 
-    var customDict = WebDict(
-        id: "custom",
-        name: "커스텀 사전",
-        url: "https://www.google.com",
-        script: ""
-    )
+    @Published var customDicts: [WebDict] = []
+    @Published var customChats: [WebDict] = []
 
     @Published var activatedDictIDs: Set<String> = ["daum_eng"]
     @Published var activatedChatIDs: Set<String> = ["chatgpt"]
     @Published var customChatPrompts: [ChatPrompt] = []
 
     private init() {
-        loadCustomDict()
+        loadCustomWebDicts()
         loadActivatedDicts()
         loadActivatedChats()
         loadCustomChatPrompts()
@@ -32,20 +28,104 @@ class WebDictManager: ObservableObject {
 }
 
 extension WebDictManager {
-    func loadCustomDict() {
-        guard let data = UserDefaults.standard.data(forKey: SettingKeys.customDictData.rawValue),
-              let decoded = try? JSONDecoder().decode(WebDict.self, from: data)
-        else { return }
-
-        customDict = decoded
+    func loadCustomWebDicts() {
+        customDicts = CustomWebDictStore.shared.load(mode: "dictionary")
+        customChats = CustomWebDictStore.shared.load(mode: "chat")
     }
 
-    func saveCustomDict(_ dict: WebDict) {
-        customDict = dict
+    @discardableResult
+    func addCustomWebDict(mode: String) -> WebDict {
+        let defaultName = mode == "chat" ? "새 커스텀 서비스" : "새 커스텀 사전"
+        let webDict = WebDict(
+            id: UUID().uuidString,
+            name: defaultName,
+            url: "https://www.google.com",
+            script: ""
+        )
 
-        if let encoded = try? JSONEncoder().encode(dict) {
-            UserDefaults.standard.set(encoded, forKey: SettingKeys.customDictData.rawValue)
+        CustomWebDictStore.shared.upsert(webDict, mode: mode)
+        if mode == "chat" {
+            customChats.append(webDict)
+        } else {
+            customDicts.append(webDict)
         }
+
+        return webDict
+    }
+
+    func updateCustomWebDict(_ dict: WebDict, mode: String) {
+        CustomWebDictStore.shared.upsert(dict, mode: mode)
+
+        if mode == "chat" {
+            if let index = customChats.firstIndex(where: { $0.id == dict.id }) {
+                customChats[index] = dict
+            }
+        } else {
+            if let index = customDicts.firstIndex(where: { $0.id == dict.id }) {
+                customDicts[index] = dict
+            }
+        }
+    }
+
+    func deleteCustomWebDict(id: String, mode: String) {
+        CustomWebDictStore.shared.delete(id: id, mode: mode)
+
+        if mode == "chat" {
+            customChats.removeAll { $0.id == id }
+            activatedChatIDs.remove(id)
+
+            if activatedChatIDs.isEmpty {
+                activatedChatIDs = ["chatgpt"]
+            }
+
+            if chatSettingKeysManager.selectedChat == id {
+                chatSettingKeysManager.selectedChat = activatedChatIDs.first ?? "chatgpt"
+            }
+
+            saveActivatedChats()
+        } else {
+            customDicts.removeAll { $0.id == id }
+            activatedDictIDs.remove(id)
+
+            if activatedDictIDs.isEmpty {
+                activatedDictIDs = ["daum_eng"]
+            }
+
+            if dictionarySettingKeysManager.selectedDict == id {
+                dictionarySettingKeysManager.selectedDict = activatedDictIDs.first ?? "daum_eng"
+            }
+
+            saveActivatedDicts()
+        }
+    }
+
+    @discardableResult
+    func importLegacyCustomDictFromAppStorage() -> Bool {
+        guard let data = UserDefaults.standard.data(forKey: SettingKeys.customDictData.rawValue),
+              let decoded = try? JSONDecoder().decode(WebDict.self, from: data)
+        else {
+            return false
+        }
+
+        if customDicts.contains(where: { $0.url == decoded.url && $0.script == decoded.script }) {
+            return false
+        }
+
+        var importedDict = decoded
+        importedDict.id = UUID().uuidString
+        importedDict.name = importedDict.name?.isEmpty == false ? importedDict.name : "기존 커스텀 사전"
+
+        CustomWebDictStore.shared.upsert(importedDict, mode: "dictionary")
+        customDicts.append(importedDict)
+        activatedDictIDs.insert(importedDict.id)
+
+        if dictionarySettingKeysManager.selectedDict == "custom" || getDict(dictionarySettingKeysManager.selectedDict) == nil {
+            dictionarySettingKeysManager.selectedDict = importedDict.id
+        }
+
+        saveActivatedDicts()
+        UserDefaults.standard.removeObject(forKey: SettingKeys.customDictData.rawValue)
+        return true
     }
 
     func loadActivatedDicts() {
@@ -73,7 +153,7 @@ extension WebDictManager {
               let decoded = try? JSONDecoder().decode([String].self, from: data)
         else { return }
 
-        let validIDs = Set(decoded).intersection(Set(Self.chatIDs))
+        let validIDs = Set(decoded).intersection(Set(getAllSelectableChats().map { $0.id }))
         if validIDs.isEmpty {
             activatedChatIDs = ["chatgpt"]
         } else {
@@ -175,11 +255,11 @@ extension WebDictManager {
     }
 
     func getAllDicts() -> [WebDict] {
-        return DefaultWebDicts.dictionaries + [customDict]
+        return DefaultWebDicts.dictionaries + customDicts
     }
 
     func getAllChats() -> [WebDict] {
-        return DefaultChatServices.all
+        return DefaultChatServices.all + customChats
     }
 
     func getAllSelectableDicts() -> [WebDict] {
@@ -187,11 +267,11 @@ extension WebDictManager {
             rootDict.filterRecursively { dict in !dict.isEmptyParent }
         }
 
-        return filtered + [customDict]
+        return filtered + customDicts
     }
 
     func getAllSelectableChats() -> [WebDict] {
-        return DefaultChatServices.all
+        return DefaultChatServices.all + customChats
     }
 
     func getActivatedDicts() -> [WebDict] {
