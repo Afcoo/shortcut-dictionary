@@ -24,7 +24,7 @@ enum ChatPromptPresets {
     static let translate = ChatPrompt(
         id: "preset_translate",
         name: "번역",
-        prefix: "다음을 한국어로 번역해줘:\n\n",
+        prefix: "다음을 한국어로 번역:\n",
         postfix: "",
         isPreset: true
     )
@@ -32,7 +32,7 @@ enum ChatPromptPresets {
     static let relatedWords = ChatPrompt(
         id: "preset_related_words",
         name: "모든 단어 검색",
-        prefix: "아래 단어를 포함한 핵심 표현을 최대한 많이 찾아줘:\n\n",
+        prefix: "문장 속 고유 단어들만 뜻 검색:\n",
         postfix: "",
         isPreset: true
     )
@@ -40,7 +40,7 @@ enum ChatPromptPresets {
     static let meaningAndExamples = ChatPrompt(
         id: "preset_meaning_examples",
         name: "단어 및 예문",
-        prefix: "아래 단어의 뜻을 품사별로 정리하고, 자연스러운 예문 5개를 작성해줘:\n\n",
+        prefix: "단어의 뜻을 품사별로 정리 후, 각각의 뜻에 예문 하나씩:\n",
         postfix: "",
         isPreset: true
     )
