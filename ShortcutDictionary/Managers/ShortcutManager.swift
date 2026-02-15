@@ -31,11 +31,11 @@ class ShortcutManager {
 
     /// register global keyboard shortcuts
     func registerShortcut() {
-        KeyboardShortcuts.onKeyDown(for: .dictShortcut, action: { () in
+        KeyboardShortcuts.onKeyUp(for: .dictShortcut, action: { () in
             self.activate(mode: "dictionary")
         })
 
-        KeyboardShortcuts.onKeyDown(for: .chatShortcut, action: { () in
+        KeyboardShortcuts.onKeyUp(for: .chatShortcut, action: { () in
             self.activate(mode: "chat")
         })
 
@@ -155,8 +155,8 @@ class ShortcutManager {
         let location = CGEventTapLocation.cghidEventTap
         cmdDown.post(tap: location)
         keyCDown.post(tap: location)
-        cmdUp.post(tap: location)
         keyCUp.post(tap: location)
+        cmdUp.post(tap: location)
 
         return true
     }
