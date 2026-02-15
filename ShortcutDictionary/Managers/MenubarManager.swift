@@ -127,11 +127,12 @@ extension MenubarManager {
             dictionaryMenuItem.submenu = dictionaryMenu
             mainMenu.addItem(dictionaryMenuItem)
 
+            let shouldUseDictionaryQuickShortcuts = selectedPageMode != "chat"
             let activatedDicts = WebDictManager.shared.getActivatedDicts()
             for index in activatedDicts.indices {
                 let dictQuickChangeMenuItem: NSMenuItem
 
-                if index < 9 {
+                if index < 9, shouldUseDictionaryQuickShortcuts {
                     dictQuickChangeMenuItem = NSMenuItem(
                         title: activatedDicts[index].name ?? "",
                         action: #selector(changeDictionary(_:)),
@@ -156,18 +157,18 @@ extension MenubarManager {
             chatMenuItem.submenu = chatMenu
             mainMenu.addItem(chatMenuItem)
 
+            let shouldUseChatQuickShortcuts = isChatEnabled && selectedPageMode == "chat"
             if isChatEnabled {
                 let activatedChats = WebDictManager.shared.getActivatedChats()
                 for index in activatedChats.indices {
                     let chatQuickChangeMenuItem: NSMenuItem
 
-                    if index < 9 {
+                    if index < 9, shouldUseChatQuickShortcuts {
                         chatQuickChangeMenuItem = NSMenuItem(
                             title: activatedChats[index].name ?? "",
                             action: #selector(changeChat(_:)),
                             keyEquivalent: String(index + 1)
                         )
-                        chatQuickChangeMenuItem.keyEquivalentModifierMask = [.command, .shift]
                     } else {
                         chatQuickChangeMenuItem = NSMenuItem(
                             title: activatedChats[index].name ?? "",
