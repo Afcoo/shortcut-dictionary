@@ -1,8 +1,7 @@
 import SwiftUI
 
 struct DictActivationSettingSheet: View {
-    @AppStorage(SettingKeys.isLiquidGlassEnabled.rawValue)
-    private var isLiquidGlassEnabled = SettingKeys.isLiquidGlassEnabled.defaultValue as! Bool
+    @ObservedObject private var appearanceSettingKeysManager = AppearanceSettingKeysManager.shared
 
     @Binding var isPresented: Bool
     let mode: String
@@ -19,7 +18,7 @@ struct DictActivationSettingSheet: View {
     var body: some View {
         VStack {
             HStack {
-                if #available(macOS 26.0, *), isLiquidGlassEnabled {
+                if #available(macOS 26.0, *), appearanceSettingKeysManager.isLiquidGlassEnabled {
                     ToolbarButtonV2(action: { isPresented = false }, systemName: "xmark")
                 } else {
                     ToolbarButton(action: { isPresented = false }, systemName: "xmark.circle")

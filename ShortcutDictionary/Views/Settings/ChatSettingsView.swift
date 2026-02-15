@@ -1,17 +1,7 @@
 import SwiftUI
 
 struct ChatSettingsView: View {
-    @AppStorage(SettingKeys.isChatEnabled.rawValue)
-    private var isChatEnabled = SettingKeys.isChatEnabled.defaultValue as! Bool
-
-    @AppStorage(SettingKeys.selectedChat.rawValue)
-    private var selectedChat = SettingKeys.selectedChat.defaultValue as! String
-
-    @AppStorage(SettingKeys.activatedChats.rawValue)
-    private var activatedChats = SettingKeys.activatedChats.defaultValue as! String
-
-    @AppStorage(SettingKeys.selectedChatPromptID.rawValue)
-    private var selectedChatPromptID = SettingKeys.selectedChatPromptID.defaultValue as! String
+    @ObservedObject private var chatSettingKeysManager = ChatSettingKeysManager.shared
 
     @State private var showChatActivationSetting = false
     @State private var customPromptName = ""
@@ -22,19 +12,19 @@ struct ChatSettingsView: View {
 
     var body: some View {
         Form {
-            Toggle(isOn: $isChatEnabled) {
+            Toggle(isOn: chatSettingKeysManager.binding(\.isChatEnabled)) {
                 Text("채팅 기능 사용")
             }
 
-            Picker("채팅 서비스", selection: $selectedChat) {
+            Picker("채팅 서비스", selection: chatSettingKeysManager.binding(\.selectedChat)) {
                 ForEach(webDictManager.getActivatedChats(), id: \.self) { chat in
                     Text(chat.wrappedName)
                         .tag(chat.id)
                 }
             }
             .pickerStyle(.menu)
-            .id(activatedChats)
-            .disabled(!isChatEnabled)
+            .id(webDictManager.activatedChatIDs)
+            .disabled(!chatSettingKeysManager.isChatEnabled)
 
             LabeledContent("") {
                 Button("채팅 서비스 관리") {
@@ -44,28 +34,28 @@ struct ChatSettingsView: View {
                     DictActivationSettingSheet(isPresented: $showChatActivationSetting, mode: "chat")
                 }
             }
-            .disabled(!isChatEnabled)
+            .disabled(!chatSettingKeysManager.isChatEnabled)
 
             Section("자동 입력 프롬프트") {
-                Picker("프롬프트", selection: $selectedChatPromptID) {
+                Picker("프롬프트", selection: chatSettingKeysManager.binding(\.selectedChatPromptID)) {
                     ForEach(webDictManager.getChatPrompts(), id: \.self) { prompt in
                         Text(prompt.name)
                             .tag(prompt.id)
                     }
                 }
                 .pickerStyle(.menu)
-                .disabled(!isChatEnabled)
+                .disabled(!chatSettingKeysManager.isChatEnabled)
 
                 TextField("커스텀 프롬프트 이름", text: $customPromptName)
-                    .disabled(!isChatEnabled)
+                    .disabled(!chatSettingKeysManager.isChatEnabled)
 
                 TextField("앞에 붙일 프롬프트", text: $customPromptPrefix, axis: .vertical)
                     .lineLimit(2 ... 5)
-                    .disabled(!isChatEnabled)
+                    .disabled(!chatSettingKeysManager.isChatEnabled)
 
                 TextField("뒤에 붙일 프롬프트", text: $customPromptPostfix, axis: .vertical)
                     .lineLimit(2 ... 5)
-                    .disabled(!isChatEnabled)
+                    .disabled(!chatSettingKeysManager.isChatEnabled)
 
                 HStack {
                     Button("커스텀 프롬프트 추가") {
@@ -97,7 +87,7 @@ struct ChatSettingsView: View {
     }
 
     var canAddPrompt: Bool {
-        return isChatEnabled && !customPromptName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        return chatSettingKeysManager.isChatEnabled && !customPromptName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
     }
 
     func addPrompt() {

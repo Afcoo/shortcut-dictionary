@@ -3,45 +3,35 @@ import LaunchAtLogin
 import SwiftUI
 
 struct ShortcutSettingsView: View {
-    @AppStorage(SettingKeys.isGlobalShortcutEnabled.rawValue)
-    private var isGlobalShortcutEnabled = SettingKeys.isGlobalShortcutEnabled.defaultValue as! Bool
-
-    @AppStorage(SettingKeys.isCopyPasteEnabled.rawValue)
-    private var isCopyPasteEnabled = SettingKeys.isCopyPasteEnabled.defaultValue as! Bool
-
-    @AppStorage(SettingKeys.isChatShortcutEnabled.rawValue)
-    private var isChatShortcutEnabled = SettingKeys.isChatShortcutEnabled.defaultValue as! Bool
-
-    @AppStorage(SettingKeys.isFastSearchEnabled.rawValue)
-    private var isFastSearchEnabled = SettingKeys.isFastSearchEnabled.defaultValue as! Bool
+    @ObservedObject private var shortcutSettingKeysManager = ShortcutSettingKeysManager.shared
 
     @State var accessEnabled = AXIsProcessTrusted() // 손쉬운 사용 권한 유무
 
     var body: some View {
         Form {
             // 전역 단축키
-            Toggle(isOn: $isGlobalShortcutEnabled) {
+            Toggle(isOn: shortcutSettingKeysManager.binding(\.isGlobalShortcutEnabled)) {
                 Text("사전 단축키 사용")
             }
-            .onChange(of: isGlobalShortcutEnabled) { _ in
+            .onChange(of: shortcutSettingKeysManager.isGlobalShortcutEnabled) { _ in
                 setShortcutEnabled()
             }
 
             KeyboardShortcuts.Recorder("사전 단축키", name: .dictShortcut)
-                .disabled(!isGlobalShortcutEnabled)
+                .disabled(!shortcutSettingKeysManager.isGlobalShortcutEnabled)
 
-            Toggle(isOn: $isChatShortcutEnabled) {
+            Toggle(isOn: shortcutSettingKeysManager.binding(\.isChatShortcutEnabled)) {
                 Text("채팅 단축키 사용")
             }
-            .onChange(of: isChatShortcutEnabled) { _ in
+            .onChange(of: shortcutSettingKeysManager.isChatShortcutEnabled) { _ in
                 setShortcutEnabled()
             }
 
             KeyboardShortcuts.Recorder("채팅 단축키", name: .chatShortcut)
-                .disabled(!isChatShortcutEnabled)
+                .disabled(!shortcutSettingKeysManager.isChatShortcutEnabled)
 
             // 단축키 입력시 복사 유무 결정
-            Toggle(isOn: $isCopyPasteEnabled) {
+            Toggle(isOn: shortcutSettingKeysManager.binding(\.isCopyPasteEnabled)) {
                 Text("선택한 항목 자동 입력")
                 if accessEnabled {
                     Text("단축키 입력시 자동으로 복사&붙여넣기를 합니다")
@@ -55,8 +45,8 @@ struct ShortcutSettingsView: View {
                     .buttonStyle(.borderless)
                 }
             }
-            .disabled(!isGlobalShortcutEnabled && !isChatShortcutEnabled)
-            .onChange(of: isCopyPasteEnabled) { value in
+            .disabled(!shortcutSettingKeysManager.isGlobalShortcutEnabled && !shortcutSettingKeysManager.isChatShortcutEnabled)
+            .onChange(of: shortcutSettingKeysManager.isCopyPasteEnabled) { value in
                 // 처음 활성화 시 빈 키 입력을 발생시켜 손쉬운 사용 권한 설정 팝업 표시
                 if value { ShortcutManager.shared.sendEmptyCommand() }
             }
@@ -66,7 +56,7 @@ struct ShortcutSettingsView: View {
             }
 
             // 빠른 검색 활성화 여부
-            Toggle(isOn: $isFastSearchEnabled) {
+            Toggle(isOn: shortcutSettingKeysManager.binding(\.isFastSearchEnabled)) {
                 Text("즉시 검색 확성화")
                 Text("이 기능을 활성화하면 복사된 단어를 바로 검색합니다")
             }
@@ -76,13 +66,13 @@ struct ShortcutSettingsView: View {
     }
 
     func setShortcutEnabled() {
-        if isGlobalShortcutEnabled {
+        if shortcutSettingKeysManager.isGlobalShortcutEnabled {
             KeyboardShortcuts.enable(.dictShortcut)
         } else {
             KeyboardShortcuts.disable(.dictShortcut)
         }
 
-        if isChatShortcutEnabled {
+        if shortcutSettingKeysManager.isChatShortcutEnabled {
             KeyboardShortcuts.enable(.chatShortcut)
         } else {
             KeyboardShortcuts.disable(.chatShortcut)

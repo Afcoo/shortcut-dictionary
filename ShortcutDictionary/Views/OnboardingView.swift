@@ -12,11 +12,8 @@ struct OnboardingPage: Identifiable {
 }
 
 struct OnboardingView: View {
-    @AppStorage(SettingKeys.hasCompletedOnboarding.rawValue)
-    private var hasCompletedOnboarding = SettingKeys.hasCompletedOnboarding.defaultValue as! Bool
-
-    @AppStorage(SettingKeys.isLiquidGlassEnabled.rawValue)
-    private var isLiquidGlassEnabled = SettingKeys.isLiquidGlassEnabled.defaultValue as! Bool
+    @ObservedObject private var generalSettingKeysManager = GeneralSettingKeysManager.shared
+    @ObservedObject private var appearanceSettingKeysManager = AppearanceSettingKeysManager.shared
 
     @State private var currentPage = 0
 
@@ -55,7 +52,7 @@ struct OnboardingView: View {
                     ? "chevron.backward"
                     : "xmark"
 
-                if #available(macOS 26.0, *), isLiquidGlassEnabled {
+                if #available(macOS 26.0, *), appearanceSettingKeysManager.isLiquidGlassEnabled {
                     ToolbarButtonV2(action: _action, systemName: _systemName)
                 } else {
                     ToolbarButton(action: _action, systemName: _systemName)
@@ -66,7 +63,7 @@ struct OnboardingView: View {
                 let nextButton =
                     Button(currentPage < onboardingPages.count - 1 ? "다음" : "시작하기", action: next)
 
-                if #available(macOS 26.0, *), isLiquidGlassEnabled {
+                if #available(macOS 26.0, *), appearanceSettingKeysManager.isLiquidGlassEnabled {
                     nextButton
                         .buttonStyle(.glassProminent)
                         .buttonBorderShape(.capsule)
@@ -83,7 +80,7 @@ struct OnboardingView: View {
         }
         .frame(width: 400)
         .setViewColoredBackground()
-        .clipShape(RoundedRectangle(cornerRadius: isLiquidGlassEnabled ? 26.0 : 15.0))
+        .clipShape(RoundedRectangle(cornerRadius: appearanceSettingKeysManager.isLiquidGlassEnabled ? 26.0 : 15.0))
     }
 
     func prev() {
@@ -103,7 +100,7 @@ struct OnboardingView: View {
     }
 
     func end() {
-        hasCompletedOnboarding = true
+        generalSettingKeysManager.hasCompletedOnboarding = true
         WindowManager.shared.closeOnboarding()
         WindowManager.shared.showDict()
     }

@@ -1,14 +1,8 @@
 import SwiftUI
 
 class WebDictManager: ObservableObject {
-    @AppStorage(SettingKeys.selectedDict.rawValue)
-    private var selectedDict = SettingKeys.selectedDict.defaultValue as! String
-
-    @AppStorage(SettingKeys.selectedChat.rawValue)
-    private var selectedChat = SettingKeys.selectedChat.defaultValue as! String
-
-    @AppStorage(SettingKeys.selectedChatPromptID.rawValue)
-    private var selectedChatPromptID = SettingKeys.selectedChatPromptID.defaultValue as! String
+    private let dictionarySettingKeysManager = DictionarySettingKeysManager.shared
+    private let chatSettingKeysManager = ChatSettingKeysManager.shared
 
     static let shared = WebDictManager()
 
@@ -123,8 +117,8 @@ extension WebDictManager {
     func deleteCustomChatPrompt(id: String) {
         customChatPrompts.removeAll { $0.id == id }
 
-        if selectedChatPromptID == id {
-            selectedChatPromptID = ChatPromptPresets.none.id
+        if chatSettingKeysManager.selectedChatPromptID == id {
+            chatSettingKeysManager.selectedChatPromptID = ChatPromptPresets.none.id
         }
 
         saveCustomChatPrompts()
@@ -142,8 +136,8 @@ extension WebDictManager {
         } else {
             activatedDictIDs.remove(id)
 
-            if id == selectedDict {
-                selectedDict = activatedDictIDs.first ?? ""
+            if id == dictionarySettingKeysManager.selectedDict {
+                dictionarySettingKeysManager.selectedDict = activatedDictIDs.first ?? ""
             }
         }
 
@@ -160,8 +154,8 @@ extension WebDictManager {
         } else {
             activatedChatIDs.remove(id)
 
-            if id == selectedChat {
-                selectedChat = activatedChatIDs.first ?? "chatgpt"
+            if id == chatSettingKeysManager.selectedChat {
+                chatSettingKeysManager.selectedChat = activatedChatIDs.first ?? "chatgpt"
             }
         }
 
@@ -221,7 +215,7 @@ extension WebDictManager {
     }
 
     func getSelectedChatPrompt() -> ChatPrompt {
-        return getChatPrompts().first(where: { $0.id == selectedChatPromptID }) ?? ChatPromptPresets.none
+        return getChatPrompts().first(where: { $0.id == chatSettingKeysManager.selectedChatPromptID }) ?? ChatPromptPresets.none
     }
 
     func getSelectedWebDict(mode: String, selectedDictID: String, selectedChatID: String) -> WebDict? {

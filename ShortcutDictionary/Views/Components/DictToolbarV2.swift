@@ -4,20 +4,8 @@ import SwiftUI
 /// macOS Tahoe 부터 사용 가능한 Liquid Glass 툴바
 @available(macOS 26.0, *)
 struct DictToolbarV2: View {
-    @AppStorage(SettingKeys.selectedDict.rawValue)
-    private var selectedDict = SettingKeys.selectedDict.defaultValue as! String
-
-    @AppStorage(SettingKeys.selectedChat.rawValue)
-    private var selectedChat = SettingKeys.selectedChat.defaultValue as! String
-
-    @AppStorage(SettingKeys.selectedPageMode.rawValue)
-    private var selectedPageMode = SettingKeys.selectedPageMode.defaultValue as! String
-
-    @AppStorage(SettingKeys.isChatEnabled.rawValue)
-    private var isChatEnabled = SettingKeys.isChatEnabled.defaultValue as! Bool
-
-    @AppStorage(SettingKeys.selectedChatPromptID.rawValue)
-    private var selectedChatPromptID = SettingKeys.selectedChatPromptID.defaultValue as! String
+    @ObservedObject private var dictionarySettingKeysManager = DictionarySettingKeysManager.shared
+    @ObservedObject private var chatSettingKeysManager = ChatSettingKeysManager.shared
 
     @State private var showChevron = false
     @State private var showPromptChevron = false
@@ -67,9 +55,9 @@ struct DictToolbarV2: View {
                                     dict.wrappedName,
                                     action: {
                                         if pageMode == "chat" {
-                                            selectedChat = dict.id
+                                            chatSettingKeysManager.selectedChat = dict.id
                                         } else {
-                                            selectedDict = dict.id
+                                            dictionarySettingKeysManager.selectedDict = dict.id
                                         }
                                         showMenu.toggle()
                                     }
@@ -121,7 +109,7 @@ struct DictToolbarV2: View {
                             VStack {
                                 ForEach(WebDictManager.shared.getChatPrompts(), id: \.self) { prompt in
                                     Button(prompt.name) {
-                                        selectedChatPromptID = prompt.id
+                                        chatSettingKeysManager.selectedChatPromptID = prompt.id
                                         showPromptMenu.toggle()
                                     }
                                     .buttonStyle(.borderless)
@@ -192,7 +180,7 @@ struct DictToolbarV2: View {
     }
 
     var pageMode: String {
-        if selectedPageMode == "chat", isChatEnabled {
+        if dictionarySettingKeysManager.selectedPageMode == "chat", chatSettingKeysManager.isChatEnabled {
             return "chat"
         }
 
@@ -209,18 +197,18 @@ struct DictToolbarV2: View {
 
     var currentWebName: String {
         if pageMode == "chat" {
-            return WebDictManager.shared.getChat(selectedChat)?.wrappedName ?? "error"
+            return WebDictManager.shared.getChat(chatSettingKeysManager.selectedChat)?.wrappedName ?? "error"
         }
 
-        return WebDictManager.shared.getDict(selectedDict)?.wrappedName ?? "error"
+        return WebDictManager.shared.getDict(dictionarySettingKeysManager.selectedDict)?.wrappedName ?? "error"
     }
 
     func showEllipsisContextMenu() {
         ellipsisMenuBridge.onSelectDictionary = {
-            selectedPageMode = "dictionary"
+            dictionarySettingKeysManager.selectedPageMode = "dictionary"
         }
         ellipsisMenuBridge.onSelectChat = {
-            selectedPageMode = "chat"
+            dictionarySettingKeysManager.selectedPageMode = "chat"
         }
         ellipsisMenuBridge.onOpenSettings = {
             WindowManager.shared.showSettings()
@@ -236,7 +224,7 @@ struct DictToolbarV2: View {
         let chatItem = NSMenuItem(title: "채팅 모드", action: #selector(DictToolbarV2EllipsisMenuBridge.selectChat), keyEquivalent: "")
         chatItem.target = ellipsisMenuBridge
         chatItem.state = pageMode == "chat" ? .on : .off
-        chatItem.isEnabled = isChatEnabled
+        chatItem.isEnabled = chatSettingKeysManager.isChatEnabled
         menu.addItem(chatItem)
 
         menu.addItem(.separator())

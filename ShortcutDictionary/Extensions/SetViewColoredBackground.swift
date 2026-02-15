@@ -11,22 +11,12 @@ struct SetViewColoredBackground<S: Shape>: ViewModifier {
 
     @Environment(\.colorScheme) var colorScheme
 
-    @AppStorage(SettingKeys.backgroundColor.rawValue)
-    private var backgroundColor = SettingKeys.backgroundColor.defaultValue as! String
-
-    @AppStorage(SettingKeys.backgroundDarkColor.rawValue)
-    private var backgroundDarkColor = SettingKeys.backgroundDarkColor.defaultValue as! String
-
-    @AppStorage(SettingKeys.isBackgroundTransparent.rawValue)
-    private var isBackgroundTransparent = SettingKeys.isBackgroundTransparent.defaultValue as! Bool
-
-    @AppStorage(SettingKeys.isLiquidGlassEnabled.rawValue)
-    private var isLiquidGlassEnabled = SettingKeys.isLiquidGlassEnabled.defaultValue as! Bool
+    @ObservedObject private var appearanceSettingKeysManager = AppearanceSettingKeysManager.shared
 
     var color: Color {
         colorScheme == .light
-            ? Color(hexString: backgroundColor)
-            : Color(hexString: backgroundDarkColor)
+            ? Color(hexString: appearanceSettingKeysManager.backgroundColor)
+            : Color(hexString: appearanceSettingKeysManager.backgroundDarkColor)
     }
 
     var colorOpacity: Double {
@@ -39,11 +29,11 @@ struct SetViewColoredBackground<S: Shape>: ViewModifier {
         content
             .background {
                 // macOS 26.0 이상에서 Liquid Glass 디자인 활성화 가능
-                if #available(macOS 26.0, *), isLiquidGlassEnabled {
+                if #available(macOS 26.0, *), appearanceSettingKeysManager.isLiquidGlassEnabled {
                     Color.clear
                         .glassEffect(.regular.tint(color.opacity(colorOpacity)), in: shape)
                 } else {
-                    if isBackgroundTransparent {
+                    if appearanceSettingKeysManager.isBackgroundTransparent {
                         color
                             .opacity(colorOpacity)
                             .background(Material.thin)

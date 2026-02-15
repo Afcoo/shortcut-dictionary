@@ -2,23 +2,10 @@ import Cocoa
 import SwiftUI
 
 class MenubarManager {
-    @AppStorage(SettingKeys.isMenuItemEnabled.rawValue)
-    private var isMenuItemEnabled = SettingKeys.isMenuItemEnabled.defaultValue as! Bool
-
-    @AppStorage(SettingKeys.isToolbarEnabled.rawValue)
-    private var isToolbarEnabled = SettingKeys.isToolbarEnabled.defaultValue as! Bool
-
-    @AppStorage(SettingKeys.selectedDict.rawValue)
-    private var selectedDict = SettingKeys.selectedDict.defaultValue as! String
-
-    @AppStorage(SettingKeys.selectedChat.rawValue)
-    private var selectedChat = SettingKeys.selectedChat.defaultValue as! String
-
-    @AppStorage(SettingKeys.selectedPageMode.rawValue)
-    private var selectedPageMode = SettingKeys.selectedPageMode.defaultValue as! String
-
-    @AppStorage(SettingKeys.isChatEnabled.rawValue)
-    private var isChatEnabled = SettingKeys.isChatEnabled.defaultValue as! Bool
+    private let generalSettingKeysManager = GeneralSettingKeysManager.shared
+    private let appearanceSettingKeysManager = AppearanceSettingKeysManager.shared
+    private let dictionarySettingKeysManager = DictionarySettingKeysManager.shared
+    private let chatSettingKeysManager = ChatSettingKeysManager.shared
 
     static var shared = MenubarManager()
 
@@ -28,7 +15,7 @@ class MenubarManager {
     private init() {}
 
     func registerMenuBarItem() {
-        if isMenuItemEnabled {
+        if generalSettingKeysManager.isMenuItemEnabled {
             setupMenuBarItem()
         } else {
             removeMenuBarItem()
@@ -127,7 +114,7 @@ extension MenubarManager {
             dictionaryMenuItem.submenu = dictionaryMenu
             mainMenu.addItem(dictionaryMenuItem)
 
-            let shouldUseDictionaryQuickShortcuts = selectedPageMode != "chat"
+            let shouldUseDictionaryQuickShortcuts = dictionarySettingKeysManager.selectedPageMode != "chat"
             let activatedDicts = WebDictManager.shared.getActivatedDicts()
             for index in activatedDicts.indices {
                 let dictQuickChangeMenuItem: NSMenuItem
@@ -148,7 +135,7 @@ extension MenubarManager {
 
                 dictQuickChangeMenuItem.target = self
                 dictQuickChangeMenuItem.representedObject = activatedDicts[index].id
-                dictQuickChangeMenuItem.state = selectedDict == activatedDicts[index].id ? .on : .off
+                dictQuickChangeMenuItem.state = dictionarySettingKeysManager.selectedDict == activatedDicts[index].id ? .on : .off
                 dictionaryMenu.addItem(dictQuickChangeMenuItem)
             }
 
@@ -157,8 +144,8 @@ extension MenubarManager {
             chatMenuItem.submenu = chatMenu
             mainMenu.addItem(chatMenuItem)
 
-            let shouldUseChatQuickShortcuts = isChatEnabled && selectedPageMode == "chat"
-            if isChatEnabled {
+            let shouldUseChatQuickShortcuts = chatSettingKeysManager.isChatEnabled && dictionarySettingKeysManager.selectedPageMode == "chat"
+            if chatSettingKeysManager.isChatEnabled {
                 let activatedChats = WebDictManager.shared.getActivatedChats()
                 for index in activatedChats.indices {
                     let chatQuickChangeMenuItem: NSMenuItem
@@ -179,7 +166,7 @@ extension MenubarManager {
 
                     chatQuickChangeMenuItem.target = self
                     chatQuickChangeMenuItem.representedObject = activatedChats[index].id
-                    chatQuickChangeMenuItem.state = selectedChat == activatedChats[index].id ? .on : .off
+                    chatQuickChangeMenuItem.state = chatSettingKeysManager.selectedChat == activatedChats[index].id ? .on : .off
                     chatMenu.addItem(chatQuickChangeMenuItem)
                 }
             }
@@ -194,7 +181,7 @@ extension MenubarManager {
             let toolbarMenuItem = NSMenuItem(title: "툴바 표시",
                                              action: #selector(toggleToolbar),
                                              keyEquivalent: "t")
-            toolbarMenuItem.state = isToolbarEnabled ? .on : .off
+            toolbarMenuItem.state = appearanceSettingKeysManager.isToolbarEnabled ? .on : .off
             toolbarMenuItem.target = self
             viewMenu.addItem(toolbarMenuItem)
 
@@ -213,7 +200,7 @@ extension MenubarManager {
                 keyEquivalent: ""
             )
             dictionaryModeMenuItem.target = self
-            dictionaryModeMenuItem.state = selectedPageMode == "dictionary" ? .on : .off
+            dictionaryModeMenuItem.state = dictionarySettingKeysManager.selectedPageMode == "dictionary" ? .on : .off
             viewMenu.addItem(dictionaryModeMenuItem)
 
             let chatModeMenuItem = NSMenuItem(
@@ -222,8 +209,8 @@ extension MenubarManager {
                 keyEquivalent: ""
             )
             chatModeMenuItem.target = self
-            chatModeMenuItem.state = selectedPageMode == "chat" ? .on : .off
-            chatModeMenuItem.isEnabled = isChatEnabled
+            chatModeMenuItem.state = dictionarySettingKeysManager.selectedPageMode == "chat" ? .on : .off
+            chatModeMenuItem.isEnabled = chatSettingKeysManager.isChatEnabled
             viewMenu.addItem(chatModeMenuItem)
 
             viewMenu.addItem(NSMenuItem.separator())
@@ -292,7 +279,7 @@ extension MenubarManager {
             statusBarItem.menu = nil
 
         } else {
-            if selectedPageMode == "chat" {
+            if dictionarySettingKeysManager.selectedPageMode == "chat" {
                 ShortcutManager.shared.activate(mode: "chat", doCopyPaste: false)
             } else {
                 ShortcutManager.shared.activate(mode: "dictionary", doCopyPaste: false)
@@ -316,7 +303,7 @@ extension MenubarManager {
     }
 
     @objc func toggleToolbar() {
-        isToolbarEnabled.toggle()
+        appearanceSettingKeysManager.isToolbarEnabled.toggle()
         setupMenu()
     }
 
@@ -325,7 +312,7 @@ extension MenubarManager {
             return
         }
 
-        selectedDict = id
+        dictionarySettingKeysManager.selectedDict = id
         setupMenu()
     }
 
@@ -334,21 +321,21 @@ extension MenubarManager {
             return
         }
 
-        selectedChat = id
+        chatSettingKeysManager.selectedChat = id
         setupMenu()
     }
 
     @objc func changeDictionaryMode() {
-        selectedPageMode = "dictionary"
+        dictionarySettingKeysManager.selectedPageMode = "dictionary"
         setupMenu()
     }
 
     @objc func changeChatMode() {
-        guard isChatEnabled else {
+        guard chatSettingKeysManager.isChatEnabled else {
             return
         }
 
-        selectedPageMode = "chat"
+        dictionarySettingKeysManager.selectedPageMode = "chat"
         setupMenu()
     }
 
@@ -356,7 +343,7 @@ extension MenubarManager {
         NotificationCenter.default.post(
             name: .reloadDict,
             object: nil,
-            userInfo: [NotificationUserInfoKey.mode: selectedPageMode]
+            userInfo: [NotificationUserInfoKey.mode: dictionarySettingKeysManager.selectedPageMode]
         )
     }
 

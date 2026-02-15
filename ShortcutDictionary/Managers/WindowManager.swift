@@ -2,29 +2,8 @@ import KeyboardShortcuts
 import SwiftUI
 
 class WindowManager {
-    @AppStorage(SettingKeys.isAlwaysOnTop.rawValue)
-    private var isAlwaysOnTop = SettingKeys.isAlwaysOnTop.defaultValue as! Bool
-
-    @AppStorage(SettingKeys.isShowOnMousePos.rawValue)
-    private var isShowOnMousePos = SettingKeys.isShowOnMousePos.defaultValue as! Bool
-
-    @AppStorage(SettingKeys.isShowOnScreenCenter.rawValue)
-    private var isShowOnScreenCenter = SettingKeys.isShowOnScreenCenter.defaultValue as! Bool
-
-    @AppStorage(SettingKeys.dictWindowCursorPlacement.rawValue)
-    private var dictWindowCursorPlacement = SettingKeys.dictWindowCursorPlacement.defaultValue as! String
-
-    @AppStorage(SettingKeys.dictWindowCursorGap.rawValue)
-    private var dictWindowCursorGap = SettingKeys.dictWindowCursorGap.defaultValue as! Double
-
-    @AppStorage(SettingKeys.isDictWindowKeepInScreen.rawValue)
-    private var isDictWindowKeepInScreen = SettingKeys.isDictWindowKeepInScreen.defaultValue as! Bool
-
-    @AppStorage(SettingKeys.isOutClickToClose.rawValue)
-    private var isOutClickToClose = SettingKeys.isOutClickToClose.defaultValue as! Bool
-
-    @AppStorage(SettingKeys.isLiquidGlassEnabled.rawValue)
-    private var isLiquidGlassEnabled = SettingKeys.isLiquidGlassEnabled.defaultValue as! Bool
+    private let windowSettingKeysManager = WindowSettingKeysManager.shared
+    private let appearanceSettingKeysManager = AppearanceSettingKeysManager.shared
 
     static var shared = WindowManager()
 
@@ -74,7 +53,7 @@ extension WindowManager {
 
         dictWindow.isMovableByWindowBackground = true
 
-        if isLiquidGlassEnabled {
+        if appearanceSettingKeysManager.isLiquidGlassEnabled {
             dictWindow.toolbarStyle = .unified
             dictWindow.toolbar = NSToolbar()
         }
@@ -82,7 +61,7 @@ extension WindowManager {
         chromeless(dictWindow)
         moveToScreenCenter(dictWindow)
 
-        setDictAlwaysOnTop(isAlwaysOnTop)
+        setDictAlwaysOnTop(windowSettingKeysManager.isAlwaysOnTop)
 
         dictWindow.delegate = dictWindowDelegate
     }
@@ -92,13 +71,13 @@ extension WindowManager {
 
         NSApplication.shared.setActivationPolicy(.regular)
 
-        if isShowOnScreenCenter {
+        if windowSettingKeysManager.isShowOnScreenCenter {
             moveToScreenCenter(dictWindow)
         }
 
         setShowOnMousePos()
 
-        setOutClickToClose(isOutClickToClose)
+        setOutClickToClose(windowSettingKeysManager.isOutClickToClose)
 
         goFront(dictWindow)
     }
@@ -110,7 +89,7 @@ extension WindowManager {
 
     /// 마우스 위치에 사전 창 표시 구현
     func setShowOnMousePos() {
-        if isShowOnMousePos {
+        if windowSettingKeysManager.isShowOnMousePos {
             let mouseLocation = NSEvent.mouseLocation
             let screens = NSScreen.screens
             if let screenWithMouse = (screens.first { NSMouseInRect(mouseLocation, $0.frame, false) }) {
@@ -120,9 +99,9 @@ extension WindowManager {
                     dictFrame: dictWindow.frame,
                     screenFrame: screenWithMouse.frame,
                     visibleFrame: screenWithMouse.visibleFrame,
-                    placement: DictWindowCursorPlacement(rawValue: dictWindowCursorPlacement) ?? .center,
-                    gap: CGFloat(dictWindowCursorGap),
-                    keepInScreen: isDictWindowKeepInScreen
+                    placement: DictWindowCursorPlacement(rawValue: windowSettingKeysManager.dictWindowCursorPlacement) ?? .center,
+                    gap: CGFloat(windowSettingKeysManager.dictWindowCursorGap),
+                    keepInScreen: windowSettingKeysManager.isDictWindowKeepInScreen
                 )
 
                 // 사전 창 위치 설정
@@ -293,7 +272,7 @@ extension WindowManager {
         )
         window.title = "환영합니다!"
 
-        if isLiquidGlassEnabled {
+        if appearanceSettingKeysManager.isLiquidGlassEnabled {
             window.toolbar = NSToolbar()
             window.toolbarStyle = .unified
         }

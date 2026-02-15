@@ -4,8 +4,7 @@ import SwiftUI
 
 @main
 final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
-    @AppStorage(SettingKeys.hasCompletedOnboarding.rawValue)
-    private var hasCompletedOnboarding = SettingKeys.hasCompletedOnboarding.defaultValue as! Bool
+    private let generalSettingKeysManager = GeneralSettingKeysManager.shared
 
     static func main() {
         let app = NSApplication.shared
@@ -23,7 +22,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
         NSApplication.shared.setActivationPolicy(.regular)
 
-        if !hasCompletedOnboarding {
+        if !generalSettingKeysManager.hasCompletedOnboarding {
             WindowManager.shared.showOnboarding()
         } else {
             WindowManager.shared.showDict()

@@ -2,20 +2,9 @@ import KeyboardShortcuts
 import SwiftUI
 
 class ShortcutManager {
-    @AppStorage(SettingKeys.isGlobalShortcutEnabled.rawValue)
-    private var isGlobalShortcutEnabled = SettingKeys.isGlobalShortcutEnabled.defaultValue as! Bool
-
-    @AppStorage(SettingKeys.isCopyPasteEnabled.rawValue)
-    private var isCopyPasteEnabled = SettingKeys.isCopyPasteEnabled.defaultValue as! Bool
-
-    @AppStorage(SettingKeys.isChatShortcutEnabled.rawValue)
-    private var isChatShortcutEnabled = SettingKeys.isChatShortcutEnabled.defaultValue as! Bool
-
-    @AppStorage(SettingKeys.isChatEnabled.rawValue)
-    private var isChatEnabled = SettingKeys.isChatEnabled.defaultValue as! Bool
-
-    @AppStorage(SettingKeys.selectedPageMode.rawValue)
-    private var selectedPageMode = SettingKeys.selectedPageMode.defaultValue as! String
+    private let shortcutSettingKeysManager = ShortcutSettingKeysManager.shared
+    private let chatSettingKeysManager = ChatSettingKeysManager.shared
+    private let dictionarySettingKeysManager = DictionarySettingKeysManager.shared
 
     static var shared = ShortcutManager()
 
@@ -39,13 +28,13 @@ class ShortcutManager {
             self.activate(mode: "chat")
         })
 
-        if isGlobalShortcutEnabled {
+        if shortcutSettingKeysManager.isGlobalShortcutEnabled {
             KeyboardShortcuts.enable(.dictShortcut)
         } else {
             KeyboardShortcuts.disable(.dictShortcut)
         }
 
-        if isChatShortcutEnabled {
+        if shortcutSettingKeysManager.isChatShortcutEnabled {
             KeyboardShortcuts.enable(.chatShortcut)
         } else {
             KeyboardShortcuts.disable(.chatShortcut)
@@ -53,11 +42,11 @@ class ShortcutManager {
     }
 
     func activate(mode: String, doCopyPaste: Bool = true) {
-        if mode == "chat", !isChatEnabled {
+        if mode == "chat", !chatSettingKeysManager.isChatEnabled {
             return
         }
 
-        selectedPageMode = mode
+        dictionarySettingKeysManager.selectedPageMode = mode
         NotificationCenter.default.post(name: .pageModeChanged, object: mode)
 
         // 이미 복사 중이면 무시
@@ -66,7 +55,7 @@ class ShortcutManager {
             return
         }
 
-        if isCopyPasteEnabled, doCopyPaste {
+        if shortcutSettingKeysManager.isCopyPasteEnabled, doCopyPaste {
             isCopying = true
 
             getSelectedText { [weak self] selectedText in

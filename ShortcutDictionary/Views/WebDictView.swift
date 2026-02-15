@@ -4,20 +4,8 @@ import WebKit
 struct WebDictView: NSViewRepresentable {
     @Environment(\.colorScheme) var colorScheme // 다크모드 변경 감지용
 
-    @AppStorage(SettingKeys.backgroundColor.rawValue)
-    private var backgroundColor = SettingKeys.backgroundColor.defaultValue as! String
-
-    @AppStorage(SettingKeys.backgroundDarkColor.rawValue)
-    private var backgroundDarkColor = SettingKeys.backgroundDarkColor.defaultValue as! String
-
-    @AppStorage(SettingKeys.isMobileView.rawValue)
-    private var isMobileView = SettingKeys.isMobileView.defaultValue as! Bool
-
-    @AppStorage(SettingKeys.isToolbarEnabled.rawValue)
-    private var isToolbarEnabled = SettingKeys.isToolbarEnabled.defaultValue as! Bool
-
-    @AppStorage(SettingKeys.isLiquidGlassEnabled.rawValue)
-    private var isLiquidGlassEnabled = SettingKeys.isLiquidGlassEnabled.defaultValue as! Bool
+    @ObservedObject private var dictionarySettingKeysManager = DictionarySettingKeysManager.shared
+    @ObservedObject private var appearanceSettingKeysManager = AppearanceSettingKeysManager.shared
 
     let webDict: WebDict
     let mode: String
@@ -32,7 +20,7 @@ struct WebDictView: NSViewRepresentable {
         let view = context.coordinator.getOrCreateView(
             webDict: webDict,
             mode: mode,
-            isMobileView: isMobileView
+            isMobileView: dictionarySettingKeysManager.isMobileView
         )
 
         applyAppearance(to: view)
@@ -54,22 +42,22 @@ struct WebDictView: NSViewRepresentable {
     }
 
     private func applyAppearance(to view: WKWebView) {
-        if isMobileView {
+        if dictionarySettingKeysManager.isMobileView {
             view.customUserAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 13_2_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.0.3 Mobile/15E148 Safari/604.1"
         } else {
             view.customUserAgent = nil
         }
 
         if #available(macOS 26.0, *) {
-            view.obscuredContentInsets = isToolbarEnabled && isLiquidGlassEnabled
+            view.obscuredContentInsets = appearanceSettingKeysManager.isToolbarEnabled && appearanceSettingKeysManager.isLiquidGlassEnabled
                 ? .init(top: 52, left: 0, bottom: 0, right: 0)
                 : .init(top: 0, left: 0, bottom: 0, right: 0)
         }
 
         view.underPageBackgroundColor =
             colorScheme == .light
-                ? NSColor(Color(hexString: backgroundColor))
-                : NSColor(Color(hexString: backgroundDarkColor))
+                ? NSColor(Color(hexString: appearanceSettingKeysManager.backgroundColor))
+                : NSColor(Color(hexString: appearanceSettingKeysManager.backgroundDarkColor))
     }
 
     func tryLoad(_ url: URL, into view: WKWebView) {
@@ -78,11 +66,8 @@ struct WebDictView: NSViewRepresentable {
 
     /// Coordinator 클래스: WKNavigationDelegate를 처리
     class Coordinator: NSObject, WKScriptMessageHandler, WKNavigationDelegate {
-        @AppStorage(SettingKeys.isEscToClose.rawValue)
-        private var isEscToClose = SettingKeys.isEscToClose.defaultValue as! Bool
-
-        @AppStorage(SettingKeys.isFastSearchEnabled.rawValue)
-        private var isFastSearchEnabled = SettingKeys.isFastSearchEnabled.defaultValue as! Bool
+        private let windowSettingKeysManager = WindowSettingKeysManager.shared
+        private let shortcutSettingKeysManager = ShortcutSettingKeysManager.shared
 
         var parent: WebDictView
 
@@ -164,7 +149,7 @@ struct WebDictView: NSViewRepresentable {
                 if let key {
                     switch key {
                     case "Escape":
-                        if isEscToClose {
+                        if windowSettingKeysManager.isEscToClose {
                             WindowManager.shared.closeDict()
                         }
                     default:
@@ -296,7 +281,7 @@ struct WebDictView: NSViewRepresentable {
                 processedText = text
             }
 
-            let script = parent.webDict.getPasteScript(value: processedText, fastSearch: isFastSearchEnabled) ?? ""
+            let script = parent.webDict.getPasteScript(value: processedText, fastSearch: shortcutSettingKeysManager.isFastSearchEnabled) ?? ""
 
             runPasteScriptWhenDOMReady(script: script, in: webView)
         }

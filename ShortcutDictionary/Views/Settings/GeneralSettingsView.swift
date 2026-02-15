@@ -2,8 +2,7 @@ import LaunchAtLogin
 import SwiftUI
 
 struct GeneralSettingsView: View {
-    @AppStorage(SettingKeys.isMenuItemEnabled.rawValue)
-    private var isMenuItemEnabled = SettingKeys.isMenuItemEnabled.defaultValue as! Bool
+    @ObservedObject private var generalSettingKeysManager = GeneralSettingKeysManager.shared
 
     var body: some View {
         Form {
@@ -11,10 +10,10 @@ struct GeneralSettingsView: View {
             LaunchAtLogin.Toggle("시작 시 실행")
 
             // 메뉴 아이템 표시
-            Toggle(isOn: $isMenuItemEnabled) {
+            Toggle(isOn: generalSettingKeysManager.binding(\.isMenuItemEnabled)) {
                 Text("메뉴 바 아이템 표시")
             }
-            .onChange(of: isMenuItemEnabled) { _ in
+            .onChange(of: generalSettingKeysManager.isMenuItemEnabled) { _ in
                 setMenuItemEnabled()
             }
         }
@@ -23,7 +22,7 @@ struct GeneralSettingsView: View {
     }
 
     func setMenuItemEnabled() {
-        if isMenuItemEnabled {
+        if generalSettingKeysManager.isMenuItemEnabled {
             MenubarManager.shared.setupMenuBarItem()
         } else {
             MenubarManager.shared.removeMenuBarItem()

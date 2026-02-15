@@ -7,20 +7,17 @@ extension View {
 }
 
 struct DictViewContextMenu: ViewModifier {
-    @AppStorage(SettingKeys.isToolbarEnabled.rawValue)
-    private var isToolbarEnabled = SettingKeys.isToolbarEnabled.defaultValue as! Bool
-
-    @AppStorage(SettingKeys.selectedPageMode.rawValue)
-    private var selectedPageMode = SettingKeys.selectedPageMode.defaultValue as! String
+    @ObservedObject private var appearanceSettingKeysManager = AppearanceSettingKeysManager.shared
+    @ObservedObject private var dictionarySettingKeysManager = DictionarySettingKeysManager.shared
 
     func body(content: Content) -> some View {
         content
             .contextMenu {
                 Button(action: {
-                    self.isToolbarEnabled.toggle()
+                    appearanceSettingKeysManager.isToolbarEnabled.toggle()
                 }) {
                     HStack {
-                        if self.isToolbarEnabled {
+                        if appearanceSettingKeysManager.isToolbarEnabled {
                             Image(systemName: "checkmark")
                                 .imageScale(.small)
                         }
@@ -33,7 +30,7 @@ struct DictViewContextMenu: ViewModifier {
                     NotificationCenter.default.post(
                         name: .reloadDict,
                         object: nil,
-                        userInfo: [NotificationUserInfoKey.mode: selectedPageMode]
+                        userInfo: [NotificationUserInfoKey.mode: dictionarySettingKeysManager.selectedPageMode]
                     )
                 }
                 .keyboardShortcut("R", modifiers: .command)
