@@ -1,6 +1,6 @@
 # PROJECT KNOWLEDGE BASE
 
-**Last Updated:** 2026-02-15
+**Last Updated:** 2026-02-16
 
 ## OVERVIEW
 
@@ -169,7 +169,7 @@ open ShortcutDictionary.xcodeproj
 
 - Accessibility permission is required for auto copy/paste flow (`CGEvent` copy command).
 - App sandbox is enabled (`network.client`, `user-selected.read-only`).
-- Deployment targets in project: App macOS 13.5+, unit/UI test targets macOS 15.0+.
+- Deployment targets in project: App macOS 14.0+, unit/UI test targets macOS 15.0+.
 - There is a known TODO for back/forward navigation controls in toolbar components.
 
 ## RELEASE CHECKLIST
