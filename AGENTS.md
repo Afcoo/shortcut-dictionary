@@ -65,6 +65,10 @@ shortcut-dictionary/
 - Singleton pattern: `static var shared = ClassName()` (or `static let` in manager)
 - Window and manager logic grouped with `extension` blocks by concern
 
+### Commit Message Style
+- Use a head-first subject line that starts with the purpose or conclusion.
+- Keep the commit body as bullet-only detail lines prefixed with `-` (no narrative sentences).
+
 ### Architecture
 - No Storyboard. SwiftUI + AppKit (`NSWindow`, `NSMenu`, `WKWebView`) hybrid.
 - Notification-driven cross-component sync:
