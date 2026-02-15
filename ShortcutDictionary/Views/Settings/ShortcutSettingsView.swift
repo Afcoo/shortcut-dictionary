@@ -42,7 +42,7 @@ struct ShortcutSettingsView: View {
 
             // 단축키 입력시 복사 유무 결정
             Toggle(isOn: $isCopyPasteEnabled) {
-                Text("선택된 단어 바로 검색")
+                Text("선택한 항목 자동 입력")
                 if accessEnabled {
                     Text("단축키 입력시 자동으로 복사&붙여넣기를 합니다")
                 } else {
@@ -67,7 +67,7 @@ struct ShortcutSettingsView: View {
 
             // 빠른 검색 활성화 여부
             Toggle(isOn: $isFastSearchEnabled) {
-                Text("빠른 검색 활성화")
+                Text("즉시 검색 확성화")
                 Text("이 기능을 활성화하면 복사된 단어를 바로 검색합니다")
             }
         }

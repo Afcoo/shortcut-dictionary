@@ -36,6 +36,8 @@ struct SettingsView: View {
             GeneralSettingsView()
         case .shortcut:
             ShortcutSettingsView()
+        case .window:
+            WindowSettingsView()
         case .dictionary:
             DictionarySettingsView()
         case .chat:
@@ -51,6 +53,7 @@ struct SettingsView: View {
 enum SettingsPage: String, CaseIterable, Identifiable {
     case general
     case shortcut
+    case window
     case dictionary
     case chat
     case appearance
@@ -64,6 +67,7 @@ enum SettingsPage: String, CaseIterable, Identifiable {
         switch self {
         case .general: return "일반"
         case .shortcut: return "단축키"
+        case .window: return "창"
         case .dictionary: return "사전"
         case .chat: return "채팅"
         case .appearance: return "외관"
@@ -75,6 +79,7 @@ enum SettingsPage: String, CaseIterable, Identifiable {
         switch self {
         case .general: return "switch.2"
         case .shortcut: return "keyboard"
+        case .window: return "macwindow"
         case .dictionary: return "character.book.closed.fill"
         case .chat: return "bubble.left.and.bubble.right"
         case .appearance: return "paintpalette"
