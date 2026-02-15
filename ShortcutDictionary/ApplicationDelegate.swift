@@ -14,8 +14,8 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         app.run()
     }
 
-    // 앱 실행 시
-    func applicationDidFinishLaunching(_ notification: Notification) {
+    /// 앱 실행 시
+    func applicationDidFinishLaunching(_: Notification) {
         MenubarManager.shared.registerMenuBarItem()
 //        MenubarManager.shared.setupMenu()
 
@@ -25,19 +25,18 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
         if !hasCompletedOnboarding {
             WindowManager.shared.showOnboarding()
-        }
-        else {
+        } else {
             WindowManager.shared.showDict()
         }
     }
 
-    // 창 닫아도 세션 유지
-    func applicationShouldTerminateAfterLastWindowClosed(_ sender: NSApplication) -> Bool {
+    /// 창 닫아도 세션 유지
+    func applicationShouldTerminateAfterLastWindowClosed(_: NSApplication) -> Bool {
         return false
     }
 
-    // Dock 아이콘 클릭 시 창 표시
-    func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {
+    /// Dock 아이콘 클릭 시 창 표시
+    func applicationShouldHandleReopen(_: NSApplication, hasVisibleWindows _: Bool) -> Bool {
         WindowManager.shared.showDict()
         return false
     }

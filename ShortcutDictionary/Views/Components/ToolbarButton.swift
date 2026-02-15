@@ -14,8 +14,7 @@ struct ToolbarButton: View {
                     Image(systemName: systemName)
                         .imageScale(scale)
                         .foregroundColor(Color(.tertiaryLabelColor))
-                }
-                else {
+                } else {
                     Image(systemName)
                         .renderingMode(.template) // 색 변경 가능하게
                         .resizable()

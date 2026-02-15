@@ -89,13 +89,11 @@ struct AppearanceSettingsView: View {
                         dictViewPadding = 0.0 // padding 제거 (기본값으로 변경)
                         isBackgroundTransparent = true // 배경 투명 효과 강제 활성화
                         WindowManager.shared.setDictWindowLiquidGlass(true)
-                    }
-                    else {
+                    } else {
                         WindowManager.shared.setDictWindowLiquidGlass(false)
                     }
                 }
-            }
-            else {
+            } else {
                 Toggle(isOn: $isLiquidGlassEnabled) {
                     Text("Liquid Glass 디자인 사용").foregroundStyle(.secondary)
                     Text("macOS Tahoe 이상이 필요합니다").foregroundStyle(.tertiary)

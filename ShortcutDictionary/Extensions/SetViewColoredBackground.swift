@@ -1,7 +1,6 @@
 import SwiftUI
 
 extension View {
-    @ViewBuilder
     func setViewColoredBackground<S: Shape>(shape: S = .rect) -> some View {
         modifier(SetViewColoredBackground(shape: shape))
     }

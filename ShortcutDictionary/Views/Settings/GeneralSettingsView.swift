@@ -25,8 +25,7 @@ struct GeneralSettingsView: View {
     func setMenuItemEnabled() {
         if isMenuItemEnabled {
             MenubarManager.shared.setupMenuBarItem()
-        }
-        else {
+        } else {
             MenubarManager.shared.removeMenuBarItem()
         }
     }

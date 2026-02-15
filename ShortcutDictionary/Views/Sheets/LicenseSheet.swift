@@ -24,7 +24,7 @@ struct LicenseSheet: View {
             licenseType: "MIT",
             url: "https://github.com/sindresorhus/LaunchAtLogin-Modern",
             licenseUrl: "https://github.com/sindresorhus/LaunchAtLogin-Modern/blob/main/license"
-        )
+        ),
     ]
 
     var body: some View {

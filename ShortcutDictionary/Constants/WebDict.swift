@@ -5,7 +5,7 @@ struct WebDict: Hashable, Codable, Identifiable {
     var name: String? // 표시 이름
 
     var wrappedName: String {
-        self.name ?? self.id
+        name ?? id
     }
 
     var url: String
@@ -27,12 +27,12 @@ extension WebDict {
         return """
         (() => {
             let SD_clipboard_value = `\(value)`;
-            \((self.prefix ?? "") + self.script + (self.postfix ?? ""))
+            \((prefix ?? "") + script + (postfix ?? ""))
         })();
-        """ + (fastSearch ? (self.postScript ?? "") : "")
+        """ + (fastSearch ? (postScript ?? "") : "")
     }
 
-    // 하위 항목들을 순회하며 조건에 맞는 항목을 배열로 반환
+    /// 하위 항목들을 순회하며 조건에 맞는 항목을 배열로 반환
     func filterRecursively(isIncluded: (WebDict) -> Bool) -> [WebDict] {
         var results: [WebDict] = []
 
@@ -41,7 +41,7 @@ extension WebDict {
         }
 
         // 하위 항목이 있다면 재귀적으로 탐색해 결과에 추가
-        if let children = self.children {
+        if let children = children {
             for child in children {
                 results.append(contentsOf: child.filterRecursively(isIncluded: isIncluded))
             }

@@ -8,7 +8,7 @@ struct SizePreferenceKey: PreferenceKey {
     }
 }
 
-// View extension to read view height
+/// View extension to read view height
 extension View {
     func getViewSize(_ getSize: @escaping ((CGSize) -> Void)) -> some View {
         return background {

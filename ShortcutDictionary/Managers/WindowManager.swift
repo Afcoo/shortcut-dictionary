@@ -108,7 +108,7 @@ extension WindowManager {
         dictWindow.close()
     }
 
-    // 마우스 위치에 사전 창 표시 구현
+    /// 마우스 위치에 사전 창 표시 구현
     func setShowOnMousePos() {
         if isShowOnMousePos {
             let mouseLocation = NSEvent.mouseLocation
@@ -134,7 +134,7 @@ extension WindowManager {
     static func getDictWindowOrigin(
         mouseLocation: NSPoint,
         dictFrame: CGRect,
-        screenFrame: CGRect,
+        screenFrame _: CGRect,
         visibleFrame: CGRect,
         placement: DictWindowCursorPlacement,
         gap: CGFloat,
@@ -193,7 +193,7 @@ extension WindowManager {
         return NSPoint(x: x, y: y)
     }
 
-    // 사전 창 밖 클릭시 닫기 구현
+    /// 사전 창 밖 클릭시 닫기 구현
     func setOutClickToClose(_ tf: Bool) {
         if tf, clickEventMonitor == nil {
             // 클릭 이벤트 모니터링
@@ -210,8 +210,7 @@ extension WindowManager {
                     closeDict()
                 }
             }
-        }
-        else {
+        } else {
             removeClickEventMonitor()
         }
     }
@@ -223,22 +222,20 @@ extension WindowManager {
         }
     }
 
-    // 사전 창 항상 위에 표시 구현
+    /// 사전 창 항상 위에 표시 구현
     func setDictAlwaysOnTop(_ tf: Bool) {
         if tf {
             dictWindow.level = .floating
-        }
-        else {
+        } else {
             dictWindow.level = .normal
         }
     }
 
-    // 사전 창의 Liquid Glass 스타일 변경
+    /// 사전 창의 Liquid Glass 스타일 변경
     func setDictWindowLiquidGlass(_ tf: Bool) {
         if tf {
             dictWindow.toolbar = NSToolbar()
-        }
-        else {
+        } else {
             dictWindow.toolbar = nil
         }
     }
@@ -251,8 +248,7 @@ extension WindowManager {
         if let window = settingsWindow {
             moveToScreenCenter(window)
             window.makeKeyAndOrderFront(nil)
-        }
-        else {
+        } else {
             let window = NSWindow(
                 contentRect: NSRect(x: 0, y: 0, width: 520, height: 480),
                 styleMask: [.closable, .titled, .fullSizeContentView],
@@ -354,7 +350,7 @@ extension WindowManager {
 // MARK: - 윈도우 유틸리티
 
 private extension WindowManager {
-    // 타이틀 바 완전 제거
+    /// 타이틀 바 완전 제거
     func chromeless(_ window: NSWindow) {
         // hide buttons
         window.standardWindowButton(.closeButton)?.isHidden = true
@@ -367,7 +363,7 @@ private extension WindowManager {
         window.styleMask.insert(NSWindow.StyleMask.fullSizeContentView)
     }
 
-    // 창을 가장 앞으로 가져오기
+    /// 창을 가장 앞으로 가져오기
     func goFront(_ window: NSWindow) {
         window.makeKeyAndOrderFront(nil)
         NSApp.activate(ignoringOtherApps: true)
@@ -394,13 +390,13 @@ private extension WindowManager {
 // MARK: - DictWindowDelegate
 
 class DictWindowDelegate: NSObject, NSWindowDelegate {
-    func windowDidBecomeKey(_ notification: Notification) {
+    func windowDidBecomeKey(_: Notification) {
         print("Dict Window become key")
 
         MenubarManager.shared.setupMenu()
     }
 
-    func windowWillClose(_ notification: Notification) {
+    func windowWillClose(_: Notification) {
         print("Dict Window will close")
         WindowManager.shared.isDictClosing = true
 
@@ -442,7 +438,7 @@ class SettingsToolbarObserver: NSObject {
 
 /// 메뉴바 위로도 이동 가능한 사전 창
 class DictWindow: NSWindow {
-    override func constrainFrameRect(_ frameRect: NSRect, to screen: NSScreen?) -> NSRect {
+    override func constrainFrameRect(_ frameRect: NSRect, to _: NSScreen?) -> NSRect {
         return frameRect
     }
 }

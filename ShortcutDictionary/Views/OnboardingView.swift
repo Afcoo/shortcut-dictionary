@@ -57,8 +57,7 @@ struct OnboardingView: View {
 
                 if #available(macOS 26.0, *), isLiquidGlassEnabled {
                     ToolbarButtonV2(action: _action, systemName: _systemName)
-                }
-                else {
+                } else {
                     ToolbarButton(action: _action, systemName: _systemName)
                 }
 
@@ -72,8 +71,7 @@ struct OnboardingView: View {
                         .buttonStyle(.glassProminent)
                         .buttonBorderShape(.capsule)
                         .controlSize(.extraLarge)
-                }
-                else {
+                } else {
                     nextButton
                         .buttonStyle(.borderedProminent)
                         .controlSize(.large)
@@ -95,8 +93,7 @@ struct OnboardingView: View {
     func next() {
         if currentPage < onboardingPages.count - 1 {
             changePage(1)
-        }
-        else {
+        } else {
             end()
         }
     }
