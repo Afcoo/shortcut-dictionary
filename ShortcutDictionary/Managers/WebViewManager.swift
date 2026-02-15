@@ -1,7 +1,7 @@
 import WebKit
 
-class WebViewStore {
-    static var shared = WebViewStore()
+class WebViewManager {
+    static var shared = WebViewManager()
 
     private var views: [String: WKWebView] = [:]
 

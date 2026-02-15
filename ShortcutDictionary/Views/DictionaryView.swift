@@ -22,6 +22,8 @@ struct DictionaryView: View {
     @AppStorage(SettingKeys.isLiquidGlassEnabled.rawValue)
     private var isLiquidGlassEnabled = SettingKeys.isLiquidGlassEnabled.defaultValue as! Bool
 
+    @State private var postLastCopiedTextWorkItem: DispatchWorkItem?
+
     var body: some View {
         ZStack(alignment: .topLeading) {
             if let currentWebDict {
@@ -52,11 +54,11 @@ struct DictionaryView: View {
         }
         .onChange(of: selectedDict) { _ in
             guard pageMode == "dictionary" else { return }
-            ShortcutManager.shared.postLastCopiedTextIfExists(mode: "dictionary")
+            schedulePostLastCopiedText(mode: "dictionary")
         }
         .onChange(of: selectedChat) { _ in
             guard pageMode == "chat" else { return }
-            ShortcutManager.shared.postLastCopiedTextIfExists(mode: "chat")
+            schedulePostLastCopiedText(mode: "chat")
         }
         .onChange(of: isChatEnabled) { enabled in
             if !enabled, selectedPageMode == "chat" {
@@ -107,6 +109,17 @@ struct DictionaryView: View {
             .padding([.horizontal, .bottom], dictViewPadding)
             .padding(.top, (!isLiquidGlassEnabled && isToolbarEnabled) ? 36.0 : dictViewPadding)
             .id("\(isToolbarEnabled)-\(isLiquidGlassEnabled)")
+    }
+
+    private func schedulePostLastCopiedText(mode: String) {
+        postLastCopiedTextWorkItem?.cancel()
+
+        let workItem = DispatchWorkItem {
+            ShortcutManager.shared.postLastCopiedTextIfExists(mode: mode)
+        }
+
+        postLastCopiedTextWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: workItem)
     }
 }
 

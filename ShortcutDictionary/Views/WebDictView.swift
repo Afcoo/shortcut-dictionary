@@ -94,6 +94,8 @@ struct WebDictView: NSViewRepresentable {
         private var isRetrying = false
         private var retryCount = 0
         private let maxRetryCount = 5
+        private let pasteRetryInterval: TimeInterval = 0.25
+        private let maxPasteRetryDuration: TimeInterval = 5.0
 
         init(_ parent: WebDictView) {
             self.parent = parent
@@ -179,7 +181,7 @@ struct WebDictView: NSViewRepresentable {
             let mode = parent.mode
             let id = parent.webDict.id
 
-            guard let webView = WebViewStore.shared.get(mode: mode, id: id) else {
+            guard let webView = WebViewManager.shared.get(mode: mode, id: id) else {
                 pendingTexts[cacheKey(mode: mode, id: id)] = text
                 return
             }
@@ -205,7 +207,7 @@ struct WebDictView: NSViewRepresentable {
                 return
             }
 
-            if let webView = WebViewStore.shared.get(mode: parent.mode, id: parent.webDict.id) {
+            if let webView = WebViewManager.shared.get(mode: parent.mode, id: parent.webDict.id) {
                 webView.load(URLRequest(url: url))
                 setReady(false, for: parent.mode, id: parent.webDict.id)
             } else if isRetrying {
@@ -216,7 +218,7 @@ struct WebDictView: NSViewRepresentable {
         }
 
         func getOrCreateView(webDict: WebDict, mode: String, isMobileView: Bool) -> WKWebView {
-            let view = WebViewStore.shared.getOrCreate(mode: mode, id: webDict.id) {
+            let view = WebViewManager.shared.getOrCreate(mode: mode, id: webDict.id) {
                 self.createView(webDict: webDict, isMobileView: isMobileView)
             }
 
@@ -261,7 +263,7 @@ struct WebDictView: NSViewRepresentable {
             let key = cacheKey(mode: mode, id: id)
 
             guard let text = pendingTexts[key],
-                  let webView = WebViewStore.shared.get(mode: mode, id: id),
+                  let webView = WebViewManager.shared.get(mode: mode, id: id),
                   readyKeys.contains(key)
             else {
                 return
@@ -296,12 +298,57 @@ struct WebDictView: NSViewRepresentable {
 
             let script = parent.webDict.getPasteScript(value: processedText, fastSearch: isFastSearchEnabled) ?? ""
 
-            webView.evaluateJavaScript(script) { _, error in
-                if let error = error {
-                    print("JavaScript execution error: \(error)")
-                } else {
-                    print("JavaScript executed successfully")
+            runPasteScriptWhenDOMReady(script: script, in: webView)
+        }
+
+        private func runPasteScriptWhenDOMReady(
+            script: String,
+            in webView: WKWebView,
+            attempt: Int = 0,
+            startedAt: Date = Date()
+        ) {
+            let domReadyScript = "document.readyState"
+
+            webView.evaluateJavaScript(domReadyScript) { result, error in
+                guard error == nil else {
+                    self.retryPasteScript(script: script, in: webView, attempt: attempt, startedAt: startedAt)
+                    return
                 }
+
+                let readyState = result as? String ?? "loading"
+                guard readyState != "loading" else {
+                    self.retryPasteScript(script: script, in: webView, attempt: attempt, startedAt: startedAt)
+                    return
+                }
+
+                webView.evaluateJavaScript(script) { _, pasteError in
+                    if let pasteError {
+                        if Date().timeIntervalSince(startedAt) >= self.maxPasteRetryDuration {
+                            print("JavaScript execution error: \(pasteError)")
+                        } else {
+                            self.retryPasteScript(script: script, in: webView, attempt: attempt, startedAt: startedAt)
+                        }
+                    } else {
+                        print("JavaScript executed successfully")
+                    }
+                }
+            }
+        }
+
+        private func retryPasteScript(script: String, in webView: WKWebView, attempt: Int, startedAt: Date) {
+            if Date().timeIntervalSince(startedAt) >= maxPasteRetryDuration {
+                return
+            }
+
+            let nextAttempt = attempt + 1
+
+            DispatchQueue.main.asyncAfter(deadline: .now() + pasteRetryInterval) {
+                self.runPasteScriptWhenDOMReady(
+                    script: script,
+                    in: webView,
+                    attempt: nextAttempt,
+                    startedAt: startedAt
+                )
             }
         }
 
