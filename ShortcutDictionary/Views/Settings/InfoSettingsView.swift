@@ -57,22 +57,24 @@ struct InfoSettingsView: View {
         }
     }
 
-    // 온보딩 초기화
+    /// 온보딩 초기화
     func restartOnboarding() {
         UserDefaults.standard.resetKey(.hasCompletedOnboarding)
     }
 
-    // 설정 초기화
+    /// 설정 초기화
     func resetDefaults() {
         UserDefaults.standard.resetKeys()
 
         KeyboardShortcuts.disable(.dictShortcut)
         KeyboardShortcuts.reset(.dictShortcut)
+        KeyboardShortcuts.disable(.chatShortcut)
+        KeyboardShortcuts.reset(.chatShortcut)
 
         LaunchAtLogin.isEnabled = false
     }
 
-    // WebView 초기화
+    /// WebView 초기화
     func resetWebView() {
         WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes(), completionHandler: {
             records in
@@ -82,7 +84,7 @@ struct InfoSettingsView: View {
             }
         })
 
-        NotificationCenter.default.post(name: .reloadDict, object: "") // 사전 창 새로고침
+        NotificationCenter.default.post(name: .reloadDict, object: nil)
     }
 }
 

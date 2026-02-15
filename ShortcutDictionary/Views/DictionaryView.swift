@@ -4,6 +4,15 @@ struct DictionaryView: View {
     @AppStorage(SettingKeys.selectedDict.rawValue)
     private var selectedDict = SettingKeys.selectedDict.defaultValue as! String
 
+    @AppStorage(SettingKeys.selectedChat.rawValue)
+    private var selectedChat = SettingKeys.selectedChat.defaultValue as! String
+
+    @AppStorage(SettingKeys.selectedPageMode.rawValue)
+    private var selectedPageMode = SettingKeys.selectedPageMode.defaultValue as! String
+
+    @AppStorage(SettingKeys.isChatEnabled.rawValue)
+    private var isChatEnabled = SettingKeys.isChatEnabled.defaultValue as! Bool
+
     @AppStorage(SettingKeys.isToolbarEnabled.rawValue)
     private var isToolbarEnabled = SettingKeys.isToolbarEnabled.defaultValue as! Bool
 
@@ -15,18 +24,10 @@ struct DictionaryView: View {
 
     var body: some View {
         ZStack(alignment: .topLeading) {
-            // 사전 웹 뷰
-            if WebDictManager.shared.getDict(selectedDict) != nil {
-                WebDictView(webDict: WebDictManager.shared.getDict(selectedDict)!)
-                    .clipShape(RoundedRectangle(cornerRadius:
-                        isLiquidGlassEnabled
-                            ? max(26.0 - dictViewPadding, 14.0)
-                            : max(15.0 - dictViewPadding, 10.0)
-                    ))
-                    .accessibilitySortPriority(2) // 사전에 우선적 포커스
-                    .padding([.horizontal, .bottom], dictViewPadding)
-                    .padding(.top, (!isLiquidGlassEnabled && isToolbarEnabled) ? 36.0 : dictViewPadding)
-                    .id([isToolbarEnabled, isLiquidGlassEnabled]) // 해당 값이 바뀔 때 뷰 새로고침
+            if let currentWebDict {
+                webContainer(
+                    view: WebDictView(webDict: currentWebDict, mode: pageMode)
+                )
             }
 
             // 툴바
@@ -46,6 +47,66 @@ struct DictionaryView: View {
         }
         .setViewColoredBackground() // 배경 색상 설정
         .setDictViewContextMenu() // Edge 우클릭 시 메뉴 표시
+        .onChange(of: selectedPageMode) { _ in
+            ShortcutManager.shared.postLastCopiedTextIfExists(mode: pageMode)
+        }
+        .onChange(of: selectedDict) { _ in
+            guard pageMode == "dictionary" else { return }
+            ShortcutManager.shared.postLastCopiedTextIfExists(mode: "dictionary")
+        }
+        .onChange(of: selectedChat) { _ in
+            guard pageMode == "chat" else { return }
+            ShortcutManager.shared.postLastCopiedTextIfExists(mode: "chat")
+        }
+        .onChange(of: isChatEnabled) { enabled in
+            if !enabled, selectedPageMode == "chat" {
+                selectedPageMode = "dictionary"
+            }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: .pageModeChanged)) { notification in
+            guard let mode = notification.object as? String,
+                  mode != selectedPageMode
+            else { return }
+
+            selectedPageMode = mode
+        }
+        .onAppear {
+            if WebDictManager.shared.getDict(selectedDict) == nil {
+                selectedDict = WebDictManager.shared.getActivatedDicts().first?.id ?? "daum_eng"
+            }
+
+            if WebDictManager.shared.getChat(selectedChat) == nil {
+                selectedChat = WebDictManager.shared.getActivatedChats().first?.id ?? "chatgpt"
+            }
+        }
+    }
+
+    var pageMode: String {
+        if selectedPageMode == "chat", isChatEnabled {
+            return "chat"
+        }
+
+        return "dictionary"
+    }
+
+    var currentWebDict: WebDict? {
+        return WebDictManager.shared.getSelectedWebDict(
+            mode: pageMode,
+            selectedDictID: selectedDict,
+            selectedChatID: selectedChat
+        )
+    }
+
+    func webContainer<Content: View>(view: Content) -> some View {
+        view
+            .clipShape(RoundedRectangle(cornerRadius:
+                isLiquidGlassEnabled
+                    ? max(26.0 - dictViewPadding, 14.0)
+                    : max(15.0 - dictViewPadding, 10.0)))
+            .accessibilitySortPriority(2)
+            .padding([.horizontal, .bottom], dictViewPadding)
+            .padding(.top, (!isLiquidGlassEnabled && isToolbarEnabled) ? 36.0 : dictViewPadding)
+            .id("\(isToolbarEnabled)-\(isLiquidGlassEnabled)")
     }
 }
 

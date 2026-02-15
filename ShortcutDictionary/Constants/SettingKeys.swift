@@ -2,6 +2,7 @@ import SwiftUI
 
 enum SettingKeys: String, CaseIterable {
     case isGlobalShortcutEnabled = "enable_global_shortcut"
+    case isChatShortcutEnabled = "enable_chat_shortcut"
     case isCopyPasteEnabled = "enable_copy_paste"
     case isMenuItemEnabled = "enable_menu_item"
     case isAlwaysOnTop = "enable_always_on_top"
@@ -16,7 +17,7 @@ enum SettingKeys: String, CaseIterable {
     case dictWindowCursorGap
     case isDictWindowKeepInScreen
 
-    // 빠른 검색 활성화
+    /// 빠른 검색 활성화
     case isFastSearchEnabled
 
     case hasCompletedOnboarding
@@ -30,15 +31,23 @@ enum SettingKeys: String, CaseIterable {
 
     // 사전 종류
     case selectedDict
+    case selectedChat
+    case selectedPageMode
     case customDictData
     case activatedDicts // 사용 활성화한 사전
+    case activatedChats
+    case isChatEnabled
 
-    // 모바일 뷰 사용 여부
+    case selectedChatPromptID
+    case customChatPromptsData
+
+    /// 모바일 뷰 사용 여부
     case isMobileView
 
     var defaultValue: Any {
         switch self {
         case .isGlobalShortcutEnabled: return false
+        case .isChatShortcutEnabled: return false
         case .isCopyPasteEnabled: return false
         case .isMenuItemEnabled: return true
         case .isAlwaysOnTop: return false
@@ -61,14 +70,20 @@ enum SettingKeys: String, CaseIterable {
         case .isLiquidGlassEnabled: return if #available(macOS 26.0, *) { true } else { false } // macOS Tahoe에서만 기본 설정
         // 사전 종류
         case .selectedDict: return "daum_eng"
+        case .selectedChat: return "chatgpt"
+        case .selectedPageMode: return "dictionary"
         case .customDictData: return ""
         case .activatedDicts: return ""
+        case .activatedChats: return ""
+        case .isChatEnabled: return true
+        case .selectedChatPromptID: return "none"
+        case .customChatPromptsData: return ""
         case .isMobileView: return true
         }
     }
 }
 
-// 설정 초기화 관련
+/// 설정 초기화 관련
 extension UserDefaults {
     func resetKeys() {
         for item in SettingKeys.allCases {
@@ -94,7 +109,9 @@ enum DictWindowCursorPlacement: String, CaseIterable, Identifiable {
     case bottom
     case bottomTrailing
 
-    var id: Self { self }
+    var id: Self {
+        self
+    }
 
     var displayName: String {
         switch self {

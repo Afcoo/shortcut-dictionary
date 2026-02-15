@@ -11,6 +11,15 @@ class MenubarManager {
     @AppStorage(SettingKeys.selectedDict.rawValue)
     private var selectedDict = SettingKeys.selectedDict.defaultValue as! String
 
+    @AppStorage(SettingKeys.selectedChat.rawValue)
+    private var selectedChat = SettingKeys.selectedChat.defaultValue as! String
+
+    @AppStorage(SettingKeys.selectedPageMode.rawValue)
+    private var selectedPageMode = SettingKeys.selectedPageMode.defaultValue as! String
+
+    @AppStorage(SettingKeys.isChatEnabled.rawValue)
+    private var isChatEnabled = SettingKeys.isChatEnabled.defaultValue as! Bool
+
     static var shared = MenubarManager()
 
     var statusBarItem: NSStatusItem!
@@ -27,7 +36,7 @@ class MenubarManager {
     }
 }
 
-// 앱 메뉴 관련
+/// 앱 메뉴 관련
 extension MenubarManager {
     func setupMenu() {
         if let mainMenu = NSApp.mainMenu {
@@ -113,30 +122,65 @@ extension MenubarManager {
                                                keyEquivalent: "a")
             editMenu.addItem(selectAllMenuItem)
 
-            // 창 메뉴 (사전 간 전환)
-            let windowMenuItem = NSMenuItem()
-            let windowMenu = NSMenu(title: "창")
-            windowMenuItem.submenu = windowMenu
-            mainMenu.addItem(windowMenuItem)
+            let dictionaryMenuItem = NSMenuItem()
+            let dictionaryMenu = NSMenu(title: "사전")
+            dictionaryMenuItem.submenu = dictionaryMenu
+            mainMenu.addItem(dictionaryMenuItem)
 
             let activatedDicts = WebDictManager.shared.getActivatedDicts()
             for index in activatedDicts.indices {
                 let dictQuickChangeMenuItem: NSMenuItem
 
                 if index < 9 {
-                    dictQuickChangeMenuItem = NSMenuItem(title: activatedDicts[index].name ?? "",
-                                                         action: #selector(changeDict(_:)),
-                                                         keyEquivalent: String(index + 1))
+                    dictQuickChangeMenuItem = NSMenuItem(
+                        title: activatedDicts[index].name ?? "",
+                        action: #selector(changeDictionary(_:)),
+                        keyEquivalent: String(index + 1)
+                    )
                 } else {
-                    dictQuickChangeMenuItem = NSMenuItem(title: activatedDicts[index].name ?? "",
-                                                         action: #selector(changeDict(_:)),
-                                                         keyEquivalent: "")
+                    dictQuickChangeMenuItem = NSMenuItem(
+                        title: activatedDicts[index].name ?? "",
+                        action: #selector(changeDictionary(_:)),
+                        keyEquivalent: ""
+                    )
                 }
 
                 dictQuickChangeMenuItem.target = self
-                dictQuickChangeMenuItem.tag = index
+                dictQuickChangeMenuItem.representedObject = activatedDicts[index].id
+                dictQuickChangeMenuItem.state = selectedDict == activatedDicts[index].id ? .on : .off
+                dictionaryMenu.addItem(dictQuickChangeMenuItem)
+            }
 
-                windowMenu.addItem(dictQuickChangeMenuItem)
+            let chatMenuItem = NSMenuItem()
+            let chatMenu = NSMenu(title: "채팅")
+            chatMenuItem.submenu = chatMenu
+            mainMenu.addItem(chatMenuItem)
+
+            if isChatEnabled {
+                let activatedChats = WebDictManager.shared.getActivatedChats()
+                for index in activatedChats.indices {
+                    let chatQuickChangeMenuItem: NSMenuItem
+
+                    if index < 9 {
+                        chatQuickChangeMenuItem = NSMenuItem(
+                            title: activatedChats[index].name ?? "",
+                            action: #selector(changeChat(_:)),
+                            keyEquivalent: String(index + 1)
+                        )
+                        chatQuickChangeMenuItem.keyEquivalentModifierMask = [.command, .shift]
+                    } else {
+                        chatQuickChangeMenuItem = NSMenuItem(
+                            title: activatedChats[index].name ?? "",
+                            action: #selector(changeChat(_:)),
+                            keyEquivalent: ""
+                        )
+                    }
+
+                    chatQuickChangeMenuItem.target = self
+                    chatQuickChangeMenuItem.representedObject = activatedChats[index].id
+                    chatQuickChangeMenuItem.state = selectedChat == activatedChats[index].id ? .on : .off
+                    chatMenu.addItem(chatQuickChangeMenuItem)
+                }
             }
 
             // View 메뉴 (sidebar 대체)
@@ -149,10 +193,7 @@ extension MenubarManager {
             let toolbarMenuItem = NSMenuItem(title: "툴바 표시",
                                              action: #selector(toggleToolbar),
                                              keyEquivalent: "t")
-            // 체크 마크 추가
-            if isToolbarEnabled, let checkImage = NSImage(systemSymbolName: "checkmark", accessibilityDescription: nil) {
-                toolbarMenuItem.image = checkImage
-            }
+            toolbarMenuItem.state = isToolbarEnabled ? .on : .off
             toolbarMenuItem.target = self
             viewMenu.addItem(toolbarMenuItem)
 
@@ -162,6 +203,27 @@ extension MenubarManager {
                                             keyEquivalent: "r")
             reloadMenuItem.target = self
             viewMenu.addItem(reloadMenuItem)
+
+            viewMenu.addItem(NSMenuItem.separator())
+
+            let dictionaryModeMenuItem = NSMenuItem(
+                title: "사전 모드",
+                action: #selector(changeDictionaryMode),
+                keyEquivalent: ""
+            )
+            dictionaryModeMenuItem.target = self
+            dictionaryModeMenuItem.state = selectedPageMode == "dictionary" ? .on : .off
+            viewMenu.addItem(dictionaryModeMenuItem)
+
+            let chatModeMenuItem = NSMenuItem(
+                title: "채팅 모드",
+                action: #selector(changeChatMode),
+                keyEquivalent: ""
+            )
+            chatModeMenuItem.target = self
+            chatModeMenuItem.state = selectedPageMode == "chat" ? .on : .off
+            chatModeMenuItem.isEnabled = isChatEnabled
+            viewMenu.addItem(chatModeMenuItem)
 
             viewMenu.addItem(NSMenuItem.separator())
 
@@ -175,7 +237,7 @@ extension MenubarManager {
     }
 }
 
-// 메뉴바 아이템 (MenubarExtra) 관련
+/// 메뉴바 아이템 (MenubarExtra) 관련
 extension MenubarManager {
     func setupMenuBarItem() {
         if statusBarItem != nil {
@@ -205,7 +267,7 @@ extension MenubarManager {
             NSMenuItem(title: "사전 열기", action: #selector(showDict), keyEquivalent: "1"),
             NSMenuItem(title: "설정", action: #selector(showSettings), keyEquivalent: "2"),
             NSMenuItem.separator(),
-            NSMenuItem(title: "종료", action: #selector(quitApp), keyEquivalent: "q")
+            NSMenuItem(title: "종료", action: #selector(quitApp), keyEquivalent: "q"),
         ]
 
         for index in menuItems.indices {
@@ -220,7 +282,7 @@ extension MenubarManager {
         statusBarItem = nil
     }
 
-    @objc func statusBarButtonClicked(_ sender: Any?) {
+    @objc func statusBarButtonClicked(_: Any?) {
         let event = NSApp.currentEvent!
 
         if event.type == NSEvent.EventType.rightMouseUp {
@@ -229,12 +291,16 @@ extension MenubarManager {
             statusBarItem.menu = nil
 
         } else {
-            ShortcutManager.shared.activateDict(false)
+            if selectedPageMode == "chat" {
+                ShortcutManager.shared.activate(mode: "chat", doCopyPaste: false)
+            } else {
+                ShortcutManager.shared.activate(mode: "dictionary", doCopyPaste: false)
+            }
         }
     }
 }
 
-// objc functions
+/// objc functions
 extension MenubarManager {
     @objc func showDict() {
         WindowManager.shared.showDict()
@@ -250,16 +316,47 @@ extension MenubarManager {
 
     @objc func toggleToolbar() {
         isToolbarEnabled.toggle()
+        setupMenu()
     }
 
-    @objc func changeDict(_ sender: NSMenuItem) {
-        let index = sender.tag
+    @objc func changeDictionary(_ sender: NSMenuItem) {
+        guard let id = sender.representedObject as? String else {
+            return
+        }
 
-        selectedDict = WebDictManager.shared.getActivatedDicts()[index].id
+        selectedDict = id
+        setupMenu()
+    }
+
+    @objc func changeChat(_ sender: NSMenuItem) {
+        guard let id = sender.representedObject as? String else {
+            return
+        }
+
+        selectedChat = id
+        setupMenu()
+    }
+
+    @objc func changeDictionaryMode() {
+        selectedPageMode = "dictionary"
+        setupMenu()
+    }
+
+    @objc func changeChatMode() {
+        guard isChatEnabled else {
+            return
+        }
+
+        selectedPageMode = "chat"
+        setupMenu()
     }
 
     @objc func reloadDict() {
-        NotificationCenter.default.post(name: .reloadDict, object: "")
+        NotificationCenter.default.post(
+            name: .reloadDict,
+            object: nil,
+            userInfo: [NotificationUserInfoKey.mode: selectedPageMode]
+        )
     }
 
     @objc func closeWindow() {

@@ -2,14 +2,16 @@ import SwiftUI
 
 extension View {
     func setDictViewContextMenu() -> some View {
-        self.modifier(DictViewContextMenu()
-        )
+        modifier(DictViewContextMenu())
     }
 }
 
 struct DictViewContextMenu: ViewModifier {
     @AppStorage(SettingKeys.isToolbarEnabled.rawValue)
     private var isToolbarEnabled = SettingKeys.isToolbarEnabled.defaultValue as! Bool
+
+    @AppStorage(SettingKeys.selectedPageMode.rawValue)
+    private var selectedPageMode = SettingKeys.selectedPageMode.defaultValue as! String
 
     func body(content: Content) -> some View {
         content
@@ -28,7 +30,11 @@ struct DictViewContextMenu: ViewModifier {
                 .keyboardShortcut("T", modifiers: .command)
 
                 Button("새로 고침") {
-                    NotificationCenter.default.post(name: .reloadDict, object: "")
+                    NotificationCenter.default.post(
+                        name: .reloadDict,
+                        object: nil,
+                        userInfo: [NotificationUserInfoKey.mode: selectedPageMode]
+                    )
                 }
                 .keyboardShortcut("R", modifiers: .command)
 

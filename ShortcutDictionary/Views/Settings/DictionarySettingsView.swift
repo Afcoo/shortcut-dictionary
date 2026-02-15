@@ -64,7 +64,7 @@ struct DictionarySettingsView: View {
                 Text("설정을 적용하기 위해 재시작이 필요합니다")
             }
             .onChange(of: isMobileView) { _ in
-                NotificationCenter.default.post(name: .reloadDict, object: "") // 사전 창 새로고침
+                NotificationCenter.default.post(name: .reloadDict, object: nil) // 사전 창 새로고침
             }
 
             Section("사전 표시 설정") {

@@ -8,9 +8,19 @@ class ShortcutManager {
     @AppStorage(SettingKeys.isCopyPasteEnabled.rawValue)
     private var isCopyPasteEnabled = SettingKeys.isCopyPasteEnabled.defaultValue as! Bool
 
+    @AppStorage(SettingKeys.isChatShortcutEnabled.rawValue)
+    private var isChatShortcutEnabled = SettingKeys.isChatShortcutEnabled.defaultValue as! Bool
+
+    @AppStorage(SettingKeys.isChatEnabled.rawValue)
+    private var isChatEnabled = SettingKeys.isChatEnabled.defaultValue as! Bool
+
+    @AppStorage(SettingKeys.selectedPageMode.rawValue)
+    private var selectedPageMode = SettingKeys.selectedPageMode.defaultValue as! String
+
     static var shared = ShortcutManager()
 
     private let pasteboard = NSPasteboard.general
+    private(set) var lastCopiedText: String?
 
     var isCopying = false // 선택된 단어 복사가 진행중임을 나타내는 플래그
     private var checkCount = 0
@@ -19,18 +29,37 @@ class ShortcutManager {
 
     private init() {}
 
-    // register global keyboard shortcuts
+    /// register global keyboard shortcuts
     func registerShortcut() {
-        KeyboardShortcuts.onKeyDown(for: .dictShortcut, action: { () in self.activateDict() })
+        KeyboardShortcuts.onKeyDown(for: .dictShortcut, action: { () in
+            self.activate(mode: "dictionary")
+        })
+
+        KeyboardShortcuts.onKeyDown(for: .chatShortcut, action: { () in
+            self.activate(mode: "chat")
+        })
 
         if isGlobalShortcutEnabled {
             KeyboardShortcuts.enable(.dictShortcut)
         } else {
             KeyboardShortcuts.disable(.dictShortcut)
         }
+
+        if isChatShortcutEnabled {
+            KeyboardShortcuts.enable(.chatShortcut)
+        } else {
+            KeyboardShortcuts.disable(.chatShortcut)
+        }
     }
 
-    func activateDict(_ doCopyPaste: Bool = true) {
+    func activate(mode: String, doCopyPaste: Bool = true) {
+        if mode == "chat", !isChatEnabled {
+            return
+        }
+
+        selectedPageMode = mode
+        NotificationCenter.default.post(name: .pageModeChanged, object: mode)
+
         // 이미 복사 중이면 무시
         guard !isCopying else {
             print("복사 작업이 이미 진행 중입니다")
@@ -42,10 +71,11 @@ class ShortcutManager {
 
             getSelectedText { [weak self] selectedText in
                 if let text = selectedText {
-                    // 복사된 텍스트를 사전으로 전달
-                    NotificationCenter.default.post(name: .updateText, object: text)
-                }
+                    self?.lastCopiedText = text
+                    self?.postUpdateText(text: text, mode: mode)
 
+                    print(text)
+                }
                 // 사전 창 열기
                 WindowManager.shared.showDict()
 
@@ -54,6 +84,12 @@ class ShortcutManager {
         } else {
             WindowManager.shared.showDict()
         }
+    }
+
+    func postLastCopiedTextIfExists(mode: String) {
+        guard let lastCopiedText else { return }
+
+        postUpdateText(text: lastCopiedText, mode: mode)
     }
 
     private func getSelectedText(completion: @escaping (String?) -> Void) {
@@ -131,5 +167,16 @@ class ShortcutManager {
         let event = CGEvent(keyboardEventSource: source, virtualKey: 0x37, keyDown: false)
 
         event?.post(tap: .cghidEventTap)
+    }
+
+    private func postUpdateText(text: String, mode: String) {
+        NotificationCenter.default.post(
+            name: .updateText,
+            object: nil,
+            userInfo: [
+                NotificationUserInfoKey.text: text,
+                NotificationUserInfoKey.mode: mode,
+            ]
+        )
     }
 }
