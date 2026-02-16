@@ -8,6 +8,7 @@ struct DictToolbar: View {
     @State private var showMenu = false
     @State private var showDictActivationSetting = false
     @State private var showPromptMenu = false
+    @State private var showPromptActivationSetting = false
     @State private var ellipsisMenuBridge = DictToolbarEllipsisMenuBridge()
 
     var body: some View {
@@ -92,6 +93,10 @@ struct DictToolbar: View {
                                     }
                                     .buttonStyle(.borderless)
                                 }
+
+                                Button("프롬프트 관리") {
+                                    showPromptActivationSetting = true
+                                }
                             }
                             .padding(8)
                         }
@@ -124,6 +129,9 @@ struct DictToolbar: View {
         }
         .sheet(isPresented: $showDictActivationSetting) {
             DictActivationSettingSheet(isPresented: $showDictActivationSetting, mode: pageMode)
+        }
+        .sheet(isPresented: $showPromptActivationSetting) {
+            PromptActivationSettingSheet(isPresented: $showPromptActivationSetting)
         }
     }
 

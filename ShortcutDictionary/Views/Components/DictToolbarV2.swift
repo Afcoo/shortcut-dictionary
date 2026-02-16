@@ -12,6 +12,7 @@ struct DictToolbarV2: View {
     @State private var showMenu = false
     @State private var showDictActivationSetting = false
     @State private var showPromptMenu = false
+    @State private var showPromptActivationSetting = false
     @State private var ellipsisMenuBridge = DictToolbarV2EllipsisMenuBridge()
 
     @Namespace private var namespace
@@ -114,6 +115,12 @@ struct DictToolbarV2: View {
                                     }
                                     .buttonStyle(.borderless)
                                 }
+
+                                Button("프롬프트 관리") {
+                                    showPromptActivationSetting = true
+                                }
+                                .buttonStyle(.glass)
+                                .buttonBorderShape(.capsule)
                             }
                             .padding(.all, 8)
                             .frame(maxWidth: 180)
@@ -176,6 +183,9 @@ struct DictToolbarV2: View {
         .setDictViewContextMenu() // 툴바 우클릭 시 메뉴 표시
         .sheet(isPresented: $showDictActivationSetting) {
             DictActivationSettingSheet(isPresented: $showDictActivationSetting, mode: pageMode)
+        }
+        .sheet(isPresented: $showPromptActivationSetting) {
+            PromptActivationSettingSheet(isPresented: $showPromptActivationSetting)
         }
     }
 
