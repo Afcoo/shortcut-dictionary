@@ -59,7 +59,7 @@ struct DictToolbar: View {
                                 .buttonStyle(.borderless)
                             }
 
-                            Button(pageMode == "chat" ? "채팅 서비스 관리" : "사전 종류 관리") {
+                            Button(pageMode == "chat" ? "채팅 종류 관리" : "사전 종류 관리") {
                                 showDictActivationSetting = true
                             }
                         }

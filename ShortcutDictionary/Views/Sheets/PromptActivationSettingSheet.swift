@@ -148,7 +148,6 @@ struct PromptActivationSettingSheet: View {
             }
             .formStyle(.grouped)
             .padding(.top, 32)
-            .padding(.bottom, 32)
             .disabled(isPromptEditorReadOnly)
 
             Group {

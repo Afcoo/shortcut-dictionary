@@ -25,7 +25,7 @@ struct ChatSettingsView: View {
             .disabled(!chatSettingKeysManager.isChatEnabled)
 
             LabeledContent("") {
-                Button("채팅 서비스 관리") {
+                Button("채팅 종류 관리") {
                     showChatActivationSetting = true
                 }
                 .sheet(isPresented: $showChatActivationSetting) {
