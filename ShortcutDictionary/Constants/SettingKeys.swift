@@ -76,7 +76,7 @@ enum SettingKeys: String, CaseIterable {
         case .activatedDicts: return ""
         case .activatedChats: return ""
         case .isChatEnabled: return true
-        case .selectedChatPromptID: return "none"
+        case .selectedChatPromptID: return "preset_all_words"
         case .customChatPromptsData: return ""
         case .isMobileView: return true
         }

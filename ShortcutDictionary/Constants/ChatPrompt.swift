@@ -30,7 +30,7 @@ enum ChatPromptPresets {
     )
 
     static let relatedWords = ChatPrompt(
-        id: "preset_related_words",
+        id: "preset_all_words",
         name: "모든 단어 검색",
         prefix: "문장 속 고유 단어들만 뜻 검색:\n",
         postfix: "",
