@@ -27,7 +27,7 @@ struct WebDictView: NSViewRepresentable {
         context.coordinator.attach(view, to: container)
 
         if let reqUrl = URL(string: webDict.url),
-           reqUrl != view.url
+           context.coordinator.shouldLoadRequestedURL(reqUrl, mode: mode, id: webDict.id, currentURL: view.url)
         {
             view.stopLoading()
             view.load(URLRequest(url: reqUrl))
@@ -72,6 +72,7 @@ struct WebDictView: NSViewRepresentable {
         var parent: WebDictView
 
         private var viewModeAndID: [ObjectIdentifier: (mode: String, id: String)] = [:]
+        private var requestedURLs: [String: String] = [:]
         private var readyKeys: Set<String> = []
         private var pendingTexts: [String: String] = [:]
 
@@ -256,6 +257,23 @@ struct WebDictView: NSViewRepresentable {
 
             runPasteScript(text: text, in: webView)
             pendingTexts[key] = nil
+        }
+
+        func shouldLoadRequestedURL(_ requestedURL: URL, mode: String, id: String, currentURL: URL?) -> Bool {
+            let key = cacheKey(mode: mode, id: id)
+            let requested = requestedURL.absoluteString
+
+            if let lastRequested = requestedURLs[key] {
+                if lastRequested == requested {
+                    return false
+                }
+
+                requestedURLs[key] = requested
+                return true
+            }
+
+            requestedURLs[key] = requested
+            return currentURL == nil
         }
 
         private func textFrom(_ notification: Notification) -> String? {
