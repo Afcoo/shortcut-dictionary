@@ -90,6 +90,7 @@ struct DictActivationSettingSheet: View {
     @State private var dictPostfix = ""
     @State private var collapsedParentIDs: Set<String> = []
     @State private var showCustomEditorSheet = false
+    @State private var isCustomEditorReadOnly = false
 
     init(isPresented: Binding<Bool>, mode: String = "dictionary") {
         _isPresented = isPresented
@@ -115,6 +116,7 @@ struct DictActivationSettingSheet: View {
                     let newDict = webDictManager.addCustomWebDict(mode: mode)
                     selectedDictID = newDict.id
                     loadEditor(dict: newDict)
+                    isCustomEditorReadOnly = false
                 }
 
                 Button("삭제") {
@@ -126,6 +128,7 @@ struct DictActivationSettingSheet: View {
                 .disabled(!isSelectedCustomItem)
 
                 Button("편집") {
+                    isCustomEditorReadOnly = false
                     showCustomEditorSheet = true
                 }
                 .disabled(!isSelectedCustomItem)
@@ -158,16 +161,16 @@ struct DictActivationSettingSheet: View {
             }
         }
         .onChange(of: selectedDictID) { newValue in
-            guard let newValue else {
+            guard let newValue,
+                  let selectedRow = tableItems.first(where: { $0.id == newValue }),
+                  !selectedRow.isParent
+            else {
                 resetEditor()
                 return
             }
 
-            if let selectedDict = customItems.first(where: { $0.id == newValue }) {
-                loadEditor(dict: selectedDict)
-            } else {
-                resetEditor()
-            }
+            loadEditor(dict: selectedRow.dict)
+            isCustomEditorReadOnly = !isCustomItem(newValue)
         }
     }
 
@@ -298,11 +301,10 @@ struct DictActivationSettingSheet: View {
             return
         }
 
-        if isCustomItem(selectedID) {
-            selectedDictID = selectedID
-            loadEditor(dict: row.dict)
-            showCustomEditorSheet = true
-        }
+        selectedDictID = selectedID
+        loadEditor(dict: row.dict)
+        isCustomEditorReadOnly = !isCustomItem(selectedID)
+        showCustomEditorSheet = true
     }
 
     private func parentActivationState(for dict: WebDict) -> GroupActivationState {
@@ -449,6 +451,7 @@ struct DictActivationSettingSheet: View {
             }
             .formStyle(.grouped)
             .padding(.top, 32)
+            .disabled(isCustomEditorReadOnly)
 
             Group {
                 if #available(macOS 26.0, *), appearanceSettingKeysManager.isLiquidGlassEnabled {
@@ -461,7 +464,11 @@ struct DictActivationSettingSheet: View {
         }
         .frame(width: 400)
         .background { Color(NSColor.windowBackgroundColor) }
-        .onDisappear { saveSelectedDict() }
+        .onDisappear {
+            if !isCustomEditorReadOnly {
+                saveSelectedDict()
+            }
+        }
     }
 
     private func resetEditor() {
@@ -471,6 +478,7 @@ struct DictActivationSettingSheet: View {
         dictPostScript = ""
         dictPrefix = ""
         dictPostfix = ""
+        isCustomEditorReadOnly = false
     }
 
     private func loadEditor(dict: WebDict) {
@@ -483,7 +491,12 @@ struct DictActivationSettingSheet: View {
     }
 
     private func saveSelectedDict() {
-        guard let selectedDictID else { return }
+        guard !isCustomEditorReadOnly,
+              let selectedDictID,
+              isCustomItem(selectedDictID)
+        else {
+            return
+        }
 
         let trimmedName = dictName.trimmingCharacters(in: .whitespacesAndNewlines)
         let trimmedURL = dictUrl.trimmingCharacters(in: .whitespacesAndNewlines)

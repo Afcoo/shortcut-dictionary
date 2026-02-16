@@ -23,7 +23,6 @@ class WebDictManager: ObservableObject {
     deinit {
         self.saveActivatedDicts()
         self.saveActivatedChats()
-        self.saveCustomChatPrompts()
     }
 }
 
@@ -168,20 +167,16 @@ extension WebDictManager {
     }
 
     func loadCustomChatPrompts() {
-        guard let data = UserDefaults.standard.data(forKey: SettingKeys.customChatPromptsData.rawValue),
-              let decoded = try? JSONDecoder().decode([ChatPrompt].self, from: data)
-        else { return }
+        customChatPrompts = CustomChatPromptStore.shared.load()
+        importLegacyCustomChatPromptsFromAppStorageIfNeeded()
 
-        customChatPrompts = decoded
-    }
-
-    func saveCustomChatPrompts() {
-        if let encoded = try? JSONEncoder().encode(customChatPrompts) {
-            UserDefaults.standard.set(encoded, forKey: SettingKeys.customChatPromptsData.rawValue)
+        if !getChatPrompts().contains(where: { $0.id == chatSettingKeysManager.selectedChatPromptID }) {
+            chatSettingKeysManager.selectedChatPromptID = ChatPromptPresets.none.id
         }
     }
 
-    func addCustomChatPrompt(name: String, prefix: String, postfix: String) {
+    @discardableResult
+    func addCustomChatPrompt(name: String, prefix: String, postfix: String) -> ChatPrompt {
         let prompt = ChatPrompt(
             id: UUID().uuidString,
             name: name,
@@ -190,18 +185,67 @@ extension WebDictManager {
             isPreset: false
         )
 
+        CustomChatPromptStore.shared.upsert(prompt)
         customChatPrompts.append(prompt)
-        saveCustomChatPrompts()
+        customChatPrompts.sort { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+        return prompt
+    }
+
+    func updateCustomChatPrompt(_ prompt: ChatPrompt) {
+        guard !prompt.isPreset,
+              let index = customChatPrompts.firstIndex(where: { $0.id == prompt.id })
+        else {
+            return
+        }
+
+        CustomChatPromptStore.shared.upsert(prompt)
+        customChatPrompts[index] = prompt
+        customChatPrompts.sort { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
     }
 
     func deleteCustomChatPrompt(id: String) {
+        CustomChatPromptStore.shared.delete(id: id)
         customChatPrompts.removeAll { $0.id == id }
 
         if chatSettingKeysManager.selectedChatPromptID == id {
             chatSettingKeysManager.selectedChatPromptID = ChatPromptPresets.none.id
         }
+    }
 
-        saveCustomChatPrompts()
+    private func importLegacyCustomChatPromptsFromAppStorageIfNeeded() {
+        guard let data = UserDefaults.standard.data(forKey: SettingKeys.customChatPromptsData.rawValue),
+              let decoded = try? JSONDecoder().decode([ChatPrompt].self, from: data)
+        else {
+            return
+        }
+
+        var hasImported = false
+
+        for legacyPrompt in decoded where !legacyPrompt.isPreset {
+            if customChatPrompts.contains(where: {
+                $0.name == legacyPrompt.name &&
+                    $0.prefix == legacyPrompt.prefix &&
+                    $0.postfix == legacyPrompt.postfix
+            }) {
+                continue
+            }
+
+            var importedPrompt = legacyPrompt
+            if importedPrompt.id.isEmpty || importedPrompt.id == ChatPromptPresets.none.id {
+                importedPrompt.id = UUID().uuidString
+            }
+            importedPrompt.isPreset = false
+
+            CustomChatPromptStore.shared.upsert(importedPrompt)
+            customChatPrompts.append(importedPrompt)
+            hasImported = true
+        }
+
+        if hasImported {
+            customChatPrompts.sort { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+        }
+
+        UserDefaults.standard.removeObject(forKey: SettingKeys.customChatPromptsData.rawValue)
     }
 }
 

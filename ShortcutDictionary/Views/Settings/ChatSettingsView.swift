@@ -4,9 +4,7 @@ struct ChatSettingsView: View {
     @ObservedObject private var chatSettingKeysManager = ChatSettingKeysManager.shared
 
     @State private var showChatActivationSetting = false
-    @State private var customPromptName = ""
-    @State private var customPromptPrefix = ""
-    @State private var customPromptPostfix = ""
+    @State private var showPromptManagementSetting = false
 
     @ObservedObject private var webDictManager = WebDictManager.shared
 
@@ -44,64 +42,21 @@ struct ChatSettingsView: View {
                     }
                 }
                 .pickerStyle(.menu)
+                .id(webDictManager.customChatPrompts)
                 .disabled(!chatSettingKeysManager.isChatEnabled)
 
-                TextField("커스텀 프롬프트 이름", text: $customPromptName)
-                    .disabled(!chatSettingKeysManager.isChatEnabled)
-
-                TextField("앞에 붙일 프롬프트", text: $customPromptPrefix, axis: .vertical)
-                    .lineLimit(2 ... 5)
-                    .disabled(!chatSettingKeysManager.isChatEnabled)
-
-                TextField("뒤에 붙일 프롬프트", text: $customPromptPostfix, axis: .vertical)
-                    .lineLimit(2 ... 5)
-                    .disabled(!chatSettingKeysManager.isChatEnabled)
-
-                HStack {
-                    Button("커스텀 프롬프트 추가") {
-                        addPrompt()
+                LabeledContent("") {
+                    Button("프롬프트 관리") {
+                        showPromptManagementSetting = true
                     }
-                    .disabled(!canAddPrompt)
-
-                    Spacer()
-                }
-
-                if !webDictManager.customChatPrompts.isEmpty {
-                    ForEach(webDictManager.customChatPrompts, id: \.self) { prompt in
-                        HStack {
-                            Text(prompt.name)
-
-                            Spacer()
-
-                            Button("삭제") {
-                                webDictManager.deleteCustomChatPrompt(id: prompt.id)
-                            }
-                            .buttonStyle(.borderless)
-                        }
+                    .sheet(isPresented: $showPromptManagementSetting) {
+                        PromptActivationSettingSheet(isPresented: $showPromptManagementSetting)
                     }
                 }
+                .disabled(!chatSettingKeysManager.isChatEnabled)
             }
         }
         .formStyle(.grouped)
         .scrollContentBackground(.hidden)
-    }
-
-    var canAddPrompt: Bool {
-        return chatSettingKeysManager.isChatEnabled && !customPromptName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
-    }
-
-    func addPrompt() {
-        let trimmedName = customPromptName.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmedName.isEmpty else { return }
-
-        webDictManager.addCustomChatPrompt(
-            name: trimmedName,
-            prefix: customPromptPrefix,
-            postfix: customPromptPostfix
-        )
-
-        customPromptName = ""
-        customPromptPrefix = ""
-        customPromptPostfix = ""
     }
 }
