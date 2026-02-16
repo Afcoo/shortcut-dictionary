@@ -6,6 +6,7 @@ import SwiftUI
 struct DictToolbarV2: View {
     @ObservedObject private var dictionarySettingKeysManager = DictionarySettingKeysManager.shared
     @ObservedObject private var chatSettingKeysManager = ChatSettingKeysManager.shared
+    @ObservedObject private var appearanceSettingKeysManager = AppearanceSettingKeysManager.shared
 
     @State private var showChevron = false
     @State private var showPromptChevron = false
@@ -24,6 +25,32 @@ struct DictToolbarV2: View {
                 action: { WindowManager.shared.closeDict() },
                 systemName: "xmark"
             )
+
+            // 뒤로/앞으로 가기 버튼
+            if appearanceSettingKeysManager.isToolbarBackForwardButtonEnabled {
+                GlassEffectContainer {
+                    HStack(spacing: 0.0) {
+                        ToolbarButtonV2(
+                            action: goBack,
+                            systemName: "chevron.left"
+                        )
+                        .glassEffect()
+                        .glassEffectUnion(id: "bnf", namespace: namespace)
+
+                        Divider()
+                            .frame(height: 20)
+                            .glassEffect()
+                            .glassEffectUnion(id: "bnf", namespace: namespace)
+
+                        ToolbarButtonV2(
+                            action: goForward,
+                            systemName: "chevron.right"
+                        )
+                        .glassEffect()
+                        .glassEffectUnion(id: "bnf", namespace: namespace)
+                    }
+                }
+            }
 
             Spacer()
 
@@ -138,39 +165,19 @@ struct DictToolbarV2: View {
 
             Spacer()
 
-//            TODO: 뒤로/앞으로 버튼 구현
-//            GlassEffectContainer {
-//                HStack(spacing: 0.0) {
-//                    ToolbarButtonV2(
-//                        action: {},
-//                        systemName: "chevron.left"
-//                    )
-//                    .glassEffectUnion(id: "bnf", namespace: namespace)
-//
-//                    Divider()
-//                        .frame(height: 20)
-//                        .glassEffect()
-//                        .glassEffectUnion(id: "bnf", namespace: namespace)
-//
-//                    ToolbarButtonV2(
-//                        action: {},
-//                        systemName: "chevron.right"
-//                    )
-//                    .glassEffectUnion(id: "bnf", namespace: namespace)
-//                }
-//            }
-
-            // 새로고침 버튼
-            ToolbarButtonV2(
-                action: {
-                    NotificationCenter.default.post(
-                        name: .reloadDict,
-                        object: nil,
-                        userInfo: [NotificationUserInfoKey.mode: pageMode]
-                    )
-                },
-                systemName: "arrow.trianglehead.clockwise"
-            )
+            if appearanceSettingKeysManager.isToolbarReloadButtonEnabled {
+                // 새로고침 버튼
+                ToolbarButtonV2(
+                    action: {
+                        NotificationCenter.default.post(
+                            name: .reloadDict,
+                            object: nil,
+                            userInfo: [NotificationUserInfoKey.mode: pageMode]
+                        )
+                    },
+                    systemName: "arrow.trianglehead.clockwise"
+                )
+            }
 
             // 설정 버튼
             ToolbarButtonV2(
@@ -211,6 +218,22 @@ struct DictToolbarV2: View {
         }
 
         return WebDictManager.shared.getDict(dictionarySettingKeysManager.selectedDict)?.wrappedName ?? "error"
+    }
+
+    func goBack() {
+        NotificationCenter.default.post(
+            name: .goBackDict,
+            object: nil,
+            userInfo: [NotificationUserInfoKey.mode: pageMode]
+        )
+    }
+
+    func goForward() {
+        NotificationCenter.default.post(
+            name: .goForwardDict,
+            object: nil,
+            userInfo: [NotificationUserInfoKey.mode: pageMode]
+        )
     }
 
     func showEllipsisContextMenu() {

@@ -90,6 +90,8 @@ struct WebDictView: NSViewRepresentable {
             // Notification 관리
             NotificationCenter.default.addObserver(self, selector: #selector(handleUpdateText(_:)), name: .updateText, object: nil)
             NotificationCenter.default.addObserver(self, selector: #selector(handleReload(_:)), name: .reloadDict, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(handleGoBack(_:)), name: .goBackDict, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(handleGoForward(_:)), name: .goForwardDict, object: nil)
         }
 
         deinit {
@@ -201,6 +203,34 @@ struct WebDictView: NSViewRepresentable {
                 retryCount = 0
                 isRetrying = false
             }
+        }
+
+        @objc func handleGoBack(_ notification: Notification) {
+            if let mode = notification.userInfo?[NotificationUserInfoKey.mode] as? String,
+               mode != parent.mode
+            {
+                return
+            }
+
+            guard let webView = WebViewManager.shared.get(mode: parent.mode, id: parent.webDict.id) else {
+                return
+            }
+
+            webView.goBack()
+        }
+
+        @objc func handleGoForward(_ notification: Notification) {
+            if let mode = notification.userInfo?[NotificationUserInfoKey.mode] as? String,
+               mode != parent.mode
+            {
+                return
+            }
+
+            guard let webView = WebViewManager.shared.get(mode: parent.mode, id: parent.webDict.id) else {
+                return
+            }
+
+            webView.goForward()
         }
 
         func getOrCreateView(webDict: WebDict, mode: String, isMobileView: Bool) -> WKWebView {

@@ -4,6 +4,12 @@ final class AppearanceSettingKeysManager: SettingKeysManagerBindable {
     @NotifyingAppStorage(SettingKeys.isToolbarEnabled.rawValue)
     var isToolbarEnabled = SettingKeys.isToolbarEnabled.defaultValue as! Bool
 
+    @NotifyingAppStorage(SettingKeys.isToolbarBackForwardButtonEnabled.rawValue)
+    var isToolbarBackForwardButtonEnabled = SettingKeys.isToolbarBackForwardButtonEnabled.defaultValue as! Bool
+
+    @NotifyingAppStorage(SettingKeys.isToolbarReloadButtonEnabled.rawValue)
+    var isToolbarReloadButtonEnabled = SettingKeys.isToolbarReloadButtonEnabled.defaultValue as! Bool
+
     @NotifyingAppStorage(SettingKeys.backgroundColor.rawValue)
     var backgroundColor = SettingKeys.backgroundColor.defaultValue as! String
 

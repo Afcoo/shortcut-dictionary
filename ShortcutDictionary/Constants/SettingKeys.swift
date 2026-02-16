@@ -7,6 +7,8 @@ enum SettingKeys: String, CaseIterable {
     case isMenuItemEnabled = "enable_menu_item"
     case isAlwaysOnTop = "enable_always_on_top"
     case isToolbarEnabled = "enable_toolbar"
+    case isToolbarBackForwardButtonEnabled = "enable_toolbar_back_forward_button"
+    case isToolbarReloadButtonEnabled = "enable_toolbar_reload_button"
     case isEscToClose = "enable_close_with_esc"
     case isOutClickToClose = "enable_close_with_out_click"
     case isShowOnMousePos = "enable_show_on_mouse_position"
@@ -52,6 +54,8 @@ enum SettingKeys: String, CaseIterable {
         case .isMenuItemEnabled: return true
         case .isAlwaysOnTop: return false
         case .isToolbarEnabled: return true
+        case .isToolbarBackForwardButtonEnabled: return false
+        case .isToolbarReloadButtonEnabled: return true
         case .isEscToClose: return true
         case .isOutClickToClose: return true
         case .isShowOnMousePos: return true

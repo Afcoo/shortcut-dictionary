@@ -5,11 +5,6 @@ struct AppearanceSettingsView: View {
 
     var body: some View {
         Form {
-            // 툴바 표시
-            Toggle(isOn: appearanceSettingKeysManager.binding(\.isToolbarEnabled)) {
-                Text("툴바 표시")
-            }
-
             // 사전 뷰 Padding 조절
             Slider(value: appearanceSettingKeysManager.binding(\.dictViewPadding), in: 0.0 ... 28.0, step: 4.0) {
                 Text("배경 두께 설정")
@@ -90,6 +85,22 @@ struct AppearanceSettingsView: View {
                 Text("배경 투명 효과")
             }
             .disabled(appearanceSettingKeysManager.isLiquidGlassEnabled)
+
+            Section("툴바") {
+                Toggle(isOn: appearanceSettingKeysManager.binding(\.isToolbarEnabled)) {
+                    Text("툴바 표시")
+                }
+
+                Toggle(isOn: appearanceSettingKeysManager.binding(\.isToolbarBackForwardButtonEnabled)) {
+                    Text("앞/뒤로가기 버튼 표시")
+                }
+                .disabled(!appearanceSettingKeysManager.isLiquidGlassEnabled)
+
+                Toggle(isOn: appearanceSettingKeysManager.binding(\.isToolbarReloadButtonEnabled)) {
+                    Text("새로고침 버튼 표시")
+                }
+                .disabled(!appearanceSettingKeysManager.isLiquidGlassEnabled)
+            }
         }
         .formStyle(.grouped)
         .scrollContentBackground(.hidden)
