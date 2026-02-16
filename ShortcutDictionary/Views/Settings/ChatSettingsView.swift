@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ChatSettingsView: View {
     @ObservedObject private var chatSettingKeysManager = ChatSettingKeysManager.shared
+    @ObservedObject private var dictionarySettingKeysManager = DictionarySettingKeysManager.shared
 
     @State private var showChatActivationSetting = false
     @State private var showPromptManagementSetting = false
@@ -33,6 +34,14 @@ struct ChatSettingsView: View {
                 }
             }
             .disabled(!chatSettingKeysManager.isChatEnabled)
+
+            Toggle(isOn: dictionarySettingKeysManager.binding(\.isMobileView)) {
+                Text("모바일 뷰 사용")
+                Text("설정을 적용하기 위해 재시작이 필요합니다")
+            }
+            .onChange(of: dictionarySettingKeysManager.isMobileView) { _, _ in
+                NotificationCenter.default.post(name: .reloadDict, object: nil)
+            }
 
             Section("자동 입력 프롬프트") {
                 Picker("프롬프트", selection: chatSettingKeysManager.binding(\.selectedChatPromptID)) {
