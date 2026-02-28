@@ -169,23 +169,65 @@ struct DictToolbar: View {
         ellipsisMenuBridge.onOpenSettings = {
             WindowManager.shared.showSettings()
         }
+        ellipsisMenuBridge.onGoBack = {
+            NotificationCenter.default.post(
+                name: .goBackDict,
+                object: nil,
+                userInfo: [NotificationUserInfoKey.mode: self.pageMode]
+            )
+        }
+        ellipsisMenuBridge.onGoForward = {
+            NotificationCenter.default.post(
+                name: .goForwardDict,
+                object: nil,
+                userInfo: [NotificationUserInfoKey.mode: self.pageMode]
+            )
+        }
+        ellipsisMenuBridge.onReload = {
+            NotificationCenter.default.post(
+                name: .reloadDict,
+                object: nil,
+                userInfo: [NotificationUserInfoKey.mode: self.pageMode]
+            )
+        }
 
         let menu = NSMenu()
 
-        let dictionaryItem = NSMenuItem(title: "사전 모드", action: #selector(DictToolbarEllipsisMenuBridge.selectDictionary), keyEquivalent: "")
-        dictionaryItem.target = ellipsisMenuBridge
-        dictionaryItem.state = pageMode == "dictionary" ? .on : .off
-        menu.addItem(dictionaryItem)
+        if chatSettingKeysManager.isChatEnabled {
+            let dictionaryItem = NSMenuItem(title: "사전 모드", action: #selector(DictToolbarEllipsisMenuBridge.selectDictionary), keyEquivalent: "")
+            dictionaryItem.image = NSImage(systemSymbolName: "character.book.closed.fill", accessibilityDescription: nil)
+            dictionaryItem.target = ellipsisMenuBridge
+            dictionaryItem.state = pageMode == "dictionary" ? .on : .off
+            menu.addItem(dictionaryItem)
 
-        let chatItem = NSMenuItem(title: "채팅 모드", action: #selector(DictToolbarEllipsisMenuBridge.selectChat), keyEquivalent: "")
-        chatItem.target = ellipsisMenuBridge
-        chatItem.state = pageMode == "chat" ? .on : .off
-        chatItem.isEnabled = chatSettingKeysManager.isChatEnabled
-        menu.addItem(chatItem)
+            let chatItem = NSMenuItem(title: "채팅 모드", action: #selector(DictToolbarEllipsisMenuBridge.selectChat), keyEquivalent: "")
+            chatItem.image = NSImage(systemSymbolName: "bubble.left.and.bubble.right", accessibilityDescription: nil)
+            chatItem.target = ellipsisMenuBridge
+            chatItem.state = pageMode == "chat" ? .on : .off
+            menu.addItem(chatItem)
+
+            menu.addItem(.separator())
+        }
+
+        let goBackItem = NSMenuItem(title: "뒤로 가기", action: #selector(DictToolbarEllipsisMenuBridge.goBack), keyEquivalent: "")
+        goBackItem.image = NSImage(systemSymbolName: "chevron.left", accessibilityDescription: nil)
+        goBackItem.target = ellipsisMenuBridge
+        menu.addItem(goBackItem)
+
+        let goForwardItem = NSMenuItem(title: "앞으로 가기", action: #selector(DictToolbarEllipsisMenuBridge.goForward), keyEquivalent: "")
+        goForwardItem.image = NSImage(systemSymbolName: "chevron.right", accessibilityDescription: nil)
+        goForwardItem.target = ellipsisMenuBridge
+        menu.addItem(goForwardItem)
+
+        let reloadItem = NSMenuItem(title: "새로고침", action: #selector(DictToolbarEllipsisMenuBridge.reload), keyEquivalent: "")
+        reloadItem.image = NSImage(systemSymbolName: "arrow.clockwise", accessibilityDescription: nil)
+        reloadItem.target = ellipsisMenuBridge
+        menu.addItem(reloadItem)
 
         menu.addItem(.separator())
 
         let settingsItem = NSMenuItem(title: "설정 열기", action: #selector(DictToolbarEllipsisMenuBridge.openSettings), keyEquivalent: "")
+        settingsItem.image = NSImage(systemSymbolName: "gearshape", accessibilityDescription: nil)
         settingsItem.target = ellipsisMenuBridge
         menu.addItem(settingsItem)
 
@@ -214,6 +256,9 @@ final class DictToolbarEllipsisMenuBridge: NSObject {
     var onSelectDictionary: (() -> Void)?
     var onSelectChat: (() -> Void)?
     var onOpenSettings: (() -> Void)?
+    var onGoBack: (() -> Void)?
+    var onGoForward: (() -> Void)?
+    var onReload: (() -> Void)?
 
     @objc func selectDictionary() {
         onSelectDictionary?()
@@ -225,6 +270,18 @@ final class DictToolbarEllipsisMenuBridge: NSObject {
 
     @objc func openSettings() {
         onOpenSettings?()
+    }
+
+    @objc func goBack() {
+        onGoBack?()
+    }
+
+    @objc func goForward() {
+        onGoForward?()
+    }
+
+    @objc func reload() {
+        onReload?()
     }
 }
 
