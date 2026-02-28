@@ -66,10 +66,13 @@ shortcut-dictionary/
 - Window and manager logic grouped with `extension` blocks by concern
 
 ### Commit Message Style
-- Use a head-first subject line that starts with the purpose or conclusion.
-- Write commit subjects and body bullets in Korean by default.
-- Keep the commit body as bullet-only detail lines prefixed with `-` (no narrative sentences).
-- For Korean body bullets, avoid endings like `-함`; use concise phrase endings instead.
+- Use Conventional Commits format: `<type>[optional scope]: <description>`.
+- Use commit types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore`, `revert`.
+- Keep subject line in Korean by default, present tense/imperative, and within 72 characters.
+- Keep the body as bullet-only detail lines prefixed with `-` (no narrative paragraphs).
+- For Korean body bullets, avoid endings like `-함`; use concise phrase endings.
+- Add `!` after type/scope and `BREAKING CHANGE:` footer for breaking changes.
+- Prefer one logical change per commit and include issue refs when relevant (`Refs #123`, `Closes #123`).
 
 ### Architecture
 - No Storyboard. SwiftUI + AppKit (`NSWindow`, `NSMenu`, `WKWebView`) hybrid.
