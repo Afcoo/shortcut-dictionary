@@ -5,6 +5,7 @@ import SwiftUI
 @main
 final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     private let generalSettingKeysManager = GeneralSettingKeysManager.shared
+    private let shortcutSettingKeysManager = ShortcutSettingKeysManager.shared
 
     static func main() {
         let app = NSApplication.shared
@@ -16,16 +17,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     /// 앱 실행 시
     func applicationDidFinishLaunching(_: Notification) {
         MenubarManager.shared.registerMenuBarItem()
-//        MenubarManager.shared.setupMenu()
-
         ShortcutManager.shared.registerShortcut()
 
-        NSApplication.shared.setActivationPolicy(.regular)
+        if !generalSettingKeysManager.isMenuItemEnabled,
+           !shortcutSettingKeysManager.isGlobalShortcutEnabled,
+           !shortcutSettingKeysManager.isChatShortcutEnabled
+        {
+            NSApplication.shared.setActivationPolicy(.regular)
+        } else {
+            NSApplication.shared.setActivationPolicy(.prohibited)
+        }
 
         if !generalSettingKeysManager.hasCompletedOnboarding {
+            NSApplication.shared.setActivationPolicy(.regular)
             WindowManager.shared.showOnboarding()
         } else {
-            WindowManager.shared.showDict()
+            WebViewManager.shared.preloadSelectedWebDictView()
+            WebViewManager.shared.preloadSelectedChatWebDictView()
         }
     }
 

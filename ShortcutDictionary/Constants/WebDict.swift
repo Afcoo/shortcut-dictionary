@@ -23,6 +23,10 @@ struct WebDict: Hashable, Codable, Identifiable {
 }
 
 extension WebDict {
+    var host: String? {
+        return URL(string: url)?.host?.lowercased()
+    }
+
     func getPasteScript(value: String, fastSearch: Bool = false) -> String? {
         return """
         (() => {
