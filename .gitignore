@@ -132,3 +132,7 @@ iOSInjectionProject/
 **/xcshareddata/WorkspaceSettings.xcsettings
 
 # End of https://www.toptal.com/developers/gitignore/api/swift,xcode,macos
+
+# Local Codex/Cline agent artifacts
+.agents/
+skills-lock.json
