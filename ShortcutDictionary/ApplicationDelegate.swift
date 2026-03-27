@@ -32,6 +32,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
             NSApplication.shared.setActivationPolicy(.regular)
             WindowManager.shared.showOnboarding()
         } else {
+            WebDictManager.shared.normalizeState()
             WebViewManager.shared.preloadSelectedWebDictView()
             WebViewManager.shared.preloadSelectedChatWebDictView()
         }

@@ -116,6 +116,7 @@ private extension WebViewManager {
     @objc func handleUpdateText(_ notification: Notification) {
         guard let text = textFrom(notification) else { return }
 
+        WebDictManager.shared.normalizeState()
         let mode = resolvedMode(from: notification)
         guard let webDict = selectedWebDict(for: mode) else { return }
 
@@ -130,6 +131,7 @@ private extension WebViewManager {
     }
 
     @objc func handleReload(_ notification: Notification) {
+        WebDictManager.shared.normalizeState()
         let mode = resolvedMode(from: notification)
         guard let webDict = selectedWebDict(for: mode) else { return }
 

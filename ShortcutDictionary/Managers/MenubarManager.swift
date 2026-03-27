@@ -279,6 +279,7 @@ extension MenubarManager {
             statusBarItem.menu = nil
 
         } else {
+            WebDictManager.shared.normalizeState()
             if dictionarySettingKeysManager.selectedPageMode == "chat" {
                 ShortcutManager.shared.activate(mode: "chat", doCopyPaste: false)
             } else {

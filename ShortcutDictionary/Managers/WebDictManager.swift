@@ -27,6 +27,22 @@ class WebDictManager: ObservableObject {
 }
 
 extension WebDictManager {
+    func normalizeState() {
+        let normalizedSelectedDictID = getActivatedDicts().first?.id ?? dictionarySettingKeysManager.defaultSelectedDictID()
+        if getDict(dictionarySettingKeysManager.selectedDict) == nil {
+            dictionarySettingKeysManager.selectedDict = normalizedSelectedDictID
+        }
+
+        let normalizedSelectedChatID = getActivatedChats().first?.id ?? chatSettingKeysManager.defaultSelectedChatID()
+        if getChat(chatSettingKeysManager.selectedChat) == nil {
+            chatSettingKeysManager.selectedChat = normalizedSelectedChatID
+        }
+
+        if !chatSettingKeysManager.isChatEnabled, dictionarySettingKeysManager.selectedPageMode == "chat" {
+            dictionarySettingKeysManager.selectedPageMode = "dictionary"
+        }
+    }
+
     func loadCustomWebDicts() {
         customDicts = CustomWebDictStore.shared.load(mode: "dictionary")
         customChats = CustomWebDictStore.shared.load(mode: "chat")

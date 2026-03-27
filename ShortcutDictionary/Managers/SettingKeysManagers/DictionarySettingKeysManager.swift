@@ -13,4 +13,8 @@ final class DictionarySettingKeysManager: SettingKeysManagerBindable {
     static var shared = DictionarySettingKeysManager()
 
     private init() {}
+
+    func defaultSelectedDictID() -> String {
+        return SettingKeys.selectedDict.defaultValue as! String
+    }
 }

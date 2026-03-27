@@ -43,10 +43,8 @@ struct DictionaryView: View {
             guard pageMode == "chat" else { return }
             schedulePostLastCopiedText(mode: "chat")
         }
-        .onChange(of: chatSettingKeysManager.isChatEnabled) { enabled in
-            if !enabled, dictionarySettingKeysManager.selectedPageMode == "chat" {
-                dictionarySettingKeysManager.selectedPageMode = "dictionary"
-            }
+        .onChange(of: chatSettingKeysManager.isChatEnabled) { _ in
+            WebDictManager.shared.normalizeState()
         }
         .onReceive(NotificationCenter.default.publisher(for: .pageModeChanged)) { notification in
             guard let mode = notification.object as? String,
@@ -56,13 +54,7 @@ struct DictionaryView: View {
             dictionarySettingKeysManager.selectedPageMode = mode
         }
         .onAppear {
-            if WebDictManager.shared.getDict(dictionarySettingKeysManager.selectedDict) == nil {
-                dictionarySettingKeysManager.selectedDict = WebDictManager.shared.getActivatedDicts().first?.id ?? "daum_eng"
-            }
-
-            if WebDictManager.shared.getChat(chatSettingKeysManager.selectedChat) == nil {
-                chatSettingKeysManager.selectedChat = WebDictManager.shared.getActivatedChats().first?.id ?? "chatgpt"
-            }
+            WebDictManager.shared.normalizeState()
         }
     }
 

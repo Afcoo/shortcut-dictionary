@@ -13,4 +13,8 @@ final class ChatSettingKeysManager: SettingKeysManagerBindable {
     static var shared = ChatSettingKeysManager()
 
     private init() {}
+
+    func defaultSelectedChatID() -> String {
+        return SettingKeys.selectedChat.defaultValue as! String
+    }
 }
