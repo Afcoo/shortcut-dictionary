@@ -9,21 +9,21 @@ struct WindowSettingsView: View {
                 Toggle(isOn: windowSettingKeysManager.binding(\.isAlwaysOnTop)) {
                     Text("항상 위에 표시")
                 }
-                .onChange(of: windowSettingKeysManager.isAlwaysOnTop) { toValue in
-                    WindowManager.shared.setDictAlwaysOnTop(toValue)
+                .onChange(of: windowSettingKeysManager.isAlwaysOnTop) { _, newValue in
+                    WindowManager.shared.setDictAlwaysOnTop(newValue)
                 }
 
                 Toggle(isOn: windowSettingKeysManager.binding(\.isShowOnScreenCenter)) {
                     Text("항상 화면 중앙에 표시")
                 }
-                .onChange(of: windowSettingKeysManager.isShowOnScreenCenter) { newValue in
+                .onChange(of: windowSettingKeysManager.isShowOnScreenCenter) { _, newValue in
                     if newValue { windowSettingKeysManager.isShowOnMousePos = false }
                 }
 
                 Toggle(isOn: windowSettingKeysManager.binding(\.isShowOnMousePos)) {
                     Text("마우스 위치에 창 표시")
                 }
-                .onChange(of: windowSettingKeysManager.isShowOnMousePos) { newValue in
+                .onChange(of: windowSettingKeysManager.isShowOnMousePos) { _, newValue in
                     if newValue { windowSettingKeysManager.isShowOnScreenCenter = false }
                 }
 
@@ -58,8 +58,8 @@ struct WindowSettingsView: View {
                 Toggle(isOn: windowSettingKeysManager.binding(\.isOutClickToClose)) {
                     Text("창 밖 클릭 시 닫기")
                 }
-                .onChange(of: windowSettingKeysManager.isOutClickToClose) { toValue in
-                    WindowManager.shared.setOutClickToClose(toValue)
+                .onChange(of: windowSettingKeysManager.isOutClickToClose) { _, newValue in
+                    WindowManager.shared.setOutClickToClose(newValue)
                 }
             }
         }

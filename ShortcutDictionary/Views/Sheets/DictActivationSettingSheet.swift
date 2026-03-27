@@ -160,7 +160,7 @@ struct DictActivationSettingSheet: View {
                 selectedDictID = items.first?.id
             }
         }
-        .onChange(of: selectedDictID) { newValue in
+        .onChange(of: selectedDictID) { _, newValue in
             guard let newValue,
                   let selectedRow = tableItems.first(where: { $0.id == newValue }),
                   !selectedRow.isParent

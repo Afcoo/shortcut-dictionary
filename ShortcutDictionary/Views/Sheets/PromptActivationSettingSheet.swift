@@ -73,7 +73,7 @@ struct PromptActivationSettingSheet: View {
                 loadEditor(prompt: firstCustomPrompt)
             }
         }
-        .onChange(of: selectedPromptID) { newValue in
+        .onChange(of: selectedPromptID) { _, newValue in
             guard let newValue,
                   let selectedPrompt = webDictManager.getChatPrompts().first(where: { $0.id == newValue })
             else {

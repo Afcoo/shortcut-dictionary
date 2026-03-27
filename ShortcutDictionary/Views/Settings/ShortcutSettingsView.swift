@@ -13,7 +13,7 @@ struct ShortcutSettingsView: View {
             Toggle(isOn: shortcutSettingKeysManager.binding(\.isGlobalShortcutEnabled)) {
                 Text("사전 단축키 사용")
             }
-            .onChange(of: shortcutSettingKeysManager.isGlobalShortcutEnabled) { _ in
+            .onChange(of: shortcutSettingKeysManager.isGlobalShortcutEnabled) {
                 setShortcutEnabled()
             }
 
@@ -23,7 +23,7 @@ struct ShortcutSettingsView: View {
             Toggle(isOn: shortcutSettingKeysManager.binding(\.isChatShortcutEnabled)) {
                 Text("채팅 단축키 사용")
             }
-            .onChange(of: shortcutSettingKeysManager.isChatShortcutEnabled) { _ in
+            .onChange(of: shortcutSettingKeysManager.isChatShortcutEnabled) {
                 setShortcutEnabled()
             }
 
@@ -46,9 +46,9 @@ struct ShortcutSettingsView: View {
                 }
             }
             .disabled(!shortcutSettingKeysManager.isGlobalShortcutEnabled && !shortcutSettingKeysManager.isChatShortcutEnabled)
-            .onChange(of: shortcutSettingKeysManager.isCopyPasteEnabled) { value in
+            .onChange(of: shortcutSettingKeysManager.isCopyPasteEnabled) { _, newValue in
                 // 처음 활성화 시 빈 키 입력을 발생시켜 손쉬운 사용 권한 설정 팝업 표시
-                if value { ShortcutManager.shared.sendEmptyCommand() }
+                if newValue { ShortcutManager.shared.sendEmptyCommand() }
             }
             // 앱이 다시 Focus 되었을 때 손쉬운 사용 권한 재확인
             .onReceive(NotificationCenter.default.publisher(for: NSApplication.didBecomeActiveNotification)) { _ in

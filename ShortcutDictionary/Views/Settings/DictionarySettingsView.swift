@@ -33,7 +33,7 @@ struct DictionarySettingsView: View {
                 Text("모바일 뷰 사용")
                 Text("설정을 적용하기 위해 재시작이 필요합니다")
             }
-            .onChange(of: dictionarySettingKeysManager.isMobileView) { _ in
+            .onChange(of: dictionarySettingKeysManager.isMobileView) {
                 NotificationCenter.default.post(name: .reloadDict, object: nil) // 사전 창 새로고침
             }
         }

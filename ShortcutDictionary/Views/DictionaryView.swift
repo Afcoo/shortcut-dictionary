@@ -32,18 +32,18 @@ struct DictionaryView: View {
         }
         .setViewColoredBackground() // 배경 색상 설정
         .setDictViewContextMenu() // Edge 우클릭 시 메뉴 표시
-        .onChange(of: dictionarySettingKeysManager.selectedPageMode) { _ in
+        .onChange(of: dictionarySettingKeysManager.selectedPageMode) {
             ShortcutManager.shared.postLastCopiedTextIfExists(mode: pageMode)
         }
-        .onChange(of: dictionarySettingKeysManager.selectedDict) { _ in
+        .onChange(of: dictionarySettingKeysManager.selectedDict) {
             guard pageMode == "dictionary" else { return }
             schedulePostLastCopiedText(mode: "dictionary")
         }
-        .onChange(of: chatSettingKeysManager.selectedChat) { _ in
+        .onChange(of: chatSettingKeysManager.selectedChat) {
             guard pageMode == "chat" else { return }
             schedulePostLastCopiedText(mode: "chat")
         }
-        .onChange(of: chatSettingKeysManager.isChatEnabled) { _ in
+        .onChange(of: chatSettingKeysManager.isChatEnabled) {
             WebDictManager.shared.normalizeState()
         }
         .onReceive(NotificationCenter.default.publisher(for: .pageModeChanged)) { notification in

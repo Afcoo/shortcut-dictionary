@@ -13,7 +13,7 @@ struct GeneralSettingsView: View {
             Toggle(isOn: generalSettingKeysManager.binding(\.isMenuItemEnabled)) {
                 Text("메뉴 바 아이템 표시")
             }
-            .onChange(of: generalSettingKeysManager.isMenuItemEnabled) { _ in
+            .onChange(of: generalSettingKeysManager.isMenuItemEnabled) {
                 setMenuItemEnabled()
             }
         }

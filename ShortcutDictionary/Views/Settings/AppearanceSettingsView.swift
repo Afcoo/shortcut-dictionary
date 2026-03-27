@@ -63,8 +63,8 @@ struct AppearanceSettingsView: View {
                 Toggle(isOn: appearanceSettingKeysManager.binding(\.isLiquidGlassEnabled)) {
                     Text("Liquid Glass 디자인 사용")
                 }
-                .onChange(of: appearanceSettingKeysManager.isLiquidGlassEnabled) { value in
-                    if value {
+                .onChange(of: appearanceSettingKeysManager.isLiquidGlassEnabled) { _, newValue in
+                    if newValue {
                         appearanceSettingKeysManager.dictViewPadding = 0.0 // padding 제거 (기본값으로 변경)
                         appearanceSettingKeysManager.isBackgroundTransparent = true // 배경 투명 효과 강제 활성화
                         WindowManager.shared.setDictWindowLiquidGlass(true)
