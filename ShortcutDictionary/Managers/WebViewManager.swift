@@ -81,6 +81,12 @@ class WebViewManager {
         NSWorkspace.shared.open(url)
     }
 
+    func reloadAllControllers() {
+        for controller in controllers.values {
+            controller.reload()
+        }
+    }
+
     private func cacheKey(mode: String, id: String) -> String {
         return "\(mode)::\(id)"
     }

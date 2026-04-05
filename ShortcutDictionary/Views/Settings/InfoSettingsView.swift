@@ -76,15 +76,14 @@ struct InfoSettingsView: View {
 
     /// WebView 초기화
     func resetWebView() {
-        WKWebsiteDataStore.default().fetchDataRecords(ofTypes: WKWebsiteDataStore.allWebsiteDataTypes(), completionHandler: {
-            records in
-            for record in records {
-                WKWebsiteDataStore.default().removeData(ofTypes: record.dataTypes, for: [record], completionHandler: {})
-                // remove callback
-            }
-        })
+        let dataStore = WKWebsiteDataStore.default()
+        let dataTypes = WKWebsiteDataStore.allWebsiteDataTypes()
 
-        NotificationCenter.default.post(name: .reloadDict, object: nil)
+        dataStore.removeData(ofTypes: dataTypes, modifiedSince: .distantPast) {
+            DispatchQueue.main.async {
+                WebViewManager.shared.reloadAllControllers()
+            }
+        }
     }
 }
 
