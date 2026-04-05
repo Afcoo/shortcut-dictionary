@@ -51,7 +51,7 @@ struct ChatSettingsView: View {
                     }
                 }
                 .pickerStyle(.menu)
-                .id(webDictManager.customChatPrompts)
+                .id(webDictManager.activatedChatPromptIDs)
                 .disabled(!chatSettingKeysManager.isChatEnabled)
 
                 LabeledContent("") {

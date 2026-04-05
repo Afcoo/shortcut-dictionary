@@ -2,7 +2,6 @@ import SwiftUI
 
 struct PromptActivationSettingSheet: View {
     @ObservedObject private var appearanceSettingKeysManager = AppearanceSettingKeysManager.shared
-    @ObservedObject private var chatSettingKeysManager = ChatSettingKeysManager.shared
     @ObservedObject private var webDictManager = WebDictManager.shared
 
     @Binding var isPresented: Bool
@@ -40,12 +39,7 @@ struct PromptActivationSettingSheet: View {
                 Button("삭제") {
                     guard let selectedPromptID else { return }
                     webDictManager.deleteCustomChatPrompt(id: selectedPromptID)
-
-                    if chatSettingKeysManager.selectedChatPromptID == selectedPromptID {
-                        chatSettingKeysManager.selectedChatPromptID = ChatPromptPresets.none.id
-                    }
-
-                    self.selectedPromptID = webDictManager.getChatPrompts().first?.id
+                    self.selectedPromptID = webDictManager.getAllChatPrompts().first?.id
                     resetEditor()
                 }
                 .disabled(!isSelectedCustomPrompt)
@@ -66,7 +60,7 @@ struct PromptActivationSettingSheet: View {
             promptEditorSheet
         }
         .onAppear {
-            selectedPromptID = webDictManager.getChatPrompts().first?.id
+            selectedPromptID = webDictManager.getAllChatPrompts().first?.id
 
             if let firstCustomPrompt = webDictManager.customChatPrompts.first {
                 selectedPromptID = firstCustomPrompt.id
@@ -75,7 +69,7 @@ struct PromptActivationSettingSheet: View {
         }
         .onChange(of: selectedPromptID) { _, newValue in
             guard let newValue,
-                  let selectedPrompt = webDictManager.getChatPrompts().first(where: { $0.id == newValue })
+                  let selectedPrompt = webDictManager.getAllChatPrompts().first(where: { $0.id == newValue })
             else {
                 resetEditor()
                 return
@@ -87,7 +81,19 @@ struct PromptActivationSettingSheet: View {
     }
 
     private var promptTable: some View {
-        Table(webDictManager.getChatPrompts(), selection: $selectedPromptID) {
+        Table(webDictManager.getAllChatPrompts(), selection: $selectedPromptID) {
+            TableColumn("활성") { (prompt: ChatPrompt) in
+                Toggle("", isOn: Binding(
+                    get: { webDictManager.isActivatedChatPrompt(id: prompt.id) },
+                    set: { value in webDictManager.setChatPromptActivation(value, id: prompt.id) }
+                ))
+                .labelsHidden()
+                .toggleStyle(.checkbox)
+                .frame(width: 22)
+                .disabled(webDictManager.isActivatedChatPrompt(id: prompt.id) && activatedPromptCount <= 1)
+            }
+            .width(30)
+
             TableColumn("이름") { (prompt: ChatPrompt) in
                 Text(prompt.name)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
@@ -122,12 +128,16 @@ struct PromptActivationSettingSheet: View {
         return webDictManager.customChatPrompts.contains(where: { $0.id == selectedPromptID })
     }
 
+    private var activatedPromptCount: Int {
+        return webDictManager.activatedChatPromptIDs.count
+    }
+
     private func handleTablePrimaryAction(_ selectedIDs: Set<String>) {
         guard let selectedID = selectedIDs.first else { return }
 
         selectedPromptID = selectedID
 
-        if let selectedPrompt = webDictManager.getChatPrompts().first(where: { $0.id == selectedID }) {
+        if let selectedPrompt = webDictManager.getAllChatPrompts().first(where: { $0.id == selectedID }) {
             loadEditor(prompt: selectedPrompt)
             isPromptEditorReadOnly = selectedPrompt.isPreset
             showPromptEditorSheet = true

@@ -7,6 +7,7 @@ struct DictToolbarV2: View {
     @ObservedObject private var dictionarySettingKeysManager = DictionarySettingKeysManager.shared
     @ObservedObject private var chatSettingKeysManager = ChatSettingKeysManager.shared
     @ObservedObject private var appearanceSettingKeysManager = AppearanceSettingKeysManager.shared
+    @ObservedObject private var webDictManager = WebDictManager.shared
 
     @State private var showChevron = false
     @State private var showPromptChevron = false
@@ -115,7 +116,7 @@ struct DictToolbarV2: View {
                     HStack {
                         Button(action: { showPromptMenu.toggle() }) {
                             ZStack(alignment: .trailing) {
-                                Text(WebDictManager.shared.getSelectedChatPrompt().name)
+                                Text(webDictManager.getSelectedChatPrompt().name)
                                     .lineLimit(1)
                                     .font(.system(size: 14))
                                     .foregroundStyle(.primary)
@@ -135,7 +136,7 @@ struct DictToolbarV2: View {
                             arrowEdge: .bottom
                         ) {
                             VStack {
-                                ForEach(WebDictManager.shared.getChatPrompts(), id: \.self) { prompt in
+                                ForEach(webDictManager.getChatPrompts(), id: \.self) { prompt in
                                     Button(prompt.name) {
                                         chatSettingKeysManager.selectedChatPromptID = prompt.id
                                         showPromptMenu.toggle()
@@ -206,18 +207,18 @@ struct DictToolbarV2: View {
 
     var activeWebs: [WebDict] {
         if pageMode == "chat" {
-            return WebDictManager.shared.getActivatedChats()
+            return webDictManager.getActivatedChats()
         }
 
-        return WebDictManager.shared.getActivatedDicts()
+        return webDictManager.getActivatedDicts()
     }
 
     var currentWebName: String {
         if pageMode == "chat" {
-            return WebDictManager.shared.getChat(chatSettingKeysManager.selectedChat)?.wrappedName ?? "error"
+            return webDictManager.getChat(chatSettingKeysManager.selectedChat)?.wrappedName ?? "error"
         }
 
-        return WebDictManager.shared.getDict(dictionarySettingKeysManager.selectedDict)?.wrappedName ?? "error"
+        return webDictManager.getDict(dictionarySettingKeysManager.selectedDict)?.wrappedName ?? "error"
     }
 
     func goBack() {

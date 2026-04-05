@@ -4,6 +4,7 @@ import SwiftUI
 struct DictToolbar: View {
     @ObservedObject private var dictionarySettingKeysManager = DictionarySettingKeysManager.shared
     @ObservedObject private var chatSettingKeysManager = ChatSettingKeysManager.shared
+    @ObservedObject private var webDictManager = WebDictManager.shared
 
     @State private var showMenu = false
     @State private var showDictActivationSetting = false
@@ -74,7 +75,7 @@ struct DictToolbar: View {
                     HStack {
                         Button(action: { showPromptMenu.toggle() }) {
                             HStack {
-                                Text(WebDictManager.shared.getSelectedChatPrompt().name)
+                                Text(webDictManager.getSelectedChatPrompt().name)
                                     .lineLimit(1)
                                 Image(systemName: "chevron.down")
                                     .imageScale(.small)
@@ -86,7 +87,7 @@ struct DictToolbar: View {
                             arrowEdge: .bottom
                         ) {
                             VStack {
-                                ForEach(WebDictManager.shared.getChatPrompts(), id: \.self) { prompt in
+                                ForEach(webDictManager.getChatPrompts(), id: \.self) { prompt in
                                     Button(prompt.name) {
                                         chatSettingKeysManager.selectedChatPromptID = prompt.id
                                         showPromptMenu.toggle()
@@ -145,18 +146,18 @@ struct DictToolbar: View {
 
     var activeWebs: [WebDict] {
         if pageMode == "chat" {
-            return WebDictManager.shared.getActivatedChats()
+            return webDictManager.getActivatedChats()
         }
 
-        return WebDictManager.shared.getActivatedDicts()
+        return webDictManager.getActivatedDicts()
     }
 
     var currentWebName: String {
         if pageMode == "chat" {
-            return WebDictManager.shared.getChat(chatSettingKeysManager.selectedChat)?.wrappedName ?? "error"
+            return webDictManager.getChat(chatSettingKeysManager.selectedChat)?.wrappedName ?? "error"
         }
 
-        return WebDictManager.shared.getDict(dictionarySettingKeysManager.selectedDict)?.wrappedName ?? "error"
+        return webDictManager.getDict(dictionarySettingKeysManager.selectedDict)?.wrappedName ?? "error"
     }
 
     func showEllipsisContextMenu() {

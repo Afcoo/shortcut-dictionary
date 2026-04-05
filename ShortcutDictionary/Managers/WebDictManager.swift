@@ -11,6 +11,7 @@ class WebDictManager: ObservableObject {
 
     @Published var activatedDictIDs: Set<String> = ["daum_eng"]
     @Published var activatedChatIDs: Set<String> = ["chatgpt"]
+    @Published var activatedChatPromptIDs: Set<String> = Set(ChatPromptPresets.all.map(\.id))
     @Published var customChatPrompts: [ChatPrompt] = []
 
     private init() {
@@ -18,11 +19,14 @@ class WebDictManager: ObservableObject {
         loadActivatedDicts()
         loadActivatedChats()
         loadCustomChatPrompts()
+        loadActivatedChatPrompts()
+        normalizeState()
     }
 
     deinit {
         self.saveActivatedDicts()
         self.saveActivatedChats()
+        self.saveActivatedChatPrompts()
     }
 }
 
@@ -37,6 +41,8 @@ extension WebDictManager {
         if getChat(chatSettingKeysManager.selectedChat) == nil {
             chatSettingKeysManager.selectedChat = normalizedSelectedChatID
         }
+
+        normalizeSelectedChatPrompt()
 
         if !chatSettingKeysManager.isChatEnabled, dictionarySettingKeysManager.selectedPageMode == "chat" {
             dictionarySettingKeysManager.selectedPageMode = "dictionary"
@@ -186,8 +192,34 @@ extension WebDictManager {
         customChatPrompts = CustomChatPromptStore.shared.load()
         importLegacyCustomChatPromptsFromAppStorageIfNeeded()
 
-        if !getChatPrompts().contains(where: { $0.id == chatSettingKeysManager.selectedChatPromptID }) {
+        if !getAllChatPrompts().contains(where: { $0.id == chatSettingKeysManager.selectedChatPromptID }) {
             chatSettingKeysManager.selectedChatPromptID = ChatPromptPresets.none.id
+        }
+    }
+
+    func loadActivatedChatPrompts() {
+        guard let data = UserDefaults.standard.data(forKey: SettingKeys.activatedChatPrompts.rawValue),
+              let decoded = try? JSONDecoder().decode([String].self, from: data)
+        else {
+            activatedChatPromptIDs = Set(getAllChatPrompts().map(\.id))
+            normalizeSelectedChatPrompt()
+            return
+        }
+
+        let validIDs = Set(decoded).intersection(Set(getAllChatPrompts().map(\.id)))
+
+        if validIDs.isEmpty {
+            activatedChatPromptIDs = [ChatPromptPresets.none.id]
+        } else {
+            activatedChatPromptIDs = validIDs
+        }
+
+        normalizeSelectedChatPrompt()
+    }
+
+    func saveActivatedChatPrompts() {
+        if let encoded = try? JSONEncoder().encode(activatedChatPromptIDs) {
+            UserDefaults.standard.set(encoded, forKey: SettingKeys.activatedChatPrompts.rawValue)
         }
     }
 
@@ -204,6 +236,8 @@ extension WebDictManager {
         CustomChatPromptStore.shared.upsert(prompt)
         customChatPrompts.append(prompt)
         customChatPrompts.sort { $0.name.localizedStandardCompare($1.name) == .orderedAscending }
+        activatedChatPromptIDs.insert(prompt.id)
+        saveActivatedChatPrompts()
         return prompt
     }
 
@@ -222,10 +256,14 @@ extension WebDictManager {
     func deleteCustomChatPrompt(id: String) {
         CustomChatPromptStore.shared.delete(id: id)
         customChatPrompts.removeAll { $0.id == id }
+        activatedChatPromptIDs.remove(id)
 
-        if chatSettingKeysManager.selectedChatPromptID == id {
-            chatSettingKeysManager.selectedChatPromptID = ChatPromptPresets.none.id
+        if activatedChatPromptIDs.isEmpty {
+            activatedChatPromptIDs = [ChatPromptPresets.none.id]
         }
+
+        normalizeSelectedChatPrompt()
+        saveActivatedChatPrompts()
     }
 
     private func importLegacyCustomChatPromptsFromAppStorageIfNeeded() {
@@ -301,6 +339,25 @@ extension WebDictManager {
 
         saveActivatedChats()
     }
+
+    func isActivatedChatPrompt(id: String) -> Bool {
+        return activatedChatPromptIDs.contains(id)
+    }
+
+    func setChatPromptActivation(_ to: Bool, id: String) {
+        if to {
+            activatedChatPromptIDs.insert(id)
+        } else {
+            activatedChatPromptIDs.remove(id)
+        }
+
+        if activatedChatPromptIDs.isEmpty {
+            activatedChatPromptIDs = [ChatPromptPresets.none.id]
+        }
+
+        normalizeSelectedChatPrompt()
+        saveActivatedChatPrompts()
+    }
 }
 
 extension WebDictManager {
@@ -350,8 +407,16 @@ extension WebDictManager {
         }
     }
 
-    func getChatPrompts() -> [ChatPrompt] {
+    func getAllChatPrompts() -> [ChatPrompt] {
         return ChatPromptPresets.all + customChatPrompts
+    }
+
+    func getChatPrompts() -> [ChatPrompt] {
+        let allPrompts = getAllChatPrompts()
+
+        return allPrompts.filter { prompt in
+            activatedChatPromptIDs.contains(prompt.id)
+        }
     }
 
     func getSelectedChatPrompt() -> ChatPrompt {
@@ -364,5 +429,15 @@ extension WebDictManager {
         }
 
         return getDict(selectedDictID)
+    }
+}
+
+private extension WebDictManager {
+    func normalizeSelectedChatPrompt() {
+        let normalizedSelectedChatPromptID = getChatPrompts().first?.id ?? ChatPromptPresets.none.id
+
+        if !getChatPrompts().contains(where: { $0.id == chatSettingKeysManager.selectedChatPromptID }) {
+            chatSettingKeysManager.selectedChatPromptID = normalizedSelectedChatPromptID
+        }
     }
 }

@@ -41,6 +41,7 @@ enum SettingKeys: String, CaseIterable {
     case isChatEnabled
 
     case selectedChatPromptID
+    case activatedChatPrompts
     case customChatPromptsData
 
     /// 모바일 뷰 사용 여부
@@ -81,6 +82,7 @@ enum SettingKeys: String, CaseIterable {
         case .activatedChats: return ""
         case .isChatEnabled: return true
         case .selectedChatPromptID: return "preset_all_words"
+        case .activatedChatPrompts: return ""
         case .customChatPromptsData: return ""
         case .isMobileView: return true
         }
