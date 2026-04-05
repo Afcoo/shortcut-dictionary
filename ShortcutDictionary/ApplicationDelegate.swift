@@ -1,5 +1,6 @@
 import Cocoa
 import KeyboardShortcuts
+import LaunchAtLogin
 import SwiftUI
 
 @main
@@ -16,25 +17,26 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
 
     /// 앱 실행 시
     func applicationDidFinishLaunching(_: Notification) {
+        let wasLaunchedAtLogin = LaunchAtLogin.wasLaunchedAtLogin
+
         MenubarManager.shared.registerMenuBarItem()
         ShortcutManager.shared.registerShortcut()
-
-        if !generalSettingKeysManager.isMenuItemEnabled,
-           !shortcutSettingKeysManager.isGlobalShortcutEnabled,
-           !shortcutSettingKeysManager.isChatShortcutEnabled
-        {
-            NSApplication.shared.setActivationPolicy(.regular)
-        } else {
-            NSApplication.shared.setActivationPolicy(.prohibited)
-        }
 
         if !generalSettingKeysManager.hasCompletedOnboarding {
             NSApplication.shared.setActivationPolicy(.regular)
             WindowManager.shared.showOnboarding()
+            return
+        }
+
+        WebDictManager.shared.normalizeState()
+        WebViewManager.shared.preloadSelectedWebDictView()
+        WebViewManager.shared.preloadSelectedChatWebDictView()
+
+        if wasLaunchedAtLogin {
+            NSApplication.shared.setActivationPolicy(.prohibited)
         } else {
-            WebDictManager.shared.normalizeState()
-            WebViewManager.shared.preloadSelectedWebDictView()
-            WebViewManager.shared.preloadSelectedChatWebDictView()
+            NSApplication.shared.setActivationPolicy(.regular)
+            WindowManager.shared.showDict()
         }
     }
 
@@ -43,7 +45,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         return false
     }
 
-    /// Dock 아이콘 클릭 시 창 표시
+    /// 앱 재실행 시 사전 창 표시
     func applicationShouldHandleReopen(_: NSApplication, hasVisibleWindows _: Bool) -> Bool {
         WindowManager.shared.showDict()
         return false

@@ -87,6 +87,14 @@ shortcut-dictionary/
 - Mouse-relative placement supports 9 anchors + gap + in-screen clamping.
 - Out-click close uses global monitor (`NSEvent.addGlobalMonitorForEvents`).
 - Liquid Glass UI path (macOS 26+): `DictToolbarV2`, toolbar-attached window styling, extra content insets.
+- Launch policy:
+  - Onboarding not completed: start with `NSApplication.ActivationPolicy.regular` and show onboarding
+  - Launched via `LaunchAtLogin.wasLaunchedAtLogin`: start with `NSApplication.ActivationPolicy.prohibited`
+  - Launched directly by the user from Finder, Dock, or Launchpad: start with `NSApplication.ActivationPolicy.regular` and show the dictionary window
+- Reopen policy:
+  - If the app is already running and the user reopens it, `applicationShouldHandleReopen` shows the dictionary window
+  - This includes the recovery path relied on by the project when the app is reopened from Dock, Finder, or Launchpad after the dictionary window was closed
+  - Current project policy intentionally does not keep a separate `noEntryPoint` startup branch
 
 ## SETTINGS KEY MATRIX
 
