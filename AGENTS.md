@@ -95,6 +95,7 @@ shortcut-dictionary/
   - If the app is already running and the user reopens it, `applicationShouldHandleReopen` shows the dictionary window
   - This includes the recovery path relied on by the project when the app is reopened from Dock, Finder, or Launchpad after the dictionary window was closed
   - Current project policy intentionally does not keep a separate `noEntryPoint` startup branch
+  - If the app is launched at login while the menu bar item and both shortcuts are disabled, remaining hidden until the user manually reopens it from Finder, Dock, or Launchpad is the intended behavior
 
 ## SETTINGS KEY MATRIX
 
