@@ -1,4 +1,5 @@
 import Cocoa
+import Combine
 import SwiftUI
 
 class MenubarManager {
@@ -6,19 +7,50 @@ class MenubarManager {
     private let appearanceSettingKeysManager = AppearanceSettingKeysManager.shared
     private let dictionarySettingKeysManager = DictionarySettingKeysManager.shared
     private let chatSettingKeysManager = ChatSettingKeysManager.shared
+    private let webDictManager = WebDictManager.shared
 
     static var shared = MenubarManager()
 
     var statusBarItem: NSStatusItem!
     var statusBarMenu: NSMenu!
+    private var cancellables = Set<AnyCancellable>()
 
-    private init() {}
+    private init() {
+        observeMenuState()
+    }
 
     func registerMenuBarItem() {
         if generalSettingKeysManager.isMenuItemEnabled {
             setupMenuBarItem()
         } else {
             removeMenuBarItem()
+        }
+    }
+}
+
+private extension MenubarManager {
+    func observeMenuState() {
+        let publishers = [
+            generalSettingKeysManager.objectWillChange.eraseToAnyPublisher(),
+            appearanceSettingKeysManager.objectWillChange.eraseToAnyPublisher(),
+            dictionarySettingKeysManager.objectWillChange.eraseToAnyPublisher(),
+            chatSettingKeysManager.objectWillChange.eraseToAnyPublisher(),
+            webDictManager.objectWillChange.eraseToAnyPublisher(),
+        ]
+
+        for publisher in publishers {
+            publisher
+                .sink { [weak self] in
+                    self?.refreshMenuAsync()
+                }
+                .store(in: &cancellables)
+        }
+    }
+
+    func refreshMenuAsync() {
+        DispatchQueue.main.async { [weak self] in
+            self?.registerMenuBarItem()
+            self?.setupMenu()
         }
     }
 }
@@ -171,6 +203,39 @@ extension MenubarManager {
                 }
             }
 
+            if chatSettingKeysManager.isChatEnabled {
+                let promptMenuItem = NSMenuItem()
+                let promptMenu = NSMenu(title: "프롬프트")
+                promptMenuItem.submenu = promptMenu
+                mainMenu.addItem(promptMenuItem)
+
+                let shouldUsePromptQuickShortcuts = dictionarySettingKeysManager.selectedPageMode == "chat"
+                let activatedPrompts = WebDictManager.shared.getChatPrompts()
+                for index in activatedPrompts.indices {
+                    let promptQuickChangeMenuItem: NSMenuItem
+
+                    if index < 9, shouldUsePromptQuickShortcuts {
+                        promptQuickChangeMenuItem = NSMenuItem(
+                            title: activatedPrompts[index].name,
+                            action: #selector(changeChatPrompt(_:)),
+                            keyEquivalent: String(index + 1)
+                        )
+                        promptQuickChangeMenuItem.keyEquivalentModifierMask = [.command, .option]
+                    } else {
+                        promptQuickChangeMenuItem = NSMenuItem(
+                            title: activatedPrompts[index].name,
+                            action: #selector(changeChatPrompt(_:)),
+                            keyEquivalent: ""
+                        )
+                    }
+
+                    promptQuickChangeMenuItem.target = self
+                    promptQuickChangeMenuItem.representedObject = activatedPrompts[index].id
+                    promptQuickChangeMenuItem.state = chatSettingKeysManager.selectedChatPromptID == activatedPrompts[index].id ? .on : .off
+                    promptMenu.addItem(promptQuickChangeMenuItem)
+                }
+            }
+
             // View 메뉴 (sidebar 대체)
             let viewMenuItem = NSMenuItem()
             let viewMenu = NSMenu(title: "보기")
@@ -305,7 +370,7 @@ extension MenubarManager {
 
     @objc func toggleToolbar() {
         appearanceSettingKeysManager.isToolbarEnabled.toggle()
-        setupMenu()
+        refreshMenuAsync()
     }
 
     @objc func changeDictionary(_ sender: NSMenuItem) {
@@ -314,7 +379,7 @@ extension MenubarManager {
         }
 
         dictionarySettingKeysManager.selectedDict = id
-        setupMenu()
+        refreshMenuAsync()
     }
 
     @objc func changeChat(_ sender: NSMenuItem) {
@@ -323,12 +388,21 @@ extension MenubarManager {
         }
 
         chatSettingKeysManager.selectedChat = id
-        setupMenu()
+        refreshMenuAsync()
+    }
+
+    @objc func changeChatPrompt(_ sender: NSMenuItem) {
+        guard let id = sender.representedObject as? String else {
+            return
+        }
+
+        chatSettingKeysManager.selectedChatPromptID = id
+        refreshMenuAsync()
     }
 
     @objc func changeDictionaryMode() {
         dictionarySettingKeysManager.selectedPageMode = "dictionary"
-        setupMenu()
+        refreshMenuAsync()
     }
 
     @objc func changeChatMode() {
@@ -337,7 +411,7 @@ extension MenubarManager {
         }
 
         dictionarySettingKeysManager.selectedPageMode = "chat"
-        setupMenu()
+        refreshMenuAsync()
     }
 
     @objc func reloadDict() {
