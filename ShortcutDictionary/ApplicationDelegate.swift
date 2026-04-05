@@ -18,6 +18,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
     /// 앱 실행 시
     func applicationDidFinishLaunching(_: Notification) {
         let wasLaunchedAtLogin = LaunchAtLogin.wasLaunchedAtLogin
+        NSApplication.shared.setActivationPolicy(.prohibited)
 
         MenubarManager.shared.registerMenuBarItem()
         ShortcutManager.shared.registerShortcut()
@@ -32,9 +33,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, ObservableObject {
         WebViewManager.shared.preloadSelectedWebDictView()
         WebViewManager.shared.preloadSelectedChatWebDictView()
 
-        if wasLaunchedAtLogin {
-            NSApplication.shared.setActivationPolicy(.prohibited)
-        } else {
+        if !wasLaunchedAtLogin {
             NSApplication.shared.setActivationPolicy(.regular)
             WindowManager.shared.showDict()
         }
