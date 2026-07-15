@@ -1,13 +1,20 @@
 import SwiftUI
 
 extension View {
-    func setViewColoredBackground<S: Shape>(shape: S = .rect) -> some View {
-        modifier(SetViewColoredBackground(shape: shape))
+    func setViewColoredBackground<S: Shape>(
+        shape: S = .rect,
+        followsContainerCorners: Bool = false
+    ) -> some View {
+        modifier(SetViewColoredBackground(
+            shape: shape,
+            followsContainerCorners: followsContainerCorners
+        ))
     }
 }
 
 struct SetViewColoredBackground<S: Shape>: ViewModifier {
     var shape: S
+    var followsContainerCorners: Bool
 
     @Environment(\.colorScheme) var colorScheme
 
@@ -30,8 +37,13 @@ struct SetViewColoredBackground<S: Shape>: ViewModifier {
             .background {
                 // macOS 26.0 이상에서 Liquid Glass 디자인 활성화 가능
                 if #available(macOS 26.0, *), appearanceSettingKeysManager.isLiquidGlassEnabled {
-                    Color.clear
-                        .glassEffect(.regular.tint(color.opacity(colorOpacity)), in: shape)
+                    if followsContainerCorners {
+                        Color.clear
+                            .glassEffect(.regular.tint(color), in: ConcentricRectangle())
+                    } else {
+                        Color.clear
+                            .glassEffect(.regular.tint(color), in: shape)
+                    }
                 } else {
                     if appearanceSettingKeysManager.isBackgroundTransparent {
                         color
