@@ -1,6 +1,9 @@
 import SwiftUI
 
 enum SettingKeys: String, CaseIterable {
+    /// 명시적 tint 없이 시스템 Liquid Glass를 사용하는 저장 값
+    static let nativeWindowBackgroundColorValue = "nativeWindow"
+
     case isGlobalShortcutEnabled = "enable_global_shortcut"
     case isChatShortcutEnabled = "enable_chat_shortcut"
     case isCopyPasteEnabled = "enable_copy_paste"
@@ -27,6 +30,8 @@ enum SettingKeys: String, CaseIterable {
     // Appearance
     case backgroundColor
     case backgroundDarkColor
+    case liquidGlassBackgroundColor
+    case liquidGlassBackgroundDarkColor
     case isBackgroundTransparent
     case dictViewPadding
     case isLiquidGlassEnabled
@@ -70,6 +75,8 @@ enum SettingKeys: String, CaseIterable {
         // Appearance
         case .backgroundColor: return "#FFFFFF" // 라이트 모드 배경 색상
         case .backgroundDarkColor: return "#1E1E1E" // 다크 모드 배경 색상
+        case .liquidGlassBackgroundColor: return Self.nativeWindowBackgroundColorValue
+        case .liquidGlassBackgroundDarkColor: return Self.nativeWindowBackgroundColorValue
         case .isBackgroundTransparent: return true
         case .dictViewPadding: return if #available(macOS 26.0, *) { 0.0 } else { 8.0 }
         case .isLiquidGlassEnabled: return if #available(macOS 26.0, *) { true } else { false } // macOS Tahoe에서만 기본 설정

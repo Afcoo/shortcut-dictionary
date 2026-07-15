@@ -30,7 +30,7 @@ struct DictionaryView: View {
                 }
             }
         }
-        .setViewColoredBackground() // 배경 색상 설정
+        .setViewColoredBackground(followsContainerCorners: true) // 배경 색상 설정
         .setDictViewContextMenu() // Edge 우클릭 시 메뉴 표시
         .onChange(of: dictionarySettingKeysManager.selectedPageMode) {
             ShortcutManager.shared.postLastCopiedTextIfExists(mode: pageMode)
@@ -74,16 +74,27 @@ struct DictionaryView: View {
         )
     }
 
+    var liquidGlassMinimumCornerRadius: CGFloat {
+        if #available(macOS 27.0, *) {
+            return 10.0
+        }
+
+        return 14.0
+    }
+
     func webContainer<Content: View>(view: Content) -> some View {
-        view
-            .clipShape(RoundedRectangle(cornerRadius:
-                appearanceSettingKeysManager.isLiquidGlassEnabled
-                    ? max(26.0 - appearanceSettingKeysManager.dictViewPadding, 14.0)
-                    : max(15.0 - appearanceSettingKeysManager.dictViewPadding, 10.0)))
-            .accessibilitySortPriority(2)
-            .padding([.horizontal, .bottom], appearanceSettingKeysManager.dictViewPadding)
-            .padding(.top, (!appearanceSettingKeysManager.isLiquidGlassEnabled && appearanceSettingKeysManager.isToolbarEnabled) ? 36.0 : appearanceSettingKeysManager.dictViewPadding)
-            .id("\(appearanceSettingKeysManager.isToolbarEnabled)-\(appearanceSettingKeysManager.isLiquidGlassEnabled)")
+        Group {
+            if #available(macOS 26.0, *), appearanceSettingKeysManager.isLiquidGlassEnabled {
+                view.clipShape(ConcentricRectangle(corners: .concentric(minimum: .fixed(liquidGlassMinimumCornerRadius))))
+            } else {
+                view.clipShape(RoundedRectangle(cornerRadius:
+                    max(15.0 - appearanceSettingKeysManager.dictViewPadding, 10.0)))
+            }
+        }
+        .accessibilitySortPriority(2)
+        .padding([.horizontal, .bottom], appearanceSettingKeysManager.dictViewPadding)
+        .padding(.top, (!appearanceSettingKeysManager.isLiquidGlassEnabled && appearanceSettingKeysManager.isToolbarEnabled) ? 36.0 : appearanceSettingKeysManager.dictViewPadding)
+        .id("\(appearanceSettingKeysManager.isToolbarEnabled)-\(appearanceSettingKeysManager.isLiquidGlassEnabled)")
     }
 
     private func schedulePostLastCopiedText(mode: String) {

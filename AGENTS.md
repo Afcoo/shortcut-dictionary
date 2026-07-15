@@ -115,8 +115,10 @@ shortcut-dictionary/
 | `dictWindowCursorPlacement` | String | `center` | `DictionarySettingsView`, `WindowManager` |
 | `dictWindowCursorGap` | Double | `12.0` | `DictionarySettingsView`, `WindowManager` |
 | `isDictWindowKeepInScreen` | Bool | `true` | `DictionarySettingsView`, `WindowManager` |
-| `backgroundColor` | String(hex) | `#FFFFFF` | `AppearanceSettingsView`, `WebDictView` |
-| `backgroundDarkColor` | String(hex) | `#1E1E1E` | `AppearanceSettingsView`, `WebDictView` |
+| `backgroundColor` | String(hex) | `#FFFFFF` | `AppearanceSettingsView`, `SetViewColoredBackground`, `WebDictView` |
+| `backgroundDarkColor` | String(hex) | `#1E1E1E` | `AppearanceSettingsView`, `SetViewColoredBackground`, `WebDictView` |
+| `liquidGlassBackgroundColor` | String(system/hex) | `nativeWindow` | `AppearanceSettingsView`, `SetViewColoredBackground` |
+| `liquidGlassBackgroundDarkColor` | String(system/hex) | `nativeWindow` | `AppearanceSettingsView`, `SetViewColoredBackground` |
 | `isBackgroundTransparent` | Bool | `true` | `AppearanceSettingsView`, background modifiers |
 | `dictViewPadding` | Double | `0.0` (macOS 26+) / `8.0` | `AppearanceSettingsView`, `DictionaryView` |
 | `isLiquidGlassEnabled` | Bool | `true` (macOS 26+) / `false` | `AppearanceSettingsView`, `DictionaryView`, `WindowManager` |

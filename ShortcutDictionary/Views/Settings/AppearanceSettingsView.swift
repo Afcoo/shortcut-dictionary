@@ -10,52 +10,47 @@ struct AppearanceSettingsView: View {
                 Text("배경 두께 설정")
             }
 
-            // 배경 색상
             HStack {
                 Text("배경 색상")
                 Spacer()
 
-                // 리셋 버튼
-                Button(
-                    action: {
-                        appearanceSettingKeysManager.backgroundColor = SettingKeys.backgroundColor.defaultValue as! String
-                        appearanceSettingKeysManager.backgroundDarkColor = SettingKeys.backgroundDarkColor.defaultValue as! String
-                    },
-                    label: {
-                        Image(systemName: "arrow.trianglehead.2.clockwise")
-                    }
-                )
+                Button(action: resetBackgroundColors) {
+                    Image(systemName: "arrow.trianglehead.2.clockwise")
+                }
                 .buttonStyle(.borderless)
+                .accessibilityLabel("배경 색상 초기화")
 
-                // 라이트 모드 색상 선택
-                ColorPicker("라이트 모드 색상",
-                            selection: Binding(
-                                get: { Color(hexString: appearanceSettingKeysManager.backgroundColor) },
-                                set: { newColor in appearanceSettingKeysManager.backgroundColor = newColor.toHex() }
-                            ),
-                            supportsOpacity: false)
-                    .labelsHidden()
-                    .overlay {
-                        Image(systemName: "sun.max.fill")
-                            .foregroundColor(.init(white: 0.2))
-                            .font(.system(size: 14))
-                            .allowsHitTesting(false)
-                    }
+                ColorPicker(
+                    "라이트 모드 색상",
+                    selection: Binding(
+                        get: { backgroundColor(isDarkMode: false) },
+                        set: { setBackgroundColor($0, isDarkMode: false) }
+                    ),
+                    supportsOpacity: false
+                )
+                .labelsHidden()
+                .overlay {
+                    Image(systemName: "sun.max.fill")
+                        .foregroundColor(.init(white: 0.2))
+                        .font(.system(size: 14))
+                        .allowsHitTesting(false)
+                }
 
-                // 다크 모드 색상 선택
-                ColorPicker("다크 모드 색상",
-                            selection: Binding(
-                                get: { Color(hexString: appearanceSettingKeysManager.backgroundDarkColor) },
-                                set: { newColor in appearanceSettingKeysManager.backgroundDarkColor = newColor.toHex() }
-                            ),
-                            supportsOpacity: false)
-                    .labelsHidden()
-                    .overlay {
-                        Image(systemName: "moon.fill")
-                            .foregroundColor(.init(white: 0.9))
-                            .font(.system(size: 10))
-                            .allowsHitTesting(false)
-                    }
+                ColorPicker(
+                    "다크 모드 색상",
+                    selection: Binding(
+                        get: { backgroundColor(isDarkMode: true) },
+                        set: { setBackgroundColor($0, isDarkMode: true) }
+                    ),
+                    supportsOpacity: false
+                )
+                .labelsHidden()
+                .overlay {
+                    Image(systemName: "moon.fill")
+                        .foregroundColor(.init(white: 0.9))
+                        .font(.system(size: 10))
+                        .allowsHitTesting(false)
+                }
             }
 
             if #available(macOS 26.0, *) {
@@ -104,5 +99,59 @@ struct AppearanceSettingsView: View {
         }
         .formStyle(.grouped)
         .scrollContentBackground(.hidden)
+    }
+
+    private var usesLiquidGlassColors: Bool {
+        if #available(macOS 26.0, *) {
+            return appearanceSettingKeysManager.isLiquidGlassEnabled
+        }
+
+        return false
+    }
+
+    private func backgroundColor(isDarkMode: Bool) -> Color {
+        if usesLiquidGlassColors {
+            let storedColor = isDarkMode
+                ? appearanceSettingKeysManager.liquidGlassBackgroundDarkColor
+                : appearanceSettingKeysManager.liquidGlassBackgroundColor
+
+            guard storedColor != SettingKeys.nativeWindowBackgroundColorValue,
+                  let color = NSColor(hexString: storedColor)
+            else {
+                return Color(nsColor: NSColor.resolvedWindowBackgroundColor(
+                    for: isDarkMode ? .darkAqua : .aqua
+                ))
+            }
+
+            return Color(nsColor: color)
+        }
+
+        return Color(hexString: isDarkMode
+            ? appearanceSettingKeysManager.backgroundDarkColor
+            : appearanceSettingKeysManager.backgroundColor)
+    }
+
+    private func setBackgroundColor(_ color: Color, isDarkMode: Bool) {
+        if usesLiquidGlassColors {
+            if isDarkMode {
+                appearanceSettingKeysManager.liquidGlassBackgroundDarkColor = color.toHex()
+            } else {
+                appearanceSettingKeysManager.liquidGlassBackgroundColor = color.toHex()
+            }
+        } else if isDarkMode {
+            appearanceSettingKeysManager.backgroundDarkColor = color.toHex()
+        } else {
+            appearanceSettingKeysManager.backgroundColor = color.toHex()
+        }
+    }
+
+    private func resetBackgroundColors() {
+        if usesLiquidGlassColors {
+            appearanceSettingKeysManager.liquidGlassBackgroundColor = SettingKeys.liquidGlassBackgroundColor.defaultValue as! String
+            appearanceSettingKeysManager.liquidGlassBackgroundDarkColor = SettingKeys.liquidGlassBackgroundDarkColor.defaultValue as! String
+        } else {
+            appearanceSettingKeysManager.backgroundColor = SettingKeys.backgroundColor.defaultValue as! String
+            appearanceSettingKeysManager.backgroundDarkColor = SettingKeys.backgroundDarkColor.defaultValue as! String
+        }
     }
 }
