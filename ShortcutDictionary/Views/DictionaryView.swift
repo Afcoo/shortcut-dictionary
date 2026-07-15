@@ -74,10 +74,18 @@ struct DictionaryView: View {
         )
     }
 
+    var liquidGlassMinimumCornerRadius: CGFloat {
+        if #available(macOS 27.0, *) {
+            return 10.0
+        }
+
+        return 14.0
+    }
+
     func webContainer<Content: View>(view: Content) -> some View {
         Group {
             if #available(macOS 26.0, *), appearanceSettingKeysManager.isLiquidGlassEnabled {
-                view.clipShape(ConcentricRectangle(corners: .concentric(minimum: 14.0)))
+                view.clipShape(ConcentricRectangle(corners: .concentric(minimum: liquidGlassMinimumCornerRadius)))
             } else {
                 view.clipShape(RoundedRectangle(cornerRadius:
                     max(15.0 - appearanceSettingKeysManager.dictViewPadding, 10.0)))
