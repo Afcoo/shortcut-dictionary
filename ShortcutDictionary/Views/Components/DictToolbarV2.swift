@@ -65,6 +65,7 @@ struct DictToolbarV2: View {
                                 .foregroundStyle(.primary)
                                 .padding(.horizontal, 8)
                                 .offset(x: showChevron || showMenu ? -6 : 0)
+                                .shadow(radius: 0)
 
                             if showChevron || showMenu {
                                 Image(systemName: "chevron.down")
