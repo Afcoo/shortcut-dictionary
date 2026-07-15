@@ -3,13 +3,11 @@ import SwiftUI
 extension View {
     func setViewColoredBackground<S: Shape>(
         shape: S = .rect,
-        followsContainerCorners: Bool = false,
-        usesLiquidGlassTint: Bool = true
+        followsContainerCorners: Bool = false
     ) -> some View {
         modifier(SetViewColoredBackground(
             shape: shape,
-            followsContainerCorners: followsContainerCorners,
-            usesLiquidGlassTint: usesLiquidGlassTint
+            followsContainerCorners: followsContainerCorners
         ))
     }
 }
@@ -17,7 +15,6 @@ extension View {
 struct SetViewColoredBackground<S: Shape>: ViewModifier {
     var shape: S
     var followsContainerCorners: Bool
-    var usesLiquidGlassTint: Bool
 
     @Environment(\.colorScheme) var colorScheme
 
@@ -34,8 +31,7 @@ struct SetViewColoredBackground<S: Shape>: ViewModifier {
             ? appearanceSettingKeysManager.liquidGlassBackgroundColor
             : appearanceSettingKeysManager.liquidGlassBackgroundDarkColor
 
-        guard usesLiquidGlassTint,
-              storedColor != SettingKeys.nativeWindowBackgroundColorValue,
+        guard storedColor != SettingKeys.nativeWindowBackgroundColorValue,
               let color = NSColor(hexString: storedColor)
         else {
             return nil

@@ -361,6 +361,6 @@ struct ToolbarButtonV2: View {
         }
         .buttonStyle(.accessoryBar)
         .buttonBorderShape(.circle)
-        .setViewColoredBackground(shape: .circle, usesLiquidGlassTint: false)
+        .setViewColoredBackground(shape: .circle)
     }
 }
