@@ -16,6 +16,12 @@ final class AppearanceSettingKeysManager: SettingKeysManagerBindable {
     @NotifyingAppStorage(SettingKeys.backgroundDarkColor.rawValue)
     var backgroundDarkColor = SettingKeys.backgroundDarkColor.defaultValue as! String
 
+    @NotifyingAppStorage(SettingKeys.liquidGlassBackgroundColor.rawValue)
+    var liquidGlassBackgroundColor = SettingKeys.liquidGlassBackgroundColor.defaultValue as! String
+
+    @NotifyingAppStorage(SettingKeys.liquidGlassBackgroundDarkColor.rawValue)
+    var liquidGlassBackgroundDarkColor = SettingKeys.liquidGlassBackgroundDarkColor.defaultValue as! String
+
     @NotifyingAppStorage(SettingKeys.isBackgroundTransparent.rawValue)
     var isBackgroundTransparent = SettingKeys.isBackgroundTransparent.defaultValue as! Bool
 

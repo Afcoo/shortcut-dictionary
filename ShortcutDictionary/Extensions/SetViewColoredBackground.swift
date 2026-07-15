@@ -3,11 +3,13 @@ import SwiftUI
 extension View {
     func setViewColoredBackground<S: Shape>(
         shape: S = .rect,
-        followsContainerCorners: Bool = false
+        followsContainerCorners: Bool = false,
+        usesLiquidGlassTint: Bool = true
     ) -> some View {
         modifier(SetViewColoredBackground(
             shape: shape,
-            followsContainerCorners: followsContainerCorners
+            followsContainerCorners: followsContainerCorners,
+            usesLiquidGlassTint: usesLiquidGlassTint
         ))
     }
 }
@@ -15,15 +17,31 @@ extension View {
 struct SetViewColoredBackground<S: Shape>: ViewModifier {
     var shape: S
     var followsContainerCorners: Bool
+    var usesLiquidGlassTint: Bool
 
     @Environment(\.colorScheme) var colorScheme
 
     @ObservedObject private var appearanceSettingKeysManager = AppearanceSettingKeysManager.shared
 
-    var color: Color {
+    var backgroundColor: Color {
         colorScheme == .light
             ? Color(hexString: appearanceSettingKeysManager.backgroundColor)
             : Color(hexString: appearanceSettingKeysManager.backgroundDarkColor)
+    }
+
+    var liquidGlassTintColor: Color? {
+        let storedColor = colorScheme == .light
+            ? appearanceSettingKeysManager.liquidGlassBackgroundColor
+            : appearanceSettingKeysManager.liquidGlassBackgroundDarkColor
+
+        guard usesLiquidGlassTint,
+              storedColor != SettingKeys.nativeWindowBackgroundColorValue,
+              let color = NSColor(hexString: storedColor)
+        else {
+            return nil
+        }
+
+        return Color(nsColor: color)
     }
 
     var colorOpacity: Double {
@@ -39,19 +57,19 @@ struct SetViewColoredBackground<S: Shape>: ViewModifier {
                 if #available(macOS 26.0, *), appearanceSettingKeysManager.isLiquidGlassEnabled {
                     if followsContainerCorners {
                         Color.clear
-                            .glassEffect(.regular.tint(color), in: ConcentricRectangle())
+                            .glassEffect(.regular.tint(liquidGlassTintColor), in: ConcentricRectangle())
                     } else {
                         Color.clear
-                            .glassEffect(.regular.tint(color), in: shape)
+                            .glassEffect(.regular.tint(liquidGlassTintColor), in: shape)
                     }
                 } else {
                     if appearanceSettingKeysManager.isBackgroundTransparent {
-                        color
+                        backgroundColor
                             .opacity(colorOpacity)
                             .background(Material.thin)
                             .ignoresSafeArea()
                     } else {
-                        color
+                        backgroundColor
                     }
                 }
             }

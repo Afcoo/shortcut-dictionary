@@ -1,12 +1,32 @@
 import SwiftUI
 
 extension NSColor {
+    static func resolvedWindowBackgroundColor(for appearanceName: NSAppearance.Name) -> NSColor {
+        guard let appearance = NSAppearance(named: appearanceName) else {
+            return .windowBackgroundColor
+        }
+
+        var resolvedColor = NSColor.windowBackgroundColor
+        appearance.performAsCurrentDrawingAppearance {
+            resolvedColor = NSColor.windowBackgroundColor.usingColorSpace(.sRGB)
+                ?? NSColor.windowBackgroundColor
+        }
+        return resolvedColor
+    }
+
     convenience init?(hexString: String) {
         // Remove '#' if present
         let hex = hexString.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        let validHexCharacters = CharacterSet(charactersIn: "0123456789ABCDEFabcdef")
+
+        guard hex.unicodeScalars.allSatisfy(validHexCharacters.contains) else {
+            return nil
+        }
 
         var int = UInt64()
-        Scanner(string: hex).scanHexInt64(&int)
+        guard Scanner(string: hex).scanHexInt64(&int) else {
+            return nil
+        }
 
         let a, r, g, b: UInt64
         switch hex.count {
