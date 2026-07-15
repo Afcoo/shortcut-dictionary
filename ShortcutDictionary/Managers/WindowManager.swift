@@ -404,12 +404,22 @@ class SettingsToolbarObserver: NSObject {
     }
 
     @objc func toolbarWillAddItem(_ notification: Notification) {
-        guard let item = notification.userInfo?["item"] as? NSToolbarItem,
+        guard let toolbar = notification.object as? NSToolbar,
+              let item = notification.userInfo?["item"] as? NSToolbarItem,
               item.itemIdentifier == sidebarToggleId
         else { return }
 
         item.view?.isHidden = true
         item.menuFormRepresentation = nil
+
+        // macOS 27에서는 내부 뷰만 숨기면 Liquid Glass 배경이 남으므로 추가 완료 후 항목 자체를 제거
+        DispatchQueue.main.async { [weak toolbar] in
+            guard let toolbar,
+                  let index = toolbar.items.firstIndex(where: { $0.itemIdentifier == item.itemIdentifier })
+            else { return }
+
+            toolbar.removeItem(at: index)
+        }
     }
 }
 
