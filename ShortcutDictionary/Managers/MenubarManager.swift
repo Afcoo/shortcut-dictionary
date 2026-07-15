@@ -101,12 +101,12 @@ extension MenubarManager {
 
             // Undo/Redo
             let undoMenuItem = NSMenuItem(title: "실행 취소",
-                                          action: Selector("undo:"),
+                                          action: Selector(("undo:")),
                                           keyEquivalent: "z")
             editMenu.addItem(undoMenuItem)
 
             let redoMenuItem = NSMenuItem(title: "실행 복귀",
-                                          action: Selector("redo:"),
+                                          action: Selector(("redo:")),
                                           keyEquivalent: "Z")
             editMenu.addItem(redoMenuItem)
 
@@ -114,22 +114,22 @@ extension MenubarManager {
 
             // Cut/Copy/Paste
             let cutMenuItem = NSMenuItem(title: "오려두기",
-                                         action: Selector("cut:"),
+                                         action: #selector(NSText.cut(_:)),
                                          keyEquivalent: "x")
             editMenu.addItem(cutMenuItem)
 
             let copyMenuItem = NSMenuItem(title: "복사하기",
-                                          action: Selector("copy:"),
+                                          action: #selector(NSText.copy(_:)),
                                           keyEquivalent: "c")
             editMenu.addItem(copyMenuItem)
 
             let pasteMenuItem = NSMenuItem(title: "붙여넣기",
-                                           action: Selector("paste:"),
+                                           action: #selector(NSText.paste(_:)),
                                            keyEquivalent: "v")
             editMenu.addItem(pasteMenuItem)
 
             let deleteMenuItem = NSMenuItem(title: "삭제",
-                                            action: Selector("delete:"),
+                                            action: #selector(NSText.delete(_:)),
                                             keyEquivalent: "\u{8}")
             editMenu.addItem(deleteMenuItem)
 
@@ -137,7 +137,7 @@ extension MenubarManager {
 
             // Select All
             let selectAllMenuItem = NSMenuItem(title: "모두 선택",
-                                               action: Selector("selectAll:"),
+                                               action: #selector(NSText.selectAll(_:)),
                                                keyEquivalent: "a")
             editMenu.addItem(selectAllMenuItem)
 
